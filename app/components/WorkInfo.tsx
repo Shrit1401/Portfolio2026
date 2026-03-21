@@ -18,9 +18,6 @@ const WorkInfo = () => {
 
   return (
     <div className="workinfo-section flex py-10 items-center justify-center">
-      <span className="workinfo-bgword pointer-events-none select-none absolute text-[20vw] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-black/5 font-black tracking-tight z-10">
-        Flex
-      </span>
       <div className="w-full px-4 z-20">
         <h2 className="workinfo-title text-3xl md:text-5xl font-bold text-neutral-900 mb-10 tracking-tight text-left">
           Cool Projects

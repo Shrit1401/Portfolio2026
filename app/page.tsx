@@ -8,6 +8,9 @@ import GridLinks from "./components/GridLinks";
 import { Revealer } from "./components/Revealer";
 import Footer from "./components/Footer";
 import type { FC } from "react";
+import BuildLog from "./components/BuildLog";
+import StatsBar from "./components/StatsBar";
+import FeaturedProjects from "./components/FeaturedProjects";
 
 const Home: FC = () => {
   return (
@@ -23,6 +26,9 @@ const Home: FC = () => {
 
       <section className="content-sections">
         <AboutMe />
+        <BuildLog />
+        <StatsBar />
+        <FeaturedProjects />
         <GridLinks />
       </section>
 
