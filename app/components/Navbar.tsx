@@ -187,8 +187,8 @@ const Navbar: FC<NavbarProps> = ({ active }) => {
   const renderMenuItem = (item: MenuItem) => {
     const isActive = item.path === pathname || item.path === active;
     const commonClasses =
-      "hover:underline cursor-pointer hover:font-bold transition-all duration-300";
-    const activeClasses = isActive ? "font-bold underline" : "";
+      "cursor-pointer hover:font-bold transition-all duration-300 opacity-60 hover:opacity-100";
+    const activeClasses = isActive ? "font-bold opacity-100" : "";
 
     if (item.isExternal && item.externalUrl) {
       return (

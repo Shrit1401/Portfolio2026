@@ -113,7 +113,7 @@ const AboutMe = () => {
   return (
     <section
       id="about-me"
-      className="relative min-h-[100vh] md:min-h-[150vh]"
+      className="relative min-h-[100vh] md:min-h-[100vh]"
       ref={sectionRef}
     >
       <div className="container mx-auto px-4 py-6 md:py-12">

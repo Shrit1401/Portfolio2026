@@ -7,7 +7,6 @@ import AboutMe from "./components/AboutMe";
 import GridLinks from "./components/GridLinks";
 import { Revealer } from "./components/Revealer";
 import Footer from "./components/Footer";
-import Substack from "./components/Substack";
 import type { FC } from "react";
 
 const Home: FC = () => {
@@ -18,12 +17,12 @@ const Home: FC = () => {
 
       <div className="flex flex-col min-h-screen">
         <Navbar />
+
         <HeroText />
       </div>
 
       <section className="content-sections">
         <AboutMe />
-        <Substack />
         <GridLinks />
       </section>
 

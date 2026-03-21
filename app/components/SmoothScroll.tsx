@@ -15,9 +15,12 @@ const SmoothScroll = ({ children }: { children: React.ReactNode }) => {
       autoRaf: true,
     });
 
+    (window as any).lenis = lenisRef.current;
+
     return () => {
       lenisRef.current?.destroy();
       lenisRef.current = null;
+      delete (window as any).lenis;
     };
   }, []);
 

@@ -59,23 +59,36 @@ const HeroText: FC = () => {
   const newsletterRef = useRef<HTMLDivElement>(null);
   const subtextRef = useRef<HTMLDivElement>(null);
   const buttonsRef = useRef<HTMLDivElement>(null);
-  const orb1Ref = useRef<HTMLDivElement>(null);
-  const orb2Ref = useRef<HTMLDivElement>(null);
-  const orb3Ref = useRef<HTMLDivElement>(null);
+  const forgeRef = useRef<HTMLDivElement>(null);
+  const editorialRef = useRef<HTMLDivElement>(null);
 
-  // Parallax on scroll
+  // Parallax on scroll — uses Lenis scroll event when available, falls back to window scroll
   useEffect(() => {
-    const handleScroll = () => {
-      const y = window.scrollY;
-      if (orb1Ref.current)
-        orb1Ref.current.style.transform = `translate(${y * 0.06}px, ${-y * 0.09}px) scale(1)`;
-      if (orb2Ref.current)
-        orb2Ref.current.style.transform = `translate(${-y * 0.05}px, ${y * 0.07}px) scale(1)`;
-      if (orb3Ref.current)
-        orb3Ref.current.style.transform = `translate(${y * 0.03}px, ${-y * 0.05}px) scale(1)`;
+    const handleScroll = ({ scroll }: { scroll: number }) => {
+      const y = scroll;
+      if (forgeRef.current)
+        forgeRef.current.style.transform = `translate(22%, calc(-8% + ${-y * 0.35}px))`;
+      if (editorialRef.current)
+        editorialRef.current.style.transform = `translateY(calc(-50% + ${-y * 0.18}px)) rotate(-90deg)`;
     };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    const attachLenis = () => {
+      const lenis = (window as any).lenis;
+      if (lenis) {
+        lenis.on("scroll", handleScroll);
+        return () => lenis.off("scroll", handleScroll);
+      }
+    };
+
+    let cleanup: (() => void) | undefined;
+    const tryAttach = () => { cleanup = attachLenis(); };
+    tryAttach();
+    const retryId = window.setTimeout(() => { cleanup = cleanup ?? attachLenis(); }, 300);
+
+    return () => {
+      window.clearTimeout(retryId);
+      cleanup?.();
+    };
   }, []);
 
   useEffect(() => {
@@ -166,11 +179,6 @@ const HeroText: FC = () => {
     };
   }, []);
 
-  const handleNewsletterClick = () => {
-    const footer = document.querySelector("footer");
-    if (footer) footer.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
     <>
       <style>{`
@@ -191,7 +199,7 @@ const HeroText: FC = () => {
           padding: 10px 24px; background: transparent; color: #171717;
           border-radius: 999px; font-size: 0.875rem; font-family: inherit;
           letter-spacing: 0.01em; transition: background 0.2s, transform 0.15s;
-          border: 1.5px solid rgba(23,23,23,0.25); cursor: pointer; text-decoration: none;
+          border: 1.5px solid rgba(0,0,0,0.1); cursor: pointer; text-decoration: none;
         }
         .hero-btn-secondary:hover { background: rgba(23,23,23,0.05); transform: translateY(-1px); }
       `}</style>
@@ -205,74 +213,61 @@ const HeroText: FC = () => {
       >
         <HeroDiorama />
 
-        {/* Background orbs with parallax */}
+        {/* Grain */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 overflow-hidden"
         >
           <div
-            ref={orb1Ref}
-            style={{
-              position: "absolute",
-              top: "-8%",
-              right: "-6%",
-              width: "clamp(280px, 38vw, 560px)",
-              height: "clamp(280px, 38vw, 560px)",
-              borderRadius: "50%",
-              background:
-                "radial-gradient(circle at 40% 40%, rgba(123,55,55,0.07) 0%, transparent 70%)",
-              animation: "orb-drift 38s ease-in-out infinite",
-            }}
-          />
-          <div
-            ref={orb2Ref}
-            style={{
-              position: "absolute",
-              bottom: "-10%",
-              left: "-8%",
-              width: "clamp(240px, 32vw, 480px)",
-              height: "clamp(240px, 32vw, 480px)",
-              borderRadius: "50%",
-              background:
-                "radial-gradient(circle at 60% 60%, rgba(59,79,27,0.065) 0%, transparent 70%)",
-              animation: "orb-drift 32s ease-in-out infinite reverse",
-            }}
-          />
-          <div
-            ref={orb3Ref}
-            style={{
-              position: "absolute",
-              top: "30%",
-              right: "8%",
-              width: "clamp(120px, 14vw, 200px)",
-              height: "clamp(120px, 14vw, 200px)",
-              borderRadius: "50%",
-              background:
-                "radial-gradient(circle at 50% 50%, rgba(184,155,43,0.06) 0%, transparent 70%)",
-              animation: "orb-drift 28s ease-in-out infinite",
-              animationDelay: "-14s",
-            }}
-          />
-          <div
             className="bg-noise absolute inset-0"
-            style={{ opacity: 0.035, mixBlendMode: "multiply" }}
+            style={{ opacity: 0.12, mixBlendMode: "multiply" }}
           />
         </div>
 
-        {/* Content */}
-        <div className="relative z-10 flex flex-col lg:flex-row items-center justify-center flex-1 gap-8 lg:gap-0 py-16 lg:py-0">
-          {/* RIGHT — Diorama scene */}
-          <div
-            className="lg:order-2 lg:flex-1 w-full lg:w-auto flex items-center justify-center lg:pr-8 xl:pr-16"
-            style={{ position: "relative" }}
-          >
-            <HeroDioramaScene />
-          </div>
+        {/* FORGE — ambient background word */}
+        <div
+          ref={forgeRef}
+          aria-hidden="true"
+          className="hidden md:block absolute top-0 right-0 select-none pointer-events-none z-0"
+          style={{
+            transform: "translate(22%, -8%)",
+            fontSize: "clamp(180px, 22vw, 320px)",
+            fontWeight: 800,
+            color: "rgba(0,0,0,0.025)",
+            filter: "blur(1.5px)",
+            lineHeight: 1,
+            letterSpacing: "-0.03em",
+            fontFamily: "inherit",
+            userSelect: "none",
+          }}
+        >
+          FORGE
+        </div>
 
+        {/* Editorial vertical text */}
+        <div
+          ref={editorialRef}
+          aria-hidden="true"
+          className="hidden md:block absolute left-6 top-[45%] z-10 pointer-events-none select-none"
+          style={{
+            transform: "translateY(-50%) rotate(-90deg)",
+            fontSize: "11px",
+            letterSpacing: "0.22em",
+            color: "rgba(0,0,0,0.35)",
+            fontFamily: "inherit",
+            fontWeight: 400,
+            whiteSpace: "nowrap",
+          }}
+        >
+          build → ship
+        </div>
+
+        {/* Content */}
+        <div className="relative z-10 flex flex-col lg:flex-row items-center justify-center flex-1 gap-8 lg:gap-0 py-16 lg:py-0 w-full max-w-[1800px] mx-auto">
           {/* LEFT — text */}
-          <div className="lg:order-1 flex flex-col items-center lg:items-start text-center lg:text-left lg:flex-1 lg:pl-8 xl:pl-16">
+          <div className="lg:order-1 flex flex-col items-center text-center lg:flex-1 lg:px-6 xl:px-10">
             {/* Hero text */}
-            <div className="hero-text text-5xl md:text-6xl lg:text-7xl text-gray-800 leading-[1.15] tracking-[-0.01em] font-normal">
+            <div className="hero-text text-5xl md:text-6xl lg:text-7xl text-gray-800 leading-[1.22] tracking-[-0.01em] font-normal">
               <span className="inline-flex items-center">
                 <svg
                   ref={(el) => {
@@ -379,7 +374,7 @@ const HeroText: FC = () => {
             <div
               ref={buttonsRef}
               style={{ opacity: 0 }}
-              className="flex items-center gap-3 mt-7"
+              className="flex items-center gap-2 mt-7"
             >
               <a href="/work" className="hero-btn-primary">
                 View Projects
@@ -396,19 +391,13 @@ const HeroText: FC = () => {
                   <path d="M3 8h10M9 4l4 4-4 4" />
                 </svg>
               </a>
-              <button
-                onClick={handleNewsletterClick}
-                className="hero-btn-secondary"
-              >
-                Newsletter
-              </button>
             </div>
 
             {/* Divider + Newsletter */}
             <div
               ref={newsletterRef}
               style={{ opacity: 0 }}
-              className="flex flex-col items-center lg:items-start"
+              className="flex flex-col items-center"
             >
               <div className="flex items-center gap-3 mb-8 mt-8">
                 <div

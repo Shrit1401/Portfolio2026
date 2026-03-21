@@ -126,11 +126,7 @@ export default function Loader() {
       const r = loaderRef.current;
       const stack = cardRefs.current.filter(Boolean) as HTMLDivElement[];
 
-      const tl = gsap.timeline({
-        onComplete: () => {
-          gsap.set(r, { visibility: "hidden" });
-        },
-      });
+      const tl = gsap.timeline();
       mainTl = tl;
 
       stack.forEach((card, i) => {
@@ -154,11 +150,13 @@ export default function Loader() {
 
       tl.to({}, { duration: HOLD_LAST_DURATION }).to(r, {
         opacity: 0,
-        scale: 1.015,
         duration: EXIT_DURATION,
         ease: "power2.inOut",
         onStart: () => {
           document.dispatchEvent(new CustomEvent(LOADER_EXIT_START));
+        },
+        onComplete: () => {
+          gsap.set(r, { visibility: "hidden" });
         },
       });
     });
