@@ -82,7 +82,8 @@ export default function HeroDiorama() {
       }
 
       // Subtle breathing: just alpha variation, no gradient rebuild
-      const breatheAlpha = 0.065 + Math.sin((elapsed / 6000) * Math.PI * 2) * 0.025;
+      const breatheAlpha =
+        0.065 + Math.sin((elapsed / 6000) * Math.PI * 2) * 0.025;
       ctx.globalAlpha = breatheAlpha / 0.07; // normalize around 1
       ctx.fillStyle = cachedGrad;
       ctx.fillRect(0, 0, w, h);
@@ -132,10 +133,7 @@ export default function HeroDiorama() {
   }, []);
 
   return (
-    <div
-      aria-hidden="true"
-      className="absolute inset-0 pointer-events-none"
-    >
+    <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
       <canvas
         ref={canvasRef}
         style={{ display: "block", width: "100%", height: "100%" }}

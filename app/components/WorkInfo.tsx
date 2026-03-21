@@ -29,7 +29,7 @@ const WorkInfo = () => {
                 key={project.title}
                 className="relative flex flex-col items-start gap-4 pb-10"
                 style={{
-                  background: "#FAF8F2",
+                  background: "var(--background)",
                   borderRadius: "2.5rem",
                   padding: "2.5rem",
                   boxShadow: "none",

@@ -187,8 +187,8 @@ const Navbar: FC<NavbarProps> = ({ active }) => {
   const renderMenuItem = (item: MenuItem) => {
     const isActive = item.path === pathname || item.path === active;
     const commonClasses =
-      "cursor-pointer hover:font-bold transition-all duration-300 opacity-60 hover:opacity-100";
-    const activeClasses = isActive ? "font-bold opacity-100" : "";
+      "cursor-pointer text-[#b8b6b1] hover:text-[#5a5854] hover:font-bold transition-all duration-300";
+    const activeClasses = isActive ? "font-bold text-[#3a3936]" : "";
 
     if (item.isExternal && item.externalUrl) {
       return (
@@ -221,12 +221,20 @@ const Navbar: FC<NavbarProps> = ({ active }) => {
     );
   };
 
+  const isHome = pathname === "/";
+
   return (
-    <nav className="w-full flex items-center justify-between py-8 px-4 md:px-12 bg-transparent relative">
+    <nav
+      className={`w-full flex items-center justify-between py-8 px-4 md:px-12 bg-transparent ${
+        isHome
+          ? "absolute top-0 left-0 right-0 z-50"
+          : "relative"
+      }`}
+    >
       <a
         href="/"
         onClick={handleNavigation("/")}
-        className="logo text-3xl font-extrabold tracking-tight hover:font-normal transition-all duration-300"
+        className="logo text-3xl font-extrabold tracking-tight text-[#2e2d2b] hover:font-normal transition-all duration-300"
       >
         Shrit.
       </a>
@@ -239,17 +247,17 @@ const Navbar: FC<NavbarProps> = ({ active }) => {
       >
         <div className="w-6 h-5 relative flex flex-col justify-between">
           <span
-            className={`w-full h-0.5 bg-black transform transition-all duration-500 ${
+            className={`w-full h-0.5 bg-[#5a5854] transform transition-all duration-500 ${
               isMenuOpen ? "rotate-45 translate-y-2" : ""
             }`}
           />
           <span
-            className={`w-full h-0.5 bg-black transition-all duration-500 ${
+            className={`w-full h-0.5 bg-[#5a5854] transition-all duration-500 ${
               isMenuOpen ? "opacity-0 scale-0" : ""
             }`}
           />
           <span
-            className={`w-full h-0.5 bg-black transform transition-all duration-500 ${
+            className={`w-full h-0.5 bg-[#5a5854] transform transition-all duration-500 ${
               isMenuOpen ? "-rotate-45 -translate-y-2" : ""
             }`}
           />

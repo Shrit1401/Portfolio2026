@@ -9,7 +9,7 @@ import React, {
 import gsap from "gsap";
 import Newsletter from "./Newsletter";
 import HeroDiorama from "./HeroDiorama";
-import HeroDioramaScene from "./HeroDioramaScene";
+import HeroFluidCanvas from "./HeroFluidCanvas";
 import {
   LOADER_EXIT_START,
   LOADER_EXIT_FALLBACK_MS,
@@ -226,7 +226,7 @@ const HeroText: FC = () => {
 
         .hero-btn-primary {
           display: inline-flex; align-items: center; gap: 6px;
-          padding: 10px 24px; background: #171717; color: #f8f6f0;
+          padding: 10px 24px; background: #171717; color: var(--background);
           border-radius: 999px; font-size: 0.875rem; font-family: inherit;
           letter-spacing: 0.01em; transition: background 0.2s, transform 0.15s;
           border: 1.5px solid #171717; cursor: pointer; text-decoration: none;
@@ -270,8 +270,15 @@ const HeroText: FC = () => {
         }
       `}</style>
 
-      <section
-        className="w-full flex-1 flex flex-col relative px-4 overflow-hidden"
+      <div className="relative flex w-full flex-1 flex-col min-h-screen">
+        <HeroFluidCanvas />
+        {/* Light veil: keeps motion readable without killing the fluid */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-[#f8f6f0]/35 via-[#f8f6f0]/12 to-transparent"
+        />
+        <section
+        className="relative z-10 w-full flex-1 flex flex-col px-4 overflow-hidden"
         style={{
           opacity: isVisible ? 1 : 0,
           transition: "opacity 0.5s ease-in-out",
@@ -286,7 +293,7 @@ const HeroText: FC = () => {
         >
           <div
             className="bg-noise absolute inset-0"
-            style={{ opacity: 0.12, mixBlendMode: "multiply" }}
+            style={{ opacity: 0.045, mixBlendMode: "multiply" }}
           />
         </div>
 
@@ -333,7 +340,7 @@ const HeroText: FC = () => {
           {/* LEFT — text */}
           <div className="lg:order-1 flex flex-col items-center text-center lg:flex-1 lg:px-6 xl:px-10">
             {/* Hero text */}
-            <div className="hero-text text-5xl md:text-6xl lg:text-7xl text-gray-800 leading-[1.22] tracking-[-0.01em] font-normal">
+            <div className="hero-text text-5xl md:text-6xl lg:text-7xl text-neutral-900 leading-[1.22] tracking-[-0.01em] font-normal [text-shadow:0_1px_24px_rgba(255,255,255,0.75),0_0_1px_rgba(255,255,255,0.5)]">
               <span className="inline-flex items-center">
                 <svg
                   ref={(el) => {
@@ -431,7 +438,7 @@ const HeroText: FC = () => {
             <div
               ref={subtextRef}
               style={{ opacity: 0 }}
-              className="mt-5 text-sm md:text-base text-gray-500 max-w-xs leading-relaxed tracking-wide"
+              className="mt-5 text-sm md:text-base text-neutral-700 max-w-md leading-relaxed tracking-wide [text-shadow:0_1px_16px_rgba(255,255,255,0.9)]"
             >
               Products, interfaces & ideas — built with craft and curiosity.
             </div>
@@ -562,7 +569,7 @@ const HeroText: FC = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`${result.title} by ${result.artist} — open in Spotify`}
-                    className="hero-spotify-card flex w-[min(90vw,268px)] gap-3 rounded-xl border border-black/[0.08] bg-[#faf9f6]/95 p-3 text-left backdrop-blur-md no-underline transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-black/20 focus-visible:ring-offset-2"
+                    className="hero-spotify-card flex w-[min(90vw,268px)] gap-3 rounded-xl border border-black/[0.08] bg-background/95 p-3 text-left backdrop-blur-md no-underline transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-black/20 focus-visible:ring-offset-2"
                     style={{ fontFamily: "inherit" }}
                   >
                     <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-black/[0.06] shadow-inner">
@@ -662,6 +669,7 @@ const HeroText: FC = () => {
           </svg>
         </a>
       </section>
+      </div>
     </>
   );
 };

@@ -84,7 +84,7 @@ const FeaturedProjects = () => {
   if (projects.length === 0) return null;
 
   return (
-    <section className="relative px-4 md:px-12 py-16 md:py-20 bg-[#f8f6f0]">
+    <section className="relative px-4 md:px-12 py-16 md:py-20 bg-background">
       {/* Section header */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}

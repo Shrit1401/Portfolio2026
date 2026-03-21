@@ -70,7 +70,7 @@ const StatsBar = () => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
       transition={{ duration: 0.7, ease: "easeOut" }}
-      className="bg-[#f8f6f0] px-4 md:px-12 py-14 md:py-16"
+      className="bg-background px-4 md:px-12 py-14 md:py-16"
     >
       <div
         className="h-px w-full mb-12"

@@ -12,7 +12,7 @@ const config: Config = {
         sans: ["var(--font-dm-sans)"],
       },
       colors: {
-        background: "var(--background)",
+        background: "rgb(var(--background-rgb) / <alpha-value>)",
         foreground: "var(--foreground)",
       },
       backgroundImage: {

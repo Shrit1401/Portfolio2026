@@ -25,9 +25,16 @@ body {
 }
 
 @keyframes orb-drift {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33%       { transform: translate(6px, -10px) scale(1.015); }
-  66%       { transform: translate(-8px, 6px) scale(0.985); }
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(6px, -10px) scale(1.015);
+  }
+  66% {
+    transform: translate(-8px, 6px) scale(0.985);
+  }
 }
 
 pre {
@@ -216,3 +223,20 @@ h1.title-2 {
 }
 
 /* Do NOT change the default section styles for sticky/WorkTell */
+
+/* Hero fluid: must live inside a `position: relative` ancestor with min-height;
+   percentage height alone often collapses to 0 when the parent only has min-height. */
+.gradient-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  min-height: 100%;
+  pointer-events: none;
+}
+
+.gradient-canvas canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}

@@ -64,7 +64,7 @@ const CardText = ({
 
 const BuildLog = () => {
   return (
-    <section className="relative px-4 md:px-12 py-16 md:py-20 min-h-screen bg-[#f8f6f0]">
+    <section className="relative px-4 md:px-12 py-16 md:py-20 min-h-screen bg-background">
       {/* Section header */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
