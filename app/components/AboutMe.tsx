@@ -67,7 +67,7 @@ const AboutMe = () => {
               const smoothProgress = gsap.utils.interpolate(
                 0,
                 1,
-                easedProgress
+                easedProgress,
               );
 
               // Gentler transforms
@@ -100,7 +100,7 @@ const AboutMe = () => {
             opacity: 1,
             duration: 1.2,
             ease: "power2.out",
-          }
+          },
         );
       }
     });
@@ -164,7 +164,7 @@ const AboutMe = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.4 }}
                 >
-                  Zeno of Citium
+                  Shrit Shrivastava
                 </motion.h2>
                 <motion.p
                   className="text-lg md:text-xl text-gray-600 italic"
@@ -172,7 +172,7 @@ const AboutMe = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 0.6 }}
                 >
-                  stoics are cool ig
+                  yep that's me
                 </motion.p>
               </motion.div>
             </div>

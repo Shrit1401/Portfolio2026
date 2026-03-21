@@ -1,311 +1,252 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
+import { LOADER_EXIT_START } from "../lib/loader-events";
+
+const FRAME_COUNT = 7;
+const FRAMES = Array.from(
+  { length: FRAME_COUNT },
+  (_, i) => `/loader/${i + 1}.png`,
+);
+
+/** Next card starts before previous fully settles */
+const CARD_OVERLAP = 0.28;
+const HOLD_LAST_DURATION = 0.38;
+/** Aligned with `REVEAL_DURATION` in useRevealer for one continuous wipe */
+const EXIT_DURATION = 1.45;
+
+const IMAGE_WELL_BG = "#ebe6df";
+
+type StackPose = {
+  restRot: number;
+  restX: number;
+  restY: number;
+  enterRot: number;
+  enterY: number;
+  enterScale: number;
+  landDuration: number;
+};
+
+/** New random stack each visit; keeps tabs readable but avoids “only two directions.” */
+function randomStackPoses(count: number): StackPose[] {
+  const r = (lo: number, hi: number) => lo + Math.random() * (hi - lo);
+  const poses: StackPose[] = [];
+
+  for (let i = 0; i < count; i++) {
+    poses.push({
+      restRot: r(-7.2, 7.2),
+      restX: r(-11, 11),
+      restY: r(-10, 10),
+      enterRot: r(-18, 18),
+      enterY: 54 + r(0, 36) + i * r(3, 10),
+      enterScale: r(0.84, 0.92),
+      landDuration: r(0.48, 0.64),
+    });
+  }
+
+  // Hero card: a bit calmer
+  poses[0] = {
+    ...poses[0],
+    restRot: r(-3.8, 3.8),
+    restX: r(-5, 5),
+    restY: r(-5, 5),
+    enterRot: r(-11, 11),
+    enterY: r(46, 62),
+    enterScale: r(0.9, 0.95),
+    landDuration: r(0.52, 0.62),
+  };
+
+  // Separate adjacent rest angles so the pile doesn’t look mirrored
+  for (let i = 1; i < count; i++) {
+    const prev = poses[i - 1].restRot;
+    let rot = poses[i].restRot;
+    if (Math.abs(rot - prev) < 2) {
+      rot += rot >= prev ? r(2.5, 5) : -r(2.5, 5);
+      poses[i] = { ...poses[i], restRot: Math.max(-8, Math.min(8, rot)) };
+    }
+  }
+
+  return poses;
+}
+
+const NOISE_BG = `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`;
 
 export default function Loader() {
   const loaderRef = useRef<HTMLDivElement>(null);
-  const loaderImgsRef = useRef<HTMLDivElement>(null);
-  const imgRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const textRef = useRef<HTMLDivElement>(null);
-  const progressRef = useRef<HTMLDivElement>(null);
-  const [loadingText, setLoadingText] = useState("Brewing pixels...");
-
-  const funnyTexts = [
-    "Brewing pixels...",
-    "Summoning creativity spirits 👻",
-    "Charging design batteries 🔋",
-    "Almost there... promise! 🤞",
-    "Final touches of brilliance ✨",
-  ];
+  const stageRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
-    // Set initial states immediately
-    gsap.set(loaderRef.current, { opacity: 100 });
-    gsap.set(imgRefs.current, {
-      y: window.innerWidth <= 768 ? -500 : 500,
-      opacity: 0,
-    });
-    gsap.set(loaderImgsRef.current, {
-      x: window.innerWidth <= 768 ? 0 : 500,
-      y: window.innerWidth <= 768 ? -500 : 0,
-      opacity: 0,
-    });
-    gsap.set(textRef.current, { opacity: 0, y: 30 });
-    gsap.set(progressRef.current, { scaleX: 0 });
+    const root = loaderRef.current;
+    const stage = stageRef.current;
+    const cards = cardRefs.current.filter(Boolean) as HTMLDivElement[];
+    if (!root || !stage || cards.length !== FRAME_COUNT) return;
 
-    // Create initial entrance animation timeline
-    const entranceTl = gsap.timeline();
+    let cancelled = false;
+    let mainTl: gsap.core.Timeline | null = null;
 
-    // Animate corner accents
-    entranceTl.fromTo(
-      ".absolute.top-8.left-8, .absolute.top-8.right-8, .absolute.bottom-8.left-8, .absolute.bottom-8.right-8",
-      { scale: 0.8, opacity: 0 },
-      {
-        scale: 1,
-        opacity: 1,
-        duration: 0.3,
-        stagger: 0.05,
-        ease: "back.out(1.7)",
-      }
-    );
+    const poses = randomStackPoses(FRAME_COUNT);
 
-    // Text animation with enhanced timing
-    entranceTl.to(
-      textRef.current,
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.4,
-        ease: "power2.out",
-      },
-      "-=0.2"
-    );
+    gsap.set(root, { opacity: 1, scale: 1, visibility: "visible" });
 
-    // Progress bar animation with enhanced timing
-    entranceTl.to(
-      progressRef.current,
-      {
-        scaleX: 1,
-        duration: 1.5,
-        ease: "power2.inOut",
-      },
-      "-=0.3"
-    );
-
-    // Cycling through funny texts with equal timing
-    let textIndex = 0;
-    const totalDuration = 1500; // 1.5 seconds total
-    const timePerText = totalDuration / funnyTexts.length;
-
-    const textInterval = setInterval(() => {
-      textIndex = (textIndex + 1) % funnyTexts.length;
-      setLoadingText(funnyTexts[textIndex]);
-
-      // Text change animation
-      gsap.to(textRef.current, {
-        scale: 1.05,
-        duration: 0.1,
-        yoyo: true,
-        repeat: 1,
-        ease: "power2.inOut",
+    cards.forEach((card, i) => {
+      const p = poses[i]!;
+      gsap.set(card, {
+        left: "50%",
+        top: "50%",
+        xPercent: -50,
+        yPercent: -50,
+        transformOrigin: "50% 85%",
+        opacity: 0,
+        x: 0,
+        y: p.enterY,
+        rotation: p.enterRot,
+        scale: p.enterScale,
+        zIndex: i,
       });
-    }, timePerText);
+    });
 
-    const tl = gsap.timeline({ delay: 0.3 });
-
-    // Check if mobile screen
-    const isMobile = window.innerWidth <= 768;
-
-    // Enhanced loader animation sequence
-    tl.to(imgRefs.current, {
-      y: 0,
-      opacity: 1,
-      duration: 0.6,
-      ease: "power3.inOut",
-      stagger: 0.03,
-    })
-      .to(
-        loaderImgsRef.current,
-        {
-          x: 0,
-          y: 0,
-          opacity: 1,
-          duration: 1,
-          ease: "power3.inOut",
-        },
-        "-=0.6"
-      )
-      .to(
-        imgRefs.current.filter((_, i) => i !== 3), // Skip the logo image
-        {
-          clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
-          duration: 0.4,
-          stagger: 0.05,
-          ease: "power3.inOut",
-        },
-        "-=0.4"
-      )
-      .to(
-        textRef.current,
-        {
-          opacity: 0,
-          y: -20,
-          duration: 0.3,
-          ease: "power2.in",
-        },
-        "-=0.2"
-      )
-      .to(
-        [progressRef.current],
-        {
-          opacity: 0,
-          y: 20,
-          duration: 0.3,
-          ease: "power2.in",
-        },
-        "-=0.3"
-      )
-      .to(
-        loaderRef.current,
-        {
-          clipPath: "polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)",
-          duration: 0.4,
-          ease: "power3.inOut",
-          onComplete: () => {
-            clearInterval(textInterval);
-          },
-        },
-        "-=0.2"
+    const preload = () =>
+      Promise.all(
+        FRAMES.map(
+          (src) =>
+            new Promise<void>((resolve) => {
+              const im = new Image();
+              im.onload = () => resolve();
+              im.onerror = () => resolve();
+              im.src = src;
+            }),
+        ),
       );
+
+    preload().then(() => {
+      if (cancelled || !loaderRef.current || !stageRef.current) return;
+
+      const r = loaderRef.current;
+      const stack = cardRefs.current.filter(Boolean) as HTMLDivElement[];
+
+      const tl = gsap.timeline({
+        onComplete: () => {
+          gsap.set(r, { visibility: "hidden" });
+        },
+      });
+      mainTl = tl;
+
+      stack.forEach((card, i) => {
+        const position = i === 0 ? 0 : `>-${CARD_OVERLAP}`;
+        const p = poses[i]!;
+
+        tl.to(
+          card,
+          {
+            opacity: 1,
+            x: p.restX,
+            y: p.restY,
+            rotation: p.restRot,
+            scale: 1,
+            duration: p.landDuration,
+            ease: "power3.out",
+          },
+          position,
+        );
+      });
+
+      tl.to({}, { duration: HOLD_LAST_DURATION }).to(r, {
+        opacity: 0,
+        scale: 1.015,
+        duration: EXIT_DURATION,
+        ease: "power2.inOut",
+        onStart: () => {
+          document.dispatchEvent(new CustomEvent(LOADER_EXIT_START));
+        },
+      });
+    });
+
+    return () => {
+      cancelled = true;
+      mainTl?.kill();
+      gsap.killTweensOf([root, stage, ...cards]);
+    };
   }, []);
+
+  const backdropNoise = NOISE_BG;
 
   return (
     <div
       ref={loaderRef}
-      className="fixed w-screen h-screen bg-[#111] pointer-events-none z-[999] overflow-hidden"
-      style={{
-        clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
-      }}
+      className="fixed inset-0 z-[999] flex min-h-[100dvh] items-center justify-center pointer-events-none overflow-x-hidden overflow-y-auto p-4 sm:p-6"
+      style={{ visibility: "visible" }}
+      aria-busy="true"
+      aria-live="polite"
     >
-      {/* Minimal geometric patterns */}
-      <div className="absolute inset-0">
-        {/* Corner accents */}
-        <div className="absolute top-8 left-8 w-16 h-16 border-l-2 border-t-2 border-white/10" />
-        <div className="absolute top-8 right-8 w-16 h-16 border-r-2 border-t-2 border-white/10" />
-        <div className="absolute bottom-8 left-8 w-16 h-16 border-l-2 border-b-2 border-white/10" />
-        <div className="absolute bottom-8 right-8 w-16 h-16 border-r-2 border-b-2 border-white/10" />
-      </div>
-
-      {/* Loading text and progress */}
-      <div className="absolute bottom-20 left-1/2 -translate-x-1/2 text-center">
-        <div
-          ref={textRef}
-          className="text-white/60 text-lg font-light mb-6 min-h-[1.5rem]"
-        >
-          {loadingText}
-        </div>
-
-        {/* Progress bar */}
-        <div className="w-64 h-px bg-white/10 relative overflow-hidden">
-          <div
-            ref={progressRef}
-            className="absolute inset-0 bg-gradient-to-r from-white/40 to-white/20 origin-left"
-          />
-        </div>
-      </div>
-
-      {/* Main Content */}
       <div
-        ref={loaderImgsRef}
-        className="w-[150%] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex gap-[50px] md:flex-row flex-col md:w-[150%] w-full"
-        style={{ clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)" }}
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(ellipse 90% 75% at 50% 42%, #f2efe8 0%, #e4dfd6 48%, #d6d1c9 100%)",
+        }}
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.22] mix-blend-multiply"
+        style={{ backgroundImage: backdropNoise }}
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute inset-0 shadow-[inset_0_0_160px_rgba(0,0,0,0.055)]"
+        aria-hidden
+      />
+      <div
+        ref={stageRef}
+        className="relative z-10 mx-auto flex min-h-[min(82vh,560px)] w-full max-w-[min(94vw,500px)] items-center justify-center md:max-w-[520px]"
+        style={{
+          overflow: "visible",
+          fontFamily: "var(--font-instrument-serif), Georgia, serif",
+        }}
       >
-        <div
-          ref={(el) => {
-            imgRefs.current[0] = el;
-          }}
-          className="relative flex-1 overflow-hidden"
-          style={{ clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)" }}
-        >
-          <img
-            src="./loader/1.png"
-            alt="Image 2"
-            className="object-cover w-full h-full scale-110 transition-transform duration-500 ease-in-out hover:scale-100"
-          />
-        </div>
-        <div
-          ref={(el) => {
-            imgRefs.current[1] = el;
-          }}
-          className="relative flex-1 overflow-hidden"
-          style={{ clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)" }}
-        >
-          <img
-            src="./loader/2.png"
-            alt="Image 3"
-            className="object-cover w-full h-full scale-110 transition-transform duration-500 ease-in-out hover:scale-100"
-          />
-        </div>
-        <div
-          ref={(el) => {
-            imgRefs.current[2] = el;
-          }}
-          className="relative flex-1 overflow-hidden"
-          style={{ clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)" }}
-        >
-          <img
-            src="./loader/3.png"
-            alt="Image 4"
-            className="object-cover w-full h-full scale-110 transition-transform duration-500 ease-in-out hover:scale-100"
-          />
-        </div>
-        <div
-          ref={(el) => {
-            imgRefs.current[3] = el;
-          }}
-          className="relative flex-1 overflow-hidden"
-          style={{ clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)" }}
-        >
-          <img
-            src="./loader/logo.png"
-            alt="Logo"
-            className="object-cover w-full h-full scale-110 transition-transform duration-500 ease-in-out hover:scale-100"
-          />
-        </div>
-        <div
-          ref={(el) => {
-            imgRefs.current[4] = el;
-          }}
-          className="relative flex-1 overflow-hidden"
-          style={{ clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)" }}
-        >
-          <img
-            src="./loader/4.png"
-            alt="Image 5"
-            className="object-cover w-full h-full scale-110 transition-transform duration-500 ease-in-out hover:scale-100"
-          />
-        </div>
-        <div
-          ref={(el) => {
-            imgRefs.current[5] = el;
-          }}
-          className="relative flex-1 overflow-hidden"
-          style={{ clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)" }}
-        >
-          <img
-            src="./loader/5.png"
-            alt="Image 6"
-            className="object-cover w-full h-full scale-110 transition-transform duration-500 ease-in-out hover:scale-100"
-          />
-        </div>
-        <div
-          ref={(el) => {
-            imgRefs.current[6] = el;
-          }}
-          className="relative flex-1 overflow-hidden"
-          style={{ clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)" }}
-        >
-          <img
-            src="./loader/6.png"
-            alt="Image 7"
-            className="object-cover w-full h-full scale-110 transition-transform duration-500 ease-in-out hover:scale-100"
-          />
-        </div>
+        {FRAMES.map((src, i) => (
+          <div
+            key={src}
+            ref={(el) => {
+              cardRefs.current[i] = el;
+            }}
+            className="absolute w-[min(88vw,300px)] bg-white px-3 pt-3 pb-6 opacity-0 shadow-[0_20px_40px_rgba(0,0,0,0.12),0_4px_12px_rgba(0,0,0,0.08)] sm:w-[min(86vw,340px)] sm:pb-7 md:w-[min(70vw,400px)] md:px-3.5 md:pt-3.5 md:pb-8 lg:w-[min(440px,52vw)]"
+            style={{ zIndex: i }}
+          >
+            <div
+              className="relative aspect-[3/4] overflow-hidden border-2 border-[#1e5a8a]"
+              style={{
+                backgroundColor: IMAGE_WELL_BG,
+                boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.08)",
+              }}
+            >
+              <img
+                src={src}
+                alt=""
+                className="absolute inset-0 h-full w-full object-cover"
+                style={{
+                  filter: "contrast(1.05) saturate(1.06)",
+                }}
+                decoding="async"
+                draggable={false}
+                loading="eager"
+              />
+              {i === FRAME_COUNT - 1 ? (
+                <div
+                  className="pointer-events-none absolute inset-0 z-[1] opacity-[0.12] mix-blend-multiply"
+                  style={{ backgroundImage: NOISE_BG }}
+                  aria-hidden
+                />
+              ) : null}
+            </div>
+            <div className="mt-2.5 flex justify-between gap-2 px-0.5 text-[0.75rem] leading-none tracking-[0.01em] text-black sm:mt-3 sm:text-[0.8rem] md:text-[0.8125rem]">
+              <span className="shrink-0">Shrit Shrivastava</span>
+              <span className="shrink-0 text-right opacity-80">Loading...</span>
+            </div>
+          </div>
+        ))}
       </div>
-
-      {/* CSS Animation */}
-      <style jsx>{`
-        @keyframes pulse {
-          0%,
-          100% {
-            opacity: 0.3;
-          }
-          50% {
-            opacity: 1;
-          }
-        }
-      `}</style>
     </div>
   );
 }

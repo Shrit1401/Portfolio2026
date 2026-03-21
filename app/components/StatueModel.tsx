@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 const StatueModel = () => {
@@ -15,31 +16,49 @@ const StatueModel = () => {
       75,
       mountRef.current.clientWidth / mountRef.current.clientHeight,
       0.1,
-      1000
+      1000,
     );
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.2;
 
     renderer.setSize(
       mountRef.current.clientWidth,
-      mountRef.current.clientHeight
+      mountRef.current.clientHeight,
     );
     renderer.setClearColor(0x000000, 0);
     mountRef.current.appendChild(renderer.domElement);
 
-    // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    scene.environment = pmrem.fromScene(new RoomEnvironment()).texture;
+    pmrem.dispose();
+
+    const hemi = new THREE.HemisphereLight(0xffffff, 0x3d3d48, 0.9);
+    hemi.position.set(0, 1, 0);
+    scene.add(hemi);
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.28);
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(5, 5, 5);
-    scene.add(directionalLight);
+    const keyLight = new THREE.DirectionalLight(0xffffff, 2.4);
+    keyLight.position.set(5, 10, 6);
+    scene.add(keyLight);
+
+    const fillLight = new THREE.DirectionalLight(0xc8d4ff, 0.85);
+    fillLight.position.set(-6, 4, -3);
+    scene.add(fillLight);
+
+    const rimLight = new THREE.DirectionalLight(0xffe8d4, 1.1);
+    rimLight.position.set(0, 2, -9);
+    scene.add(rimLight);
 
     // Load the GLB model
     const loader = new GLTFLoader();
-    let model: THREE.Group;
+    let model: THREE.Group | undefined;
 
     loader.load(
-      "/stoic.glb",
+      "/shrit.glb",
       (gltf) => {
         model = gltf.scene;
 
@@ -61,7 +80,7 @@ const StatueModel = () => {
       },
       (error) => {
         console.error("An error happened while loading the model:", error);
-      }
+      },
     );
 
     // Camera position
@@ -102,7 +121,7 @@ const StatueModel = () => {
       camera.updateProjectionMatrix();
       renderer.setSize(
         mountRef.current.clientWidth,
-        mountRef.current.clientHeight
+        mountRef.current.clientHeight,
       );
     };
 
@@ -115,6 +134,7 @@ const StatueModel = () => {
       if (model) {
         scene.remove(model);
       }
+      scene.environment?.dispose();
       renderer.dispose();
     };
   }, []);

@@ -18,6 +18,18 @@ body {
   background: var(--background);
 }
 
+.bg-noise {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+@keyframes orb-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(6px, -10px) scale(1.015); }
+  66%       { transform: translate(-8px, 6px) scale(0.985); }
+}
+
 pre {
   background: transparent;
   margin: 0;
@@ -35,6 +47,11 @@ pre {
   background: #111;
   pointer-events: none;
   z-index: 99;
+}
+
+/* Work / Past / etc.: explicit black curtain (home uses polaroid Loader on top instead). */
+.revealer--route {
+  background-color: #111;
 }
 
 ::view-transition-old(root),

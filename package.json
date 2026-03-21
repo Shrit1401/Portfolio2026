@@ -16,6 +16,8 @@
     "@react-three/fiber": "^9.1.2",
     "@sanity/image-url": "^1.1.0",
     "@sanity/vision": "^3.89.0",
+    "@splinetool/react-spline": "^4.1.0",
+    "@splinetool/runtime": "^1.12.70",
     "@types/react-syntax-highlighter": "^15.5.13",
     "easymde": "^2.20.0",
     "fast-xml-parser": "^5.2.3",

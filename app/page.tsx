@@ -14,7 +14,7 @@ const Home: FC = () => {
   return (
     <main className="relative w-full home">
       <Loader />
-      <Revealer />
+      <Revealer waitForLoader />
 
       <div className="flex flex-col min-h-screen">
         <Navbar />
