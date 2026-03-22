@@ -3,12 +3,11 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { MdArrowOutward } from "react-icons/md";
-import { useTransitionRouter } from "next-view-transitions";
+import { useTransitionRouter } from "next-transition-router";
 import { usePathname } from "next/navigation";
 import { getWorks } from "@/app/lib/server";
 import { Work } from "@/app/lib/types";
 import { urlFor } from "@/sanity/lib/image";
-import { triggerPageTransition } from "@/app/lib/triggerPageTransition";
 
 const ProjectCard = ({
   project,
@@ -143,7 +142,7 @@ const FeaturedProjects = () => {
           type="button"
           onClick={() => {
             if (pathname === "/work") return;
-            router.push("/work", { onTransitionReady: triggerPageTransition });
+            router.push("/work");
           }}
           className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-black/5 text-neutral-700 font-semibold text-base tracking-wide border border-black/10 shadow-sm backdrop-blur-md hover:bg-black/10 transition-colors cursor-pointer"
         >

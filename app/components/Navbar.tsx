@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState, useRef, type FC } from "react";
 import gsap from "gsap";
-import { useTransitionRouter } from "next-view-transitions";
+import { useTransitionRouter } from "next-transition-router";
 import { usePathname } from "next/navigation";
 import NowPlaying from "./NowPlaying";
 
@@ -34,10 +34,6 @@ const MENU_ITEMS: MenuItem[] = [
 ];
 
 const ANIMATION_CONFIG = {
-  pageTransition: {
-    duration: 800,
-    easing: "cubic-bezier(0.9, 0, 0.1, 1)",
-  },
   menu: {
     duration: 0.3,
     stagger: 0.05,
@@ -55,30 +51,15 @@ const Navbar: FC<NavbarProps> = ({ active }) => {
   const menuItemsRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
 
-  const triggerPageTransition = () => {
-    document.documentElement.animate(
-      [
-        { clipPath: "polygon(25% 75%, 75% 75%, 75% 75%, 25% 75%)" },
-        { clipPath: "polygon(0 100%, 100% 100%, 100% 0,0 0)" },
-      ],
-      {
-        duration: ANIMATION_CONFIG.pageTransition.duration,
-        easing: ANIMATION_CONFIG.pageTransition.easing,
-        pseudoElement: "::view-transition-new(root)",
-      },
-    );
-  };
-
   const handleNavigation =
-    (path: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+    (path: string) => (e: React.MouseEvent<HTMLElement>) => {
       if (path === pathname) {
         e.preventDefault();
         return;
       }
+      e.preventDefault();
       setIsMenuOpen(false);
-      router.push(path, {
-        onTransitionReady: triggerPageTransition,
-      });
+      router.push(path);
     };
 
   useEffect(() => {

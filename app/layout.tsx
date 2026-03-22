@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import type { FC, ReactNode } from "react";
 import { DM_Sans, EB_Garamond, Instrument_Serif } from "next/font/google";
 import "./globals.css";
-import { ViewTransitions } from "next-view-transitions";
 import SmoothScroll from "./components/SmoothScroll";
 import { metadata as seoMetadata } from "./components/SEO";
+import TransitionProvider from "./hooks/TransitionProvider";
 
 // Font configurations
 const dmSans = DM_Sans({
@@ -35,7 +35,7 @@ interface RootLayoutProps {
 
 const RootLayout: FC<RootLayoutProps> = ({ children }) => {
   return (
-    <ViewTransitions>
+    <>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -58,10 +58,12 @@ const RootLayout: FC<RootLayoutProps> = ({ children }) => {
         className={`${dmSans.variable} ${ebGaramond.variable} ${instrumentSerif.variable}`}
       >
         <body className="font-sans antialiased">
-          <SmoothScroll>{children}</SmoothScroll>
+          <TransitionProvider>
+            <SmoothScroll>{children}</SmoothScroll>
+          </TransitionProvider>
         </body>
       </html>
-    </ViewTransitions>
+    </>
   );
 };
 

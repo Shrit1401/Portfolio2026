@@ -1,8 +1,7 @@
 "use client";
 
-import { useTransitionRouter } from "next-view-transitions";
+import { useTransitionRouter } from "next-transition-router";
 import { usePathname } from "next/navigation";
-import { triggerPageTransition } from "@/app/lib/triggerPageTransition";
 
 function isExternalHref(href: string) {
   return (
@@ -17,7 +16,7 @@ type Props = {
   className?: string;
 };
 
-/** “Learn more”: internal paths use view transitions; absolute URLs and mailto/tel use a normal link. */
+/** “Learn more”: internal paths use the app transition router; absolute URLs and mailto/tel use a normal link. */
 export function BuildLogLearnMore({ href, className }: Props) {
   const router = useTransitionRouter();
   const pathname = usePathname();
@@ -70,7 +69,7 @@ export function BuildLogLearnMore({ href, className }: Props) {
           }
           return;
         }
-        router.push(path, { onTransitionReady: triggerPageTransition });
+        router.push(path);
       }}
       className={merged}
     >

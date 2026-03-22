@@ -3,23 +3,21 @@ import React from "react";
 import Newsletter from "./Newsletter";
 import { FaGithub, FaTwitter, FaLinkedinIn } from "react-icons/fa";
 import Link from "next/link";
-import { useTransitionRouter } from "next-view-transitions";
+import { useTransitionRouter } from "next-transition-router";
 import { usePathname } from "next/navigation";
-import { triggerPageTransition } from "@/app/lib/triggerPageTransition";
 
 const Footer = () => {
   const router = useTransitionRouter();
   const pathname = usePathname();
 
   const handleNavigation =
-    (path: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+    (path: string) => (e: React.MouseEvent<HTMLElement>) => {
       if (path === pathname) {
         e.preventDefault();
         return;
       }
-      router.push(path, {
-        onTransitionReady: triggerPageTransition,
-      });
+      e.preventDefault();
+      router.push(path);
     };
 
   return (

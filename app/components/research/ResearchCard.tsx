@@ -1,7 +1,6 @@
 "use client";
-import Link from "next/link";
 import { motion } from "framer-motion";
-import { useTransitionRouter } from "next-view-transitions";
+import { useTransitionRouter } from "next-transition-router";
 import { usePathname } from "next/navigation";
 
 interface ResearchCardProps {
@@ -18,20 +17,6 @@ interface ResearchCardProps {
   }>;
 }
 
-const ANIMATION_CONFIG = {
-  pageTransition: {
-    duration: 2000,
-    easing: "cubic-bezier(0.9, 0, 0.1, 1)",
-  },
-  menu: {
-    duration: 0.5,
-    stagger: 0.1,
-  },
-  hover: {
-    duration: 0.3,
-  },
-} as const;
-
 export default function ResearchCard({
   title,
   slug,
@@ -43,29 +28,14 @@ export default function ResearchCard({
   const router = useTransitionRouter();
   const pathname = usePathname();
 
-  const triggerPageTransition = () => {
-    document.documentElement.animate(
-      [
-        { clipPath: "polygon(25% 75%, 75% 75%, 75% 75%, 25% 75%)" },
-        { clipPath: "polygon(0 100%, 100% 100%, 100% 0,0 0)" },
-      ],
-      {
-        duration: ANIMATION_CONFIG.pageTransition.duration,
-        easing: ANIMATION_CONFIG.pageTransition.easing,
-        pseudoElement: "::view-transition-new(root)",
-      },
-    );
-  };
-
   const handleNavigation =
-    (path: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+    (path: string) => (e: React.MouseEvent<HTMLElement>) => {
       if (path === pathname) {
         e.preventDefault();
         return;
       }
-      router.push(path, {
-        onTransitionReady: triggerPageTransition,
-      });
+      e.preventDefault();
+      router.push(path);
     };
 
   return (

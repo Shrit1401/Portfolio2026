@@ -24,66 +24,9 @@ body {
   background-size: 256px 256px;
 }
 
-@keyframes orb-drift {
-  0%,
-  100% {
-    transform: translate(0, 0) scale(1);
-  }
-  33% {
-    transform: translate(6px, -10px) scale(1.015);
-  }
-  66% {
-    transform: translate(-8px, 6px) scale(0.985);
-  }
-}
-
-pre {
-  background: transparent;
-  margin: 0;
-  padding: 0;
-  border-radius: 0;
-}
-
-.revealer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  transform-origin: center top;
-  background: #111;
-  pointer-events: none;
-  z-index: 99;
-}
-
 /* Work / Past / etc.: explicit black curtain (home uses polaroid Loader on top instead). */
 .revealer--route {
   background-color: #111;
-}
-
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none !important;
-}
-
-::view-transition-group(root) {
-  z-index: auto !important;
-}
-
-::view-transition-image-pair(root) {
-  isolation: isolate;
-  will-change: clip-path;
-  z-index: 99999;
-}
-
-::view-transition-new(root) {
-  z-index: 2;
-  animation: none !important;
-}
-
-::view-transition-old(root) {
-  z-index: 1;
-  animation: none !important;
 }
 
 .explosion-container {
@@ -257,4 +200,20 @@ h1.title-2 {
   .gradient-canvas {
     background-color: #f8f6f0;
   }
+}
+
+.transition-grid {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9998;
+  overflow: hidden;
+}
+
+.transition-block {
+  position: absolute;
+  opacity: 0;
 }

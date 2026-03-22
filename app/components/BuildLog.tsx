@@ -1,14 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useTransitionRouter } from "next-view-transitions";
+import { useTransitionRouter } from "next-transition-router";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
   HOME_BUILD_PROOF_LIMIT,
   type BuildProofEntry,
 } from "@/app/lib/buildProof";
-import { triggerPageTransition } from "@/app/lib/triggerPageTransition";
 import { BuildLogLearnMore } from "./BuildLogLearnMore";
 import {
   BuildLogCardOpenButton,
@@ -59,9 +58,7 @@ const BuildLog = ({ entries: allEntries }: { entries: BuildProofEntry[] }) => {
         ?.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
-    router.push("/archive#build-proof", {
-      onTransitionReady: triggerPageTransition,
-    });
+    router.push("/archive#build-proof");
   };
 
   if (entries.length === 0) return null;
