@@ -404,7 +404,7 @@ const HeroText: FC = () => {
                 style={{ opacity: 0 }}
                 className="mt-5 text-sm md:text-base text-neutral-700 max-w-md leading-relaxed tracking-wide [text-shadow:0_1px_16px_rgba(255,255,255,0.9)]"
               >
-                Products, interfaces & ideas — built with craft and curiosity.
+                Try to solve more problems by building websits, apps, games help
               </div>
 
               {/* CTA buttons */}

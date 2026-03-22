@@ -8,6 +8,7 @@ import {
 import { research } from "./research";
 import { tag } from "./tag";
 import { buildLogEntry, buildLogList } from "./buildLog";
+import { ropePolaroidGallery } from "./ropePolaroidGallery";
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -19,5 +20,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     tag,
     buildLogEntry,
     buildLogList,
+    ropePolaroidGallery,
   ],
 };

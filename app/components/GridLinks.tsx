@@ -2,89 +2,66 @@
 import React from "react";
 import { useTransitionRouter } from "next-transition-router";
 import { usePathname } from "next/navigation";
-
-const links = [
-  {
-    href: "/work",
-    img: "/wayout/nerd.png",
-    label: "\u2190 Work", // ← Work
-    align: "left",
-  },
-  {
-    href: "/archive",
-    img: "/wayout/past.png",
-    label: "Archive \u2192", // Past →
-    align: "right",
-  },
-  {
-    href: "https://x.com/Shrit1401",
-    img: "/wayout/yt.png",
-    label: "\u2190 Twitter", // ← YT
-    align: "left",
-    external: true,
-  },
-  {
-    href: "/research",
-    img: "/wayout/work.png",
-    label: "Research \u2192", // Nerd →
-    align: "right",
-  },
-];
+import { wayoutZones as zones } from "@/app/lib/wayoutZones";
 
 const GridLinks = () => {
   const router = useTransitionRouter();
   const pathname = usePathname();
 
-  const handleNavigation =
-    (path: string) => (e: React.MouseEvent<HTMLElement>) => {
-      if (path === pathname) {
+  const handleClick =
+    (href: string) => (e: React.MouseEvent<HTMLAnchorElement>) => {
+      if (href === pathname) {
         e.preventDefault();
         return;
       }
       e.preventDefault();
-      if (path.includes("youtube.com")) {
-        window.open(path, "_blank");
-      } else {
-        router.push(path);
-      }
+      router.push(href);
     };
+
   return (
-    <div className="min-h-screen w-full">
+    <div className=" w-full">
       <div className="w-full h-full p-2 md:p-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 h-full gap-2 md:gap-4">
-          {links.map((link, i) => (
-            <span
-              key={i}
-              onClick={handleNavigation(link.href)}
-              className="group block rounded-lg overflow-hidden cursor-pointer relative  aspect-[4/3] shadow-lg
-              hover:brightness-125 transition-all duration-300"
-              style={{ background: "#111" }}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.45fr_1fr] gap-2 md:gap-4 w-full max-w-[2000px] mx-auto">
+          {zones.map((zone) => (
+            <a
+              key={zone.href}
+              href={zone.href}
+              onClick={handleClick(zone.href)}
+              aria-label={`${zone.title}: ${zone.subtitle}`}
+              className="group relative block overflow-hidden rounded-xl md:rounded-2xl shadow-lg outline-none
+                ring-offset-2 ring-offset-[#0a0a0a] focus-visible:ring-2 focus-visible:ring-white/40
+                h-[min(78vw,440px)] sm:h-[min(70vw,480px)] lg:h-[clamp(360px,58vh,780px)]
+                bg-[#0a0a0a] cursor-pointer"
             >
               <img
-                src={link.img}
-                alt={link.label.replace(/[^a-zA-Z0-9 ]/g, "")}
-                className="w-full h-full
-                group-hover:brightness-125
-                object-cover object-center transition-all duration-500"
-                draggable="false"
+                src={zone.img}
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover object-center
+                  transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                draggable={false}
               />
-              {/* Black gradient overlay */}
               <div
-                className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"
-                aria-hidden="true"
+                className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-black/10
+                  transition-opacity duration-300 group-hover:via-black/45"
+                aria-hidden
               />
-              {/* Text */}
-              <div
-                className={`absolute bottom-5 ${
-                  link.align === "left" ? "left-6" : "right-6"
-                } z-10`}
-              >
-                <span
-                  className="text-2xl md:text-3xl font-extrabold text-white drop-shadow-lg tracking-tight group-hover:tracking-wider transition-all duration-300"
-                  dangerouslySetInnerHTML={{ __html: link.label }}
-                />
+              <div className="absolute inset-x-0 bottom-0 z-10 p-5 md:p-6 md:pb-7">
+                <p
+                  className="text-2xl md:text-3xl font-semibold tracking-tight text-white lowercase
+                    drop-shadow-[0_2px_24px_rgba(0,0,0,0.65)] transition-transform duration-300
+                    group-hover:translate-y-[-2px]"
+                >
+                  {zone.title}
+                </p>
+                <p
+                  className="mt-1 text-sm md:text-[0.9375rem] text-white/80 font-normal tracking-wide
+                    transition-all duration-300 lg:opacity-0 lg:translate-y-1 lg:group-hover:opacity-100
+                    lg:group-hover:translate-y-0 lg:group-focus-visible:opacity-100 lg:group-focus-visible:translate-y-0"
+                >
+                  {zone.subtitle}
+                </p>
               </div>
-            </span>
+            </a>
           ))}
         </div>
       </div>

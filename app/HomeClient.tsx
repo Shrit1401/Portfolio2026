@@ -9,15 +9,20 @@ import AboutMe from "./components/AboutMe";
 import { Revealer } from "./components/Revealer";
 import Footer from "./components/Footer";
 import type { BuildProofEntry } from "@/app/lib/buildProof";
+import type { WorkGalleryItem } from "@/app/lib/workGallery";
 
 const BuildLog = dynamic(() => import("./components/BuildLog"));
 const StatsBar = dynamic(() => import("./components/StatsBar"));
 const FeaturedProjects = dynamic(() => import("./components/FeaturedProjects"));
+const RopePolaroidGallery = dynamic(
+  () => import("./components/RopePolaroidGallery"),
+);
 const GridLinks = dynamic(() => import("./components/GridLinks"));
 
-const HomeClient: FC<{ buildProofEntries: BuildProofEntry[] }> = ({
-  buildProofEntries,
-}) => {
+const HomeClient: FC<{
+  buildProofEntries: BuildProofEntry[];
+  ropeGalleryItems: WorkGalleryItem[];
+}> = ({ buildProofEntries, ropeGalleryItems }) => {
   return (
     <main className="relative w-full home">
       <Loader />
@@ -34,6 +39,7 @@ const HomeClient: FC<{ buildProofEntries: BuildProofEntry[] }> = ({
         <BuildLog entries={buildProofEntries} />
         <StatsBar />
         <FeaturedProjects />
+        <RopePolaroidGallery items={ropeGalleryItems} />
         <GridLinks />
       </section>
 

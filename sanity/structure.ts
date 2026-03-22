@@ -1,5 +1,5 @@
 import type { StructureResolver } from "sanity/structure";
-import { BUILD_LOG_LIST_ID } from "./constants";
+import { BUILD_LOG_LIST_ID, ROPE_POLAROID_GALLERY_ID } from "./constants";
 
 // https://www.sanity.io/docs/structure-builder-cheat-sheet
 export const structure: StructureResolver = (S) =>
@@ -29,5 +29,14 @@ export const structure: StructureResolver = (S) =>
             .schemaType("pastTimeline")
             .documentId("pastLifeTimeline")
             .title("Life timeline"),
+        ),
+      S.listItem()
+        .title("Rope gallery (home)")
+        .id("ropePolaroidGalleryNav")
+        .child(
+          S.document()
+            .schemaType("ropePolaroidGallery")
+            .documentId(ROPE_POLAROID_GALLERY_ID)
+            .title("Rope polaroid gallery"),
         ),
     ]);
