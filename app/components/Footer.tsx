@@ -87,10 +87,10 @@ const Footer = () => {
 
           <nav className="flex gap-8 items-center">
             <span
-              onClick={handleNavigation("/thoughts")}
+              onClick={handleNavigation("/research")}
               className="hover:text-[#37517b] transition-colors cursor-pointer duration-300"
             >
-              Thoughts
+              Research
             </span>
             <span
               onClick={handleNavigation("/work")}
@@ -99,10 +99,10 @@ const Footer = () => {
               Work
             </span>
             <span
-              onClick={handleNavigation("/past")}
+              onClick={handleNavigation("/archive")}
               className="hover:text-[#37517b] transition-colors cursor-pointer duration-300"
             >
-              Past
+              Archive
             </span>
           </nav>
         </div>

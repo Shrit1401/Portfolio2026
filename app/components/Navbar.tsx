@@ -29,7 +29,7 @@ const MENU_ITEMS: MenuItem[] = [
   },
   { label: "Work", path: "/work" },
   { label: "Archive", path: "/archive" },
-  { label: "Thoughts", path: "/thoughts" },
+  { label: "Research", path: "/research" },
 ];
 
 const ANIMATION_CONFIG = {

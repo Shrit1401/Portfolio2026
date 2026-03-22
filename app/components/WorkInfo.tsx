@@ -1,12 +1,22 @@
 "use client";
 
-import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { getWorks } from "@/app/lib/server";
 import { Work } from "../lib/types";
 import { urlFor } from "@/sanity/lib/image";
-import { MdArrowOutward } from "react-icons/md";
+import {
+  MdArrowOutward,
+  MdKeyboardArrowLeft,
+  MdKeyboardArrowRight,
+} from "react-icons/md";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -23,13 +33,27 @@ function getLenis() {
   return (window as LenisWindow).lenis;
 }
 
-function scrollWindowTo(y: number) {
+/** Lenis exposes animated scroll; fall back for pages without smooth scroll. */
+function getScrollY(): number {
+  const lenis = getLenis();
+  if (lenis != null && typeof lenis.scroll === "number") {
+    return lenis.scroll;
+  }
+  return typeof window !== "undefined" ? window.scrollY : 0;
+}
+
+function scrollWindowTo(y: number, durationSec = 1.15) {
   const lenis = getLenis();
   if (lenis?.scrollTo) {
-    lenis.scrollTo(y, { duration: 1.15 });
+    lenis.scrollTo(y, { duration: durationSec });
   } else {
     window.scrollTo({ top: y, behavior: "smooth" });
   }
+}
+
+function projectPrimaryHref(project: Work): string {
+  const first = project.usefullinks?.[0]?.link;
+  return first ?? "https://github.com/Shrit1401?tab=repositories";
 }
 
 function layerOpacities(
@@ -61,7 +85,13 @@ const GRAIN_SVG = encodeURIComponent(
 );
 
 const SLIDER_TRIGGER_ID = "workinfo-slider";
-const AUTO_ROTATE_MS = 5000;
+/** Viewport heights of scroll track per slide (higher = slower / more scroll per project). */
+const VH_PER_SLIDE = 280;
+const AUTO_ROTATE_MS = 12_000;
+const SCROLL_DURATION_BASE = 1.12;
+const SCROLL_DURATION_PER_STEP = 0.18;
+const SCROLL_DURATION_MAX = 2.35;
+const PROGRAMMATIC_SCROLL_IGNORE_MS = 2400;
 
 const WorkInfo = () => {
   const [projects, setProjects] = useState<Work[]>([]);
@@ -77,6 +107,12 @@ const WorkInfo = () => {
   const countRef = useRef(0);
   const activeIndexRef = useRef(0);
   const ignoreProgrammaticScrollUntilRef = useRef(0);
+  const pauseAutoFromHoverRef = useRef(false);
+  const polaroidSectionRef = useRef<HTMLElement>(null);
+  const autoCycleStartRef = useRef(0);
+  const autoRingRectRef = useRef<SVGRectElement>(null);
+  const autoCountdownRef = useRef<HTMLSpanElement>(null);
+  const lastScrollYForAutoBumpRef = useRef<number | null>(null);
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -117,8 +153,6 @@ const WorkInfo = () => {
 
   useLayoutEffect(() => {
     if (count === 0 || !sectionRef.current || !pinRef.current) return;
-
-    const maxSeg = Math.max(0, count - 1);
 
     const applyProgress = (p: number) => {
       const n = countRef.current;
@@ -202,93 +236,205 @@ const WorkInfo = () => {
     return () => ctx.revert();
   }, [activeIndex]);
 
-  const goToSlide = useCallback((index: number, options?: { auto?: boolean }) => {
-    if (options?.auto) {
-      ignoreProgrammaticScrollUntilRef.current = Date.now() + 1800;
-    }
-    const n = countRef.current;
-    if (!sectionRef.current || n === 0) return;
-    const st = scrollTriggerRef.current;
-    const maxSeg = Math.max(1, n - 1);
-    const t = Math.min(1, Math.max(0, index / maxSeg));
-
-    if (st) {
-      const y = st.start + t * (st.end - st.start);
-      scrollWindowTo(y);
-    } else {
-      const el = sectionRef.current;
-      const top = el.offsetTop;
-      const maxRel = Math.max(0, el.offsetHeight - window.innerHeight);
-      scrollWindowTo(n <= 1 ? top : top + t * maxRel);
-    }
-  }, []);
-
-  /* Auto-advance while the pinned slider is active; pause in background & on reduced motion */
-  useEffect(() => {
-    if (count <= 1 || reduceMotionRef.current) return;
-
-    let timeoutId: ReturnType<typeof setTimeout> | null = null;
-    let cancelled = false;
-
-    const clearTimer = () => {
-      if (timeoutId !== null) {
-        clearTimeout(timeoutId);
-        timeoutId = null;
-      }
-    };
-
-    const schedule = () => {
-      clearTimer();
-      timeoutId = setTimeout(tick, AUTO_ROTATE_MS);
-    };
-
-    const tick = () => {
-      timeoutId = null;
-      if (cancelled) return;
-      if (document.hidden) {
-        schedule();
-        return;
-      }
-      const st = scrollTriggerRef.current;
-      if (!st?.isActive) {
-        schedule();
-        return;
+  const goToSlide = useCallback(
+    (index: number, options?: { auto?: boolean; durationSec?: number }) => {
+      autoCycleStartRef.current = performance.now();
+      if (options?.auto) {
+        ignoreProgrammaticScrollUntilRef.current =
+          Date.now() + PROGRAMMATIC_SCROLL_IGNORE_MS;
       }
       const n = countRef.current;
-      if (n <= 1) {
-        schedule();
+      if (!sectionRef.current || n === 0) return;
+      const st = scrollTriggerRef.current;
+      const maxSeg = Math.max(1, n - 1);
+      const clamped = Math.min(n - 1, Math.max(0, index));
+      const t = Math.min(1, Math.max(0, clamped / maxSeg));
+
+      const durationSec =
+        options?.durationSec ??
+        Math.min(
+          SCROLL_DURATION_MAX,
+          SCROLL_DURATION_BASE +
+            Math.abs(activeIndexRef.current - clamped) *
+              SCROLL_DURATION_PER_STEP,
+        );
+
+      if (st) {
+        const y = st.start + t * (st.end - st.start);
+        scrollWindowTo(y, durationSec);
+      } else {
+        const el = sectionRef.current;
+        const top = el.offsetTop;
+        const maxRel = Math.max(0, el.offsetHeight - window.innerHeight);
+        scrollWindowTo(n <= 1 ? top : top + t * maxRel, durationSec);
+      }
+    },
+    [],
+  );
+
+  /* Sync auto-rotate cycle when projects load */
+  useEffect(() => {
+    if (count > 0) autoCycleStartRef.current = performance.now();
+  }, [count]);
+
+  /**
+   * Auto-advance with rAF + scroll-range check (Lenis + ScrollTrigger: `isActive` is unreliable).
+   * Border stroke-dashoffset shows elapsed fraction of the interval.
+   */
+  useEffect(() => {
+    if (count <= 1) return;
+
+    let rafId = 0;
+
+    const isInSliderRange = () => {
+      const st = scrollTriggerRef.current;
+      if (!st) return false;
+      const y = getScrollY();
+      return y >= st.start - 3 && y <= st.end + 3;
+    };
+
+    const bumpCycleOnManualScroll = () => {
+      if (Date.now() < ignoreProgrammaticScrollUntilRef.current) return;
+      if (!isInSliderRange()) {
+        lastScrollYForAutoBumpRef.current = null;
         return;
       }
-      const next = (activeIndexRef.current + 1) % n;
-      goToSlide(next, { auto: true });
-      schedule();
-    };
-
-    schedule();
-
-    const onScroll = () => {
-      if (Date.now() < ignoreProgrammaticScrollUntilRef.current) return;
-      if (!scrollTriggerRef.current?.isActive) return;
-      schedule();
-    };
-
-    const onVisibility = () => {
-      if (!document.hidden) schedule();
+      const y = getScrollY();
+      const prev = lastScrollYForAutoBumpRef.current;
+      lastScrollYForAutoBumpRef.current = y;
+      /* Ignore sub-pixel noise so Lenis idle frames don’t reset the countdown. */
+      if (prev != null && Math.abs(y - prev) < 0.75) return;
+      autoCycleStartRef.current = performance.now();
     };
 
     const lenis = getLenis();
-    if (lenis?.on) lenis.on("scroll", onScroll);
-    else window.addEventListener("scroll", onScroll, { passive: true });
-    document.addEventListener("visibilitychange", onVisibility);
+    if (lenis?.on) lenis.on("scroll", bumpCycleOnManualScroll);
+    else window.addEventListener("scroll", bumpCycleOnManualScroll, { passive: true });
+
+    const tick = () => {
+      const ring = autoRingRectRef.current;
+      const label = autoCountdownRef.current;
+      const n = countRef.current;
+
+      if (n <= 1 || reduceMotionRef.current) {
+        if (ring) {
+          ring.style.strokeDashoffset = "0";
+          ring.style.opacity = "0";
+        }
+        if (label) label.textContent = "";
+        return;
+      }
+
+      if (ring) ring.style.opacity = "1";
+
+      if (!isInSliderRange() || document.hidden) {
+        if (ring) {
+          ring.style.strokeDashoffset = "0";
+          ring.style.opacity = "0";
+        }
+        if (label) label.textContent = "";
+        return;
+      }
+
+      if (pauseAutoFromHoverRef.current) {
+        autoCycleStartRef.current = performance.now();
+        if (ring) ring.style.strokeDashoffset = "0";
+        if (label) label.textContent = "Paused";
+        return;
+      }
+
+      const now = performance.now();
+      const ignored = Date.now() < ignoreProgrammaticScrollUntilRef.current;
+      const elapsed = ignored ? 0 : now - autoCycleStartRef.current;
+      const p = Math.min(1, Math.max(0, elapsed / AUTO_ROTATE_MS));
+
+      if (ring) ring.style.strokeDashoffset = String(p);
+
+      const secLeft = Math.max(0, Math.ceil((AUTO_ROTATE_MS - elapsed) / 1000));
+      if (label) {
+        label.textContent = ignored
+          ? "…"
+          : secLeft > 0
+            ? `${secLeft}s`
+            : "";
+      }
+
+      if (!ignored && elapsed >= AUTO_ROTATE_MS) {
+        goToSlide((activeIndexRef.current + 1) % n, { auto: true });
+      }
+
+      rafId = requestAnimationFrame(tick);
+    };
+
+    rafId = requestAnimationFrame(tick);
 
     return () => {
-      cancelled = true;
-      clearTimer();
-      if (lenis?.off) lenis.off("scroll", onScroll);
-      else window.removeEventListener("scroll", onScroll);
-      document.removeEventListener("visibilitychange", onVisibility);
+      cancelAnimationFrame(rafId);
+      if (lenis?.off) lenis.off("scroll", bumpCycleOnManualScroll);
+      else window.removeEventListener("scroll", bumpCycleOnManualScroll);
     };
   }, [count, goToSlide]);
+
+  useLayoutEffect(() => {
+    const root = polaroidSectionRef.current;
+    if (!root || count === 0) return;
+
+    const cards = root.querySelectorAll("[data-polaroid]");
+    if (!cards.length) return;
+
+    if (reduceMotionRef.current) {
+      gsap.set(cards, { opacity: 1, y: 0 });
+      return;
+    }
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        cards,
+        { y: 44, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.88,
+          stagger: 0.09,
+          ease: "power3.out",
+          overwrite: "auto",
+          scrollTrigger: {
+            trigger: root,
+            start: "top 88%",
+            once: true,
+          },
+        },
+      );
+    }, root);
+
+    return () => ctx.revert();
+  }, [count, projects]);
+
+  const goPrev = useCallback(() => {
+    const n = countRef.current;
+    if (n <= 1) return;
+    goToSlide((activeIndexRef.current - 1 + n) % n);
+  }, [goToSlide]);
+
+  const goNext = useCallback(() => {
+    const n = countRef.current;
+    if (n <= 1) return;
+    goToSlide((activeIndexRef.current + 1) % n);
+  }, [goToSlide]);
+
+  const onSliderKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      goPrev();
+    } else if (e.key === "ArrowRight") {
+      e.preventDefault();
+      goNext();
+    }
+  };
+
+  const setNavHoverPause = (v: boolean) => {
+    pauseAutoFromHoverRef.current = v;
+  };
 
   const active = projects[activeIndex];
 
@@ -314,13 +460,17 @@ const WorkInfo = () => {
       <section
         ref={sectionRef}
         className="workinfo-section"
-        style={{ height: `${count * 100}vh` }}
+        style={{ height: `${count * VH_PER_SLIDE}vh` }}
         aria-roledescription="scroll-driven project slider"
         aria-label="Selected work"
       >
         <div
           ref={pinRef}
-          className="relative h-[100dvh] min-h-[100vh] w-full overflow-hidden bg-[#0a0a0a]"
+          tabIndex={0}
+          role="region"
+          aria-label="Project slider. Use arrow keys to change slide."
+          onKeyDown={onSliderKeyDown}
+          className="relative h-[100dvh] min-h-[100vh] w-full overflow-hidden bg-[#0a0a0a] outline-none focus-visible:ring-2 focus-visible:ring-white/35 focus-visible:ring-offset-2 focus-visible:ring-offset-black"
         >
           <div className="absolute inset-0" aria-hidden="true">
             {projects.map((project, i) => (
@@ -367,17 +517,53 @@ const WorkInfo = () => {
             aria-hidden
           />
 
+          <svg
+            className="pointer-events-none absolute inset-0 z-[21] h-full w-full"
+            aria-hidden
+          >
+            <rect
+              ref={autoRingRectRef}
+              x="1.5%"
+              y="1.5%"
+              width="97%"
+              height="97%"
+              rx="2"
+              fill="none"
+              stroke="rgba(255,255,255,0.5)"
+              strokeWidth="2"
+              pathLength={1}
+              strokeDasharray={1}
+              strokeDashoffset={0}
+              vectorEffect="nonScalingStroke"
+            />
+          </svg>
+          <div
+            className="pointer-events-none absolute right-4 top-[max(5.5rem,env(safe-area-inset-top)+4rem)] z-[22] text-right md:right-8"
+            aria-live="polite"
+          >
+            <p className="text-[9px] font-semibold uppercase tracking-[0.28em] text-white/50">
+              Auto
+            </p>
+            <p className="mt-0.5 font-mono text-sm tabular-nums text-white/90">
+              <span ref={autoCountdownRef} />
+            </p>
+          </div>
+
           <div className="relative z-10 flex h-full flex-col text-white">
             <header className="flex shrink-0 items-start justify-between px-5 pt-8 md:px-10 md:pt-11 lg:px-[6vw]">
               <span className="rounded-full border border-white/15 bg-black/25 px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/90 backdrop-blur-md md:text-[11px]">
                 Shrit. / Selected work
               </span>
               <span className="hidden text-[10px] font-medium uppercase tracking-[0.3em] text-white/45 sm:block md:text-[11px]">
-                [ Scroll motion slider ]
+                [ Scroll · ← → ]
               </span>
             </header>
 
-            <div className="flex min-h-0 flex-1 flex-col justify-end px-5 pb-[max(2.25rem,env(safe-area-inset-bottom))] pr-16 pt-8 sm:pr-20 md:px-10 md:pb-12 md:pr-24 lg:px-[6vw] lg:pr-[min(28vw,12rem)] lg:pb-14">
+            <div
+              className="flex min-h-0 flex-1 flex-col justify-end px-5 pb-[max(2.25rem,env(safe-area-inset-bottom))] pr-16 pt-8 sm:pr-20 md:px-10 md:pb-12 md:pr-24 lg:px-[6vw] lg:pr-[min(28vw,12rem)] lg:pb-14"
+              onMouseEnter={() => setNavHoverPause(true)}
+              onMouseLeave={() => setNavHoverPause(false)}
+            >
               <div ref={contentRef} className="max-w-[min(42rem,88vw)]">
                 {active?.year != null && (
                   <p
@@ -412,7 +598,8 @@ const WorkInfo = () => {
                       </span>
                     </a>
                   ))}
-                  {(!active?.usefullinks || active.usefullinks.length === 0) && (
+                  {(!active?.usefullinks ||
+                    active.usefullinks.length === 0) && (
                     <a
                       href="https://github.com/Shrit1401?tab=repositories"
                       target="_blank"
@@ -427,11 +614,44 @@ const WorkInfo = () => {
                   )}
                 </div>
               </div>
+
+              <div
+                className="mt-10 flex items-center gap-2 md:mt-11"
+                onMouseEnter={() => setNavHoverPause(true)}
+                onMouseLeave={() => setNavHoverPause(false)}
+              >
+                <button
+                  type="button"
+                  onClick={goPrev}
+                  disabled={count <= 1}
+                  aria-label="Previous project"
+                  className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/22 bg-black/30 text-white backdrop-blur-md transition-[border-color,background-color,transform,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-white/45 hover:bg-white/10 disabled:pointer-events-none disabled:opacity-25 md:h-[3.25rem] md:w-[3.25rem]"
+                >
+                  <MdKeyboardArrowLeft
+                    className="text-2xl md:text-[1.65rem]"
+                    aria-hidden
+                  />
+                </button>
+                <button
+                  type="button"
+                  onClick={goNext}
+                  disabled={count <= 1}
+                  aria-label="Next project"
+                  className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/22 bg-black/30 text-white backdrop-blur-md transition-[border-color,background-color,transform,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-white/45 hover:bg-white/10 disabled:pointer-events-none disabled:opacity-25 md:h-[3.25rem] md:w-[3.25rem]"
+                >
+                  <MdKeyboardArrowRight
+                    className="text-2xl md:text-[1.65rem]"
+                    aria-hidden
+                  />
+                </button>
+              </div>
             </div>
 
             <nav
               className="absolute bottom-[max(1.5rem,env(safe-area-inset-bottom))] right-5 top-1/2 z-20 flex -translate-y-1/2 flex-col items-end md:right-9 lg:right-[4.5vw]"
               aria-label="Slide index"
+              onMouseEnter={() => setNavHoverPause(true)}
+              onMouseLeave={() => setNavHoverPause(false)}
             >
               <div className="flex items-start gap-5">
                 <ol className="flex flex-col items-end gap-[0.65rem] text-right md:gap-3">
@@ -481,7 +701,110 @@ const WorkInfo = () => {
         </div>
       </section>
 
-      <div className="relative border-t border-black/[0.06] bg-[#ebe6dc] px-5 py-16 md:py-20">
+      <section
+        ref={polaroidSectionRef}
+        className="workinfo-polaroid-grid relative border-t border-black/[0.08] bg-[#ebe6dc] px-4 pb-20 pt-16 md:px-8 md:pb-28 md:pt-24 lg:px-[5vw] lg:pb-32 lg:pt-28"
+        aria-label="Project polaroid gallery"
+      >
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.07]"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,${GRAIN_SVG}")`,
+            backgroundRepeat: "repeat",
+          }}
+          aria-hidden
+        />
+        <div className="relative mx-auto max-w-[88rem]">
+          <header className="mb-12 max-w-2xl md:mb-16">
+            <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.38em] text-neutral-700/75">
+              After the scroll
+            </p>
+            <h3 className="font-[family-name:var(--font-instrument-serif)] text-[clamp(2rem,5vw,3.25rem)] font-normal leading-[1.05] tracking-[-0.02em] text-neutral-900">
+              Same work, pinned snapshots
+            </h3>
+            <p className="mt-4 max-w-md text-sm leading-relaxed text-neutral-600">
+              Skim the grid, open a link, or jump back into the slider on any
+              frame.
+            </p>
+          </header>
+
+          <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-12 lg:grid-cols-3 lg:gap-x-10 lg:gap-y-14">
+            {projects.map((project, i) => {
+              const href = projectPrimaryHref(project);
+              return (
+                <article
+                  key={`polaroid-${project.title}-${i}`}
+                  data-polaroid
+                  className="flex w-full justify-center"
+                >
+                  <div className="group/polaroid w-full max-w-[22rem] transition-[transform,filter] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1 hover:shadow-[0_24px_48px_-16px_rgba(0,0,0,0.2)] sm:max-w-none">
+                    <div className="rounded-[3px] border border-white/90 bg-white p-3 pb-10 shadow-[0_12px_32px_-8px_rgba(0,0,0,0.18)] ring-1 ring-black/[0.06]">
+                      <a
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block overflow-hidden rounded-[1px] bg-neutral-200 outline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-neutral-900/35"
+                      >
+                        <div className="aspect-[4/3] w-full overflow-hidden bg-neutral-200">
+                          {project.image ? (
+                            <img
+                              src={urlFor(project.image).url()}
+                              alt=""
+                              className="h-full w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/polaroid:scale-[1.03]"
+                              loading="lazy"
+                              decoding="async"
+                              onLoad={() => ScrollTrigger.refresh()}
+                            />
+                          ) : (
+                            <div className="h-full w-full bg-gradient-to-br from-neutral-300 to-neutral-500" />
+                          )}
+                        </div>
+                      </a>
+                      <div className="mt-5 min-h-[4.5rem] px-1 text-center">
+                        {project.year != null && (
+                          <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.32em] text-neutral-500">
+                            {project.year}
+                          </p>
+                        )}
+                        <p className="font-[family-name:var(--font-instrument-serif)] text-[1.05rem] leading-snug text-neutral-900 md:text-lg">
+                          {project.title}
+                        </p>
+                        <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+                          <button
+                            type="button"
+                            className="text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-500 underline decoration-neutral-400/60 underline-offset-4 transition-colors duration-300 hover:text-neutral-800"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              goToSlide(i);
+                            }}
+                          >
+                            Open in slider
+                          </button>
+                          <span className="text-neutral-300" aria-hidden>
+                            ·
+                          </span>
+                          <a
+                            href={href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-600 transition-colors duration-300 hover:text-neutral-900"
+                          >
+                            Visit
+                            <MdArrowOutward className="ml-0.5 inline align-[-2px] text-sm" />
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <div className="workinfo-more-cta relative z-0 border-t border-black/[0.08] bg-[#e8e2d6] px-5 py-14 md:px-10 md:py-20">
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.06]"
           style={{
@@ -490,12 +813,16 @@ const WorkInfo = () => {
           }}
           aria-hidden
         />
-        <div className="relative flex justify-center">
+        <div className="relative mx-auto flex max-w-3xl flex-col items-center gap-6 text-center">
+          <p className="max-w-md text-sm leading-relaxed text-neutral-700/90">
+            Want the full stream of experiments and repos? Everything else lives
+            on GitHub.
+          </p>
           <a
             href="https://github.com/Shrit1401?tab=repositories"
             target="_blank"
             rel="noopener noreferrer"
-            className="group inline-flex items-center gap-2 rounded-full border border-neutral-900/15 bg-neutral-900/[0.04] px-10 py-3.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-neutral-900 transition-[border-color,background-color,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-neutral-900/35 hover:bg-neutral-900/[0.07] active:scale-[0.98]"
+            className="group inline-flex items-center gap-2 rounded-full border border-neutral-900/18 bg-neutral-900/[0.06] px-10 py-3.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-neutral-900 transition-[border-color,background-color,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-neutral-900/40 hover:bg-neutral-900/[0.1] active:scale-[0.98]"
           >
             More projects
             <MdArrowOutward className="text-lg transition-transform duration-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

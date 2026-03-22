@@ -126,6 +126,13 @@ pre {
   overflow: visible;
 }
 
+/* Polaroid gallery is a normal document section — must not use legacy .work section 100vh clip */
+.work section.workinfo-polaroid-grid {
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+}
+
 .titles h1 {
   text-transform: uppercase;
   font-size: 12vw;
