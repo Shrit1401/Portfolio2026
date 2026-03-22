@@ -4,6 +4,10 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { displayShader, fluidShader, vertexShader } from "../lib/fluidShaders";
 
+/** Lower = fewer pixels shaded per frame (fluid is a soft background). */
+const PIXEL_RATIO_SCALE = 0.62;
+const MAX_PIXEL_RATIO = 1.35;
+
 const FLUID_CONFIG = {
   /* Wider, stronger brush so strokes read clearly on a near-#f8f6f0 field */
   brushsize: 56.0,
@@ -42,13 +46,18 @@ export default function HeroFluidCanvas() {
     const container = containerRef.current;
     if (!container) return;
 
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (reducedMotion) return;
+
     const cfg = FLUID_CONFIG;
     let bufW = 0;
     let bufH = 0;
 
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
     const renderer = new THREE.WebGLRenderer({
-      antialias: true,
+      antialias: false,
       alpha: false,
       powerPreference: "high-performance",
     });
@@ -133,7 +142,11 @@ export default function HeroFluidCanvas() {
       if (w === bufW && h === bufH) return;
       bufW = w;
       bufH = h;
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      const pr = Math.min(
+        (window.devicePixelRatio || 1) * PIXEL_RATIO_SCALE,
+        MAX_PIXEL_RATIO,
+      );
+      renderer.setPixelRatio(pr);
       renderer.setSize(w, h, false);
       fluidTarget1.setSize(
         renderer.domElement.width,
@@ -173,8 +186,12 @@ export default function HeroFluidCanvas() {
     };
 
     let rafId = 0;
-    const animate = () => {
-      rafId = window.requestAnimationFrame(animate);
+    let paused = true;
+    let heroInView = true;
+
+    const tick = () => {
+      if (paused) return;
+      rafId = window.requestAnimationFrame(tick);
       if (bufW < 2 || bufH < 2) return;
 
       const time = performance.now() * 0.001;
@@ -212,6 +229,34 @@ export default function HeroFluidCanvas() {
       frameCount++;
     };
 
+    const syncRunningState = () => {
+      const shouldRun = !document.hidden && heroInView;
+      if (shouldRun) {
+        if (paused) {
+          paused = false;
+          rafId = window.requestAnimationFrame(tick);
+        }
+      } else {
+        if (!paused) {
+          paused = true;
+          window.cancelAnimationFrame(rafId);
+        }
+      }
+    };
+
+    const onVisibility = () => {
+      syncRunningState();
+    };
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        heroInView = entries.some((e) => e.isIntersecting);
+        syncRunningState();
+      },
+      { root: null, rootMargin: "80px 0px", threshold: 0 },
+    );
+    io.observe(container);
+
     const ro = new ResizeObserver((entries) => {
       const cr = entries[0]?.contentRect;
       if (!cr) return;
@@ -220,13 +265,17 @@ export default function HeroFluidCanvas() {
     ro.observe(container);
     syncBuffersToContainer(container.clientWidth, container.clientHeight);
 
-    rafId = window.requestAnimationFrame(animate);
+    document.addEventListener("visibilitychange", onVisibility);
+    syncRunningState();
 
     document.addEventListener("mousemove", onMouseMove);
     document.addEventListener("mouseleave", onMouseLeave);
 
     return () => {
+      paused = true;
       window.cancelAnimationFrame(rafId);
+      io.disconnect();
+      document.removeEventListener("visibilitychange", onVisibility);
       ro.disconnect();
       document.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseleave", onMouseLeave);

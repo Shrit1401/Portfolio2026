@@ -4,10 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 
 const stats = [
-  { value: 20, suffix: "+", label: "projects shipped" },
-  { value: 5, suffix: "", label: "hackathons won" },
-  { value: 50, suffix: "+", label: "experiments built" },
-  { value: 10, suffix: "k+", label: "users reached" },
+  { value: 120, suffix: "+", label: "projects shipped" },
+  { value: 20, suffix: "k+", label: "users reached" },
+  { value: 3, suffix: "L+", label: "money earnd" },
+  { value: 7, suffix: "+", label: "years of experience" },
 ];
 
 function useCountUp(target: number, duration = 1.8) {
@@ -34,13 +34,7 @@ function useCountUp(target: number, duration = 1.8) {
   return { count, ref };
 }
 
-const StatCell = ({
-  stat,
-  idx,
-}: {
-  stat: (typeof stats)[0];
-  idx: number;
-}) => {
+const StatCell = ({ stat, idx }: { stat: (typeof stats)[0]; idx: number }) => {
   const { count, ref } = useCountUp(stat.value);
 
   return (

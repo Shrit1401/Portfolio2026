@@ -252,3 +252,9 @@ h1.title-2 {
   width: 100% !important;
   height: 100% !important;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .gradient-canvas {
+    background-color: #f8f6f0;
+  }
+}

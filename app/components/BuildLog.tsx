@@ -2,22 +2,27 @@
 
 import { motion } from "framer-motion";
 import { useTransitionRouter } from "next-view-transitions";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
 import {
-  BUILD_PROOF_ENTRIES,
-  getHomeBuildProofEntries,
+  HOME_BUILD_PROOF_LIMIT,
+  type BuildProofEntry,
 } from "@/app/lib/buildProof";
-
-const entries = getHomeBuildProofEntries();
-const showSeeAllLogs = BUILD_PROOF_ENTRIES.length > 0;
+import { triggerPageTransition } from "@/app/lib/triggerPageTransition";
+import { BuildLogLearnMore } from "./BuildLogLearnMore";
+import {
+  BuildLogCardOpenButton,
+  BuildLogPolaroidModal,
+} from "./BuildLogPolaroidModal";
 
 const CardText = ({
   entry,
   large,
 }: {
-  entry: (typeof entries)[0];
+  entry: BuildProofEntry;
   large?: boolean;
 }) => (
-  <div className={`absolute bottom-5 left-5 right-5 z-10`}>
+  <div className="pointer-events-none absolute bottom-5 left-5 right-5 z-[3]">
     <div className="flex items-center gap-2 mb-1">
       <span className={large ? "text-xl" : "text-base"}>{entry.icon}</span>
       <p className="text-white/70 text-xs tracking-wide">
@@ -29,19 +34,44 @@ const CardText = ({
     >
       {entry.title}
     </p>
+    {entry.learnMoreUrl ? (
+      <div className="pointer-events-auto mt-2">
+        <BuildLogLearnMore href={entry.learnMoreUrl} />
+      </div>
+    ) : null}
   </div>
 );
 
-const BuildLog = () => {
+const BuildLog = ({ entries: allEntries }: { entries: BuildProofEntry[] }) => {
   const router = useTransitionRouter();
+  const pathname = usePathname();
+  const [polaroidEntry, setPolaroidEntry] = useState<BuildProofEntry | null>(
+    null,
+  );
+  const entries = allEntries.slice(0, HOME_BUILD_PROOF_LIMIT);
+  const showSeeAllLogs = allEntries.length > 0;
 
   const goToArchive = (e: React.MouseEvent) => {
     e.preventDefault();
-    router.push("/archive#build-proof");
+    if (pathname === "/archive") {
+      document
+        .getElementById("build-proof")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    router.push("/archive#build-proof", {
+      onTransitionReady: triggerPageTransition,
+    });
   };
+
+  if (entries.length === 0) return null;
 
   return (
     <section className="relative px-4 md:px-12 py-16 md:py-20 min-h-screen bg-background">
+      <BuildLogPolaroidModal
+        entry={polaroidEntry}
+        onClose={() => setPolaroidEntry(null)}
+      />
       {/* Section header */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -74,25 +104,26 @@ const BuildLog = () => {
       <div className="flex md:hidden gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4">
         {entries.map((entry, idx) => (
           <motion.div
-            key={idx}
+            key={entry.id ?? `${entry.title}-${idx}`}
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.7, ease: "easeOut", delay: idx * 0.08 }}
-            className="group relative flex-shrink-0 w-[72vw] h-[52vw] rounded-2xl overflow-hidden shadow-lg snap-start cursor-pointer"
+            className="group relative flex-shrink-0 w-[72vw] h-[52vw] rounded-2xl overflow-hidden shadow-lg snap-start"
             style={{ background: "#111" }}
           >
+            <BuildLogCardOpenButton entry={entry} onOpen={setPolaroidEntry} />
             <img
               src={entry.image}
               alt={entry.title}
-              className="w-full h-full object-cover object-center group-hover:brightness-125 transition-all duration-500"
+              className="relative z-0 pointer-events-none w-full h-full object-cover object-center group-hover:brightness-125 transition-all duration-500"
               draggable="false"
             />
             <div
-              className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"
+              className="pointer-events-none absolute inset-0 z-[2] bg-gradient-to-t from-black/80 via-black/40 to-transparent"
               aria-hidden="true"
             />
-            <div className="absolute bottom-4 left-4 right-4 z-10">
+            <div className="pointer-events-none absolute bottom-4 left-4 right-4 z-[3]">
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-base">{entry.icon}</span>
                 <p className="text-white/70 text-xs tracking-wide">
@@ -102,6 +133,11 @@ const BuildLog = () => {
               <p className="text-white font-bold text-base leading-tight tracking-tight group-hover:tracking-wider transition-all duration-300">
                 {entry.title}
               </p>
+              {entry.learnMoreUrl ? (
+                <div className="pointer-events-auto mt-2">
+                  <BuildLogLearnMore href={entry.learnMoreUrl} />
+                </div>
+              ) : null}
             </div>
           </motion.div>
         ))}
@@ -118,17 +154,21 @@ const BuildLog = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.7, ease: "easeOut", delay: 0 }}
-          className="group relative rounded-2xl overflow-hidden shadow-lg cursor-pointer row-span-2"
+          className="group relative rounded-2xl overflow-hidden shadow-lg row-span-2"
           style={{ background: "#111" }}
         >
+          <BuildLogCardOpenButton
+            entry={entries[0]}
+            onOpen={setPolaroidEntry}
+          />
           <img
             src={entries[0].image}
             alt={entries[0].title}
-            className="w-full h-full object-cover object-center group-hover:brightness-125 transition-all duration-500"
+            className="relative z-0 pointer-events-none w-full h-full object-cover object-center group-hover:brightness-125 transition-all duration-500"
             draggable="false"
           />
           <div
-            className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"
+            className="pointer-events-none absolute inset-0 z-[2] bg-gradient-to-t from-black/80 via-black/40 to-transparent"
             aria-hidden="true"
           />
           <CardText entry={entries[0]} large />
@@ -137,7 +177,7 @@ const BuildLog = () => {
         {/* Cards 1–4 — normal height, 2 per column */}
         {entries.slice(1).map((entry, i) => (
           <motion.div
-            key={i + 1}
+            key={entry.id ?? `${entry.title}-${i + 1}`}
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
@@ -146,17 +186,18 @@ const BuildLog = () => {
               ease: "easeOut",
               delay: (i + 1) * 0.08,
             }}
-            className="group relative rounded-2xl overflow-hidden shadow-lg cursor-pointer"
+            className="group relative rounded-2xl overflow-hidden shadow-lg"
             style={{ background: "#111" }}
           >
+            <BuildLogCardOpenButton entry={entry} onOpen={setPolaroidEntry} />
             <img
               src={entry.image}
               alt={entry.title}
-              className="w-full h-full object-cover object-center group-hover:brightness-125 transition-all duration-500"
+              className="relative z-0 pointer-events-none w-full h-full object-cover object-center group-hover:brightness-125 transition-all duration-500"
               draggable="false"
             />
             <div
-              className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"
+              className="pointer-events-none absolute inset-0 z-[2] bg-gradient-to-t from-black/80 via-black/40 to-transparent"
               aria-hidden="true"
             />
             <CardText entry={entry} />

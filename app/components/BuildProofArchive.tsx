@@ -1,10 +1,19 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { BUILD_PROOF_ENTRIES } from "@/app/lib/buildProof";
+import { useState } from "react";
+import type { BuildProofEntry } from "@/app/lib/buildProof";
+import { BuildLogLearnMore } from "./BuildLogLearnMore";
+import {
+  BuildLogCardOpenButton,
+  BuildLogPolaroidModal,
+} from "./BuildLogPolaroidModal";
 
-const BuildProofArchive = () => {
-  const entries = BUILD_PROOF_ENTRIES;
+const BuildProofArchive = ({ entries }: { entries: BuildProofEntry[] }) => {
+  const [polaroidEntry, setPolaroidEntry] = useState<BuildProofEntry | null>(
+    null,
+  );
+
   if (entries.length === 0) return null;
 
   return (
@@ -13,6 +22,10 @@ const BuildProofArchive = () => {
       className="relative w-full px-4 md:px-8 lg:px-10 py-16 md:py-24 bg-background font-instrument"
       aria-label="All build logs"
     >
+      <BuildLogPolaroidModal
+        entry={polaroidEntry}
+        onClose={() => setPolaroidEntry(null)}
+      />
       <div className="mb-8 md:mb-10 w-full">
         <h2 className="text-3xl md:text-4xl font-normal text-black tracking-tight leading-tight lowercase">
           all build logs.
@@ -25,26 +38,34 @@ const BuildProofArchive = () => {
 
       <ul className="grid w-full max-w-none grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-5 md:gap-6 list-none p-0 m-0">
         {entries.map((entry, idx) => (
-          <li key={`${entry.title}-${idx}`} className="min-w-0">
+          <li
+            key={entry.id ?? `${entry.title}-${entry.location}-${idx}`}
+            className="min-w-0"
+          >
             <motion.figure
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.15 }}
               transition={{ duration: 0.5, ease: "easeOut", delay: idx * 0.05 }}
-              className="group m-0 h-full flex flex-col bg-[#fafafa] pt-2.5 px-2.5 sm:pt-3 sm:px-3 pb-7 sm:pb-9 shadow-[0_6px_28px_rgba(0,0,0,0.1),0_1px_0_rgba(0,0,0,0.04)] rounded-[2px] border border-black/[0.06]"
+              className="group relative m-0 h-full flex flex-col bg-[#fafafa] pt-2.5 px-2.5 sm:pt-3 sm:px-3 pb-7 sm:pb-9 shadow-[0_6px_28px_rgba(0,0,0,0.1),0_1px_0_rgba(0,0,0,0.04)] rounded-[2px] border border-black/[0.06]"
             >
+              <BuildLogCardOpenButton
+                entry={entry}
+                onOpen={setPolaroidEntry}
+                roundedClassName="rounded-[2px]"
+              />
               {/* Photo area — full bleed, object-cover; slightly taller than square */}
-              <div className="relative w-full aspect-[4/5] overflow-hidden bg-neutral-200 shrink-0">
+              <div className="relative z-0 w-full aspect-[4/5] overflow-hidden bg-neutral-200 shrink-0">
                 <img
                   src={entry.image}
                   alt={entry.title}
-                  className="absolute inset-0 size-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]"
+                  className="pointer-events-none absolute inset-0 size-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]"
                   draggable="false"
                   loading="lazy"
                 />
               </div>
               {/* Polaroid caption strip */}
-              <figcaption className="flex flex-col items-center justify-center text-center flex-1 pt-3.5 sm:pt-4 px-1.5 min-h-[4rem] sm:min-h-[4.25rem]">
+              <figcaption className="pointer-events-none relative z-[2] flex flex-col items-center justify-center text-center flex-1 pt-3.5 sm:pt-4 px-1.5 min-h-[4rem] sm:min-h-[4.25rem]">
                 <p className="text-[11px] sm:text-xs text-neutral-500 italic tracking-wide leading-tight">
                   {entry.location} · {entry.date}
                 </p>
@@ -54,6 +75,14 @@ const BuildProofArchive = () => {
                   </span>
                   {entry.title}
                 </p>
+                {entry.learnMoreUrl ? (
+                  <div className="pointer-events-auto mt-2.5">
+                    <BuildLogLearnMore
+                      href={entry.learnMoreUrl}
+                      className="text-[11px] sm:text-xs font-medium tracking-tight lowercase text-neutral-600 hover:text-neutral-900 underline underline-offset-2 decoration-neutral-300 hover:decoration-neutral-600 transition-colors"
+                    />
+                  </div>
+                ) : null}
               </figcaption>
             </motion.figure>
           </li>

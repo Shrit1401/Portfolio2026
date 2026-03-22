@@ -3,9 +3,12 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { MdArrowOutward } from "react-icons/md";
+import { useTransitionRouter } from "next-view-transitions";
+import { usePathname } from "next/navigation";
 import { getWorks } from "@/app/lib/server";
 import { Work } from "@/app/lib/types";
 import { urlFor } from "@/sanity/lib/image";
+import { triggerPageTransition } from "@/app/lib/triggerPageTransition";
 
 const ProjectCard = ({
   project,
@@ -29,7 +32,7 @@ const ProjectCard = ({
     >
       {project.image && (
         <img
-          src={urlFor(project.image).url()}
+          src={urlFor(project.image).width(960).quality(82).auto("format").url()}
           alt={project.title}
           className="w-full h-full object-cover object-center group-hover:brightness-110 group-hover:scale-[1.02] transition-all duration-500"
           draggable="false"
@@ -71,6 +74,8 @@ const ProjectCard = ({
 };
 
 const FeaturedProjects = () => {
+  const router = useTransitionRouter();
+  const pathname = usePathname();
   const [projects, setProjects] = useState<Work[]>([]);
 
   useEffect(() => {
@@ -134,13 +139,17 @@ const FeaturedProjects = () => {
 
       {/* View all link */}
       <div className="flex justify-end mt-8">
-        <a
-          href="/work"
-          className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-black/5 text-neutral-700 font-semibold text-base tracking-wide border border-black/10 shadow-sm backdrop-blur-md hover:bg-black/10 transition-colors"
+        <button
+          type="button"
+          onClick={() => {
+            if (pathname === "/work") return;
+            router.push("/work", { onTransitionReady: triggerPageTransition });
+          }}
+          className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-black/5 text-neutral-700 font-semibold text-base tracking-wide border border-black/10 shadow-sm backdrop-blur-md hover:bg-black/10 transition-colors cursor-pointer"
         >
           View all work
           <MdArrowOutward />
-        </a>
+        </button>
       </div>
     </section>
   );

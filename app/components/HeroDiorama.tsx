@@ -20,7 +20,10 @@ export default function HeroDiorama() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d");
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+    const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 
     let rafId: number;
@@ -63,8 +66,23 @@ export default function HeroDiorama() {
     };
 
     let startTime = performance.now();
+    let paused = true;
+    let heroInView = true;
+    const observeRoot = canvas.parentElement;
+
+    const syncRunningState = () => {
+      const shouldRun = !document.hidden && heroInView;
+      if (shouldRun && paused) {
+        paused = false;
+        rafId = requestAnimationFrame(draw);
+      } else if (!shouldRun && !paused) {
+        paused = true;
+        cancelAnimationFrame(rafId);
+      }
+    };
 
     const draw = (now: number) => {
+      if (paused) return;
       ctx.clearRect(0, 0, w, h);
       const elapsed = now - startTime;
 
@@ -108,12 +126,27 @@ export default function HeroDiorama() {
         ctx.fill();
       }
 
-      rafId = requestAnimationFrame(draw);
+      if (!paused) rafId = requestAnimationFrame(draw);
     };
 
     resize();
     initParticles();
-    rafId = requestAnimationFrame(draw);
+
+    let io: IntersectionObserver | null = null;
+    if (observeRoot) {
+      io = new IntersectionObserver(
+        (entries) => {
+          heroInView = entries.some((e) => e.isIntersecting);
+          syncRunningState();
+        },
+        { root: null, rootMargin: "80px 0px", threshold: 0 },
+      );
+      io.observe(observeRoot);
+    }
+
+    const onVisibility = () => syncRunningState();
+    document.addEventListener("visibilitychange", onVisibility);
+    syncRunningState();
 
     let resizeTimer: ReturnType<typeof setTimeout>;
     const onResize = () => {
@@ -126,7 +159,10 @@ export default function HeroDiorama() {
     window.addEventListener("resize", onResize, { passive: true });
 
     return () => {
+      paused = true;
       cancelAnimationFrame(rafId);
+      io?.disconnect();
+      document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("resize", onResize);
       clearTimeout(resizeTimer);
     };

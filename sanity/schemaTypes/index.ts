@@ -7,7 +7,17 @@ import {
 } from "./pastTimeline";
 import { research } from "./research";
 import { tag } from "./tag";
+import { buildLogEntry, buildLogList } from "./buildLog";
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [work, pastChapter, pastEvent, pastTimeline, research, tag],
+  types: [
+    work,
+    pastChapter,
+    pastEvent,
+    pastTimeline,
+    research,
+    tag,
+    buildLogEntry,
+    buildLogList,
+  ],
 };

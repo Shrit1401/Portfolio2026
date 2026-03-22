@@ -63,14 +63,31 @@ const HeroText: FC = () => {
   const forgeRef = useRef<HTMLDivElement>(null);
   const editorialRef = useRef<HTMLDivElement>(null);
 
-  // Parallax on scroll — uses Lenis scroll event when available, falls back to window scroll
+  // Parallax on scroll — Lenis fires very often; apply at most once per frame.
   useEffect(() => {
-    const handleScroll = ({ scroll }: { scroll: number }) => {
-      const y = scroll;
+    let pendingY: number | null = null;
+    let rafScheduled = false;
+
+    const applyParallax = (y: number) => {
       if (forgeRef.current)
         forgeRef.current.style.transform = `translate(22%, calc(-8% + ${-y * 0.35}px))`;
       if (editorialRef.current)
         editorialRef.current.style.transform = `translateY(calc(-50% + ${-y * 0.18}px)) rotate(-90deg)`;
+    };
+
+    const flush = () => {
+      rafScheduled = false;
+      if (pendingY === null) return;
+      const y = pendingY;
+      pendingY = null;
+      applyParallax(y);
+    };
+
+    const handleScroll = ({ scroll }: { scroll: number }) => {
+      pendingY = scroll;
+      if (rafScheduled) return;
+      rafScheduled = true;
+      requestAnimationFrame(flush);
     };
 
     const attachLenis = () => {
