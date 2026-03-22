@@ -64,7 +64,7 @@ const BuildLog = ({ entries: allEntries }: { entries: BuildProofEntry[] }) => {
   if (entries.length === 0) return null;
 
   return (
-    <section className="relative px-4 md:px-12 py-16 md:py-20 min-h-screen bg-background">
+    <section className="relative px-4 md:px-12 py-16 md:py-20 md:min-h-screen bg-background">
       <BuildLogPolaroidModal
         entry={polaroidEntry}
         onClose={() => setPolaroidEntry(null)}
@@ -97,8 +97,8 @@ const BuildLog = ({ entries: allEntries }: { entries: BuildProofEntry[] }) => {
         )}
       </motion.div>
 
-      {/* Mobile: horizontal scroll */}
-      <div className="flex md:hidden gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4">
+      {/* Mobile: vertical stack (no horizontal carousel) */}
+      <div className="flex md:hidden flex-col gap-4">
         {entries.map((entry, idx) => (
           <motion.div
             key={entry.id ?? `${entry.title}-${idx}`}
@@ -106,7 +106,7 @@ const BuildLog = ({ entries: allEntries }: { entries: BuildProofEntry[] }) => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.7, ease: "easeOut", delay: idx * 0.08 }}
-            className="group relative flex-shrink-0 w-[72vw] h-[52vw] rounded-2xl overflow-hidden shadow-lg snap-start"
+            className="group relative w-full aspect-[16/10] rounded-2xl overflow-hidden shadow-lg"
             style={{ background: "#111" }}
           >
             <BuildLogCardOpenButton entry={entry} onOpen={setPolaroidEntry} />
