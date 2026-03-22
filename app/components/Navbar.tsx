@@ -229,82 +229,81 @@ const Navbar: FC<NavbarProps> = ({ active }) => {
     pathname === "/work" ||
     pathname === "/research" ||
     /^\/research\/(?!tag\/)[^/]+$/.test(pathname);
-  const showFloatingNowPlaying =
-    !isHome && !heroHasNowPlayingCorner;
+  const showFloatingNowPlaying = !isHome && !heroHasNowPlayingCorner;
 
   return (
     <>
-    <nav
-      className={`w-full flex items-center justify-between py-8 px-4 md:px-12 bg-transparent ${
-        isHome ? "absolute top-0 left-0 right-0 z-50" : "relative z-[100]"
-      }`}
-    >
-      <a
-        href="/"
-        onClick={handleNavigation("/")}
-        className="logo text-3xl font-extrabold tracking-tight text-[#2e2d2b] hover:font-normal transition-all duration-300"
+      <nav
+        className={`w-full flex items-center justify-between py-8 px-4 md:px-12 bg-transparent ${
+          isHome ? "absolute top-0 left-0 right-0 z-50" : "relative z-[10]"
+        }`}
       >
-        Shrit.
-      </a>
+        <a
+          href="/"
+          onClick={handleNavigation("/")}
+          className="logo text-3xl font-extrabold tracking-tight text-[#2e2d2b] hover:font-normal transition-all duration-300"
+        >
+          Shrit.
+        </a>
 
-      {/* Hamburger Menu Button */}
-      <button
-        className="md:hidden p-2 relative z-50"
-        onClick={() => setIsMenuOpen(!isMenuOpen)}
-        aria-label="Toggle menu"
-      >
-        <div className="w-6 h-5 relative flex flex-col justify-between">
-          <span
-            className={`w-full h-0.5 bg-[#5a5854] transform transition-all duration-500 ${
-              isMenuOpen ? "rotate-45 translate-y-2" : ""
-            }`}
-          />
-          <span
-            className={`w-full h-0.5 bg-[#5a5854] transition-all duration-500 ${
-              isMenuOpen ? "opacity-0 scale-0" : ""
-            }`}
-          />
-          <span
-            className={`w-full h-0.5 bg-[#5a5854] transform transition-all duration-500 ${
-              isMenuOpen ? "-rotate-45 -translate-y-2" : ""
-            }`}
-          />
-        </div>
-      </button>
+        {/* Hamburger Menu Button */}
+        <button
+          className="md:hidden p-2 relative z-50"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          <div className="w-6 h-5 relative flex flex-col justify-between">
+            <span
+              className={`w-full h-0.5 bg-[#5a5854] transform transition-all duration-500 ${
+                isMenuOpen ? "rotate-45 translate-y-2" : ""
+              }`}
+            />
+            <span
+              className={`w-full h-0.5 bg-[#5a5854] transition-all duration-500 ${
+                isMenuOpen ? "opacity-0 scale-0" : ""
+              }`}
+            />
+            <span
+              className={`w-full h-0.5 bg-[#5a5854] transform transition-all duration-500 ${
+                isMenuOpen ? "-rotate-45 -translate-y-2" : ""
+              }`}
+            />
+          </div>
+        </button>
 
-      {/* Desktop Menu — own stacking context so links stay crisp above any mobile layers */}
-      <div className="relative z-[1] hidden md:flex space-x-10 text-xl font-normal">
-        {MENU_ITEMS.map(renderMenuItem)}
-      </div>
-
-      {/* Mobile Menu — md:!hidden beats any inline display GSAP might set; solid bg avoids backdrop-filter bleed */}
-      <div
-        ref={menuRef}
-        className="fixed top-0 right-0 z-40 h-full w-64 translate-x-full transform bg-white shadow-2xl md:!hidden"
-      >
-        <div ref={menuItemsRef} className="flex flex-col space-y-6 p-8 mt-16">
+        {/* Desktop Menu — own stacking context so links stay crisp above any mobile layers */}
+        <div className="relative z-[1] hidden md:flex space-x-10 text-xl font-normal">
           {MENU_ITEMS.map(renderMenuItem)}
         </div>
-      </div>
 
-      {/* Overlay — only on small screens; md:!hidden keeps it off desktop even if display toggles */}
-      <div
-        ref={overlayRef}
-        className={`fixed inset-0 z-30 bg-black/25 backdrop-blur-[2px] md:!hidden ${
-          isMenuOpen ? "block" : "hidden"
-        }`}
-        onClick={() => setIsMenuOpen(false)}
-        aria-hidden={!isMenuOpen}
-      />
-    </nav>
-
-    {showFloatingNowPlaying ? (
-      <div className="pointer-events-none fixed bottom-4 md:bottom-8 right-4 md:right-8 z-[60] flex max-w-[min(100vw-2rem,420px)] flex-col items-end gap-2">
-        <div className="pointer-events-auto flex flex-wrap items-center justify-end gap-x-3 gap-y-1 text-xs md:text-sm text-black/80">
-          <NowPlaying />
+        {/* Mobile Menu — md:!hidden beats any inline display GSAP might set; solid bg avoids backdrop-filter bleed */}
+        <div
+          ref={menuRef}
+          className="fixed top-0 right-0 z-40 h-full w-64 translate-x-full transform bg-white shadow-2xl md:!hidden"
+        >
+          <div ref={menuItemsRef} className="flex flex-col space-y-6 p-8 mt-16">
+            {MENU_ITEMS.map(renderMenuItem)}
+          </div>
         </div>
-      </div>
-    ) : null}
+
+        {/* Overlay — only on small screens; md:!hidden keeps it off desktop even if display toggles */}
+        <div
+          ref={overlayRef}
+          className={`fixed inset-0 z-30 bg-black/25 backdrop-blur-[2px] md:!hidden ${
+            isMenuOpen ? "block" : "hidden"
+          }`}
+          onClick={() => setIsMenuOpen(false)}
+          aria-hidden={!isMenuOpen}
+        />
+      </nav>
+
+      {showFloatingNowPlaying ? (
+        <div className="pointer-events-none fixed bottom-4 md:bottom-8 right-4 md:right-8 z-[60] flex max-w-[min(100vw-2rem,420px)] flex-col items-end gap-2">
+          <div className="pointer-events-auto flex flex-wrap items-center justify-end gap-x-3 gap-y-1 text-xs md:text-sm text-black/80">
+            <NowPlaying />
+          </div>
+        </div>
+      ) : null}
     </>
   );
 };

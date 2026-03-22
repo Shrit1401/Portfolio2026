@@ -18,7 +18,11 @@ const StatueModel = () => {
       0.1,
       1000,
     );
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: true,
+      powerPreference: "high-performance",
+    });
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.2;
@@ -98,19 +102,55 @@ const StatueModel = () => {
     controls.minPolarAngle = 0;
     controls.enablePan = false;
 
-    // Animation
-    const animate = () => {
-      requestAnimationFrame(animate);
+    let rafId = 0;
+    let visible = true;
+    let inView = true;
 
-      // Smooth continuous rotation
-      if (model) {
-        model.rotation.y += 0.005;
+    const shouldRender = () => visible && inView;
+
+    const tick = () => {
+      if (!shouldRender()) {
+        rafId = 0;
+        return;
       }
-
+      rafId = requestAnimationFrame(tick);
+      // OrbitControls.autoRotate handles camera motion; skip extra mesh spin (saves work per frame).
       controls.update();
       renderer.render(scene, camera);
     };
-    animate();
+
+    const startLoop = () => {
+      if (rafId || !shouldRender()) return;
+      rafId = requestAnimationFrame(tick);
+    };
+
+    const stopLoop = () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = 0;
+    };
+
+    const syncLoop = () => {
+      if (shouldRender()) startLoop();
+      else stopLoop();
+    };
+
+    const onVisibility = () => {
+      visible = !document.hidden;
+      syncLoop();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    visible = !document.hidden;
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        inView = entries.some((e) => e.isIntersecting);
+        syncLoop();
+      },
+      { root: null, rootMargin: "64px", threshold: 0 },
+    );
+    io.observe(mountRef.current);
+    inView = true;
+    syncLoop();
 
     // Handle resize
     const handleResize = () => {
@@ -129,8 +169,12 @@ const StatueModel = () => {
 
     // Cleanup
     return () => {
+      stopLoop();
+      document.removeEventListener("visibilitychange", onVisibility);
+      io.disconnect();
       window.removeEventListener("resize", handleResize);
-      mountRef.current?.removeChild(renderer.domElement);
+      const parent = renderer.domElement.parentNode;
+      if (parent) parent.removeChild(renderer.domElement);
       if (model) {
         scene.remove(model);
       }

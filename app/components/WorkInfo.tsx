@@ -137,18 +137,29 @@ const WorkInfo = () => {
   countRef.current = count;
   activeIndexRef.current = activeIndex;
 
-  /* Lenis does not fire native scroll; ScrollTrigger must be nudged every frame */
+  /* Lenis can emit scroll more than once per frame; coalesce to one ST update per paint. */
   useEffect(() => {
+    let raf = 0;
     const bump = () => {
-      ScrollTrigger.update();
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        ScrollTrigger.update();
+      });
     };
     const lenis = getLenis();
     if (lenis?.on) {
       lenis.on("scroll", bump);
-      return () => lenis.off("scroll", bump);
+      return () => {
+        lenis.off("scroll", bump);
+        if (raf) cancelAnimationFrame(raf);
+      };
     }
     window.addEventListener("scroll", bump, { passive: true });
-    return () => window.removeEventListener("scroll", bump);
+    return () => {
+      window.removeEventListener("scroll", bump);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, []);
 
   useLayoutEffect(() => {

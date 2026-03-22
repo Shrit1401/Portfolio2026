@@ -1,10 +1,27 @@
 "use client";
 import React, { useState, useEffect, useRef, type FC } from "react";
+import dynamic from "next/dynamic";
 import gsap from "gsap";
 import Newsletter from "./Newsletter";
-import HeroDiorama from "./HeroDiorama";
-import HeroFluidCanvas from "./HeroFluidCanvas";
 import NowPlaying from "./NowPlaying";
+
+const HeroFluidCanvas = dynamic(() => import("./HeroFluidCanvas"), {
+  ssr: false,
+  loading: () => (
+    <div
+      className="gradient-canvas"
+      aria-hidden
+      style={{ backgroundColor: "#f8f6f0" }}
+    />
+  ),
+});
+
+const HeroDiorama = dynamic(() => import("./HeroDiorama"), {
+  ssr: false,
+  loading: () => (
+    <div aria-hidden className="absolute inset-0 pointer-events-none" />
+  ),
+});
 import {
   LOADER_EXIT_START,
   LOADER_EXIT_FALLBACK_MS,

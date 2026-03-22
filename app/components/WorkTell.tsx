@@ -49,14 +49,11 @@ const WorkTell = () => {
         const curSpeed = Math.min(Math.abs(vel / 500), maxOffset);
         const isAtEdge = self.progress <= 0 || self.progress >= 1;
 
-        // Move the entire titles container horizontally
-        gsap.to(titlesContainerRef.current, {
+        // Direct mapping from scroll progress — avoid gsap.to on every tick (kills FPS).
+        gsap.set(titlesContainerRef.current, {
           x: -moveDist * self.progress,
-          duration: 0.1,
-          ease: "none",
         });
 
-        // Animate individual titles
         const titles = document.querySelectorAll(".title");
         titles.forEach((title) => {
           const title1 = title.querySelector(".title-1");
@@ -65,34 +62,25 @@ const WorkTell = () => {
 
           if (isAtEdge) {
             if (title1 && title2) {
-              gsap.to([title1, title2], {
+              gsap.set([title1, title2], {
                 xPercent: -50,
                 x: 0,
-                duration: 0.5,
-                ease: "power2.out",
-                overwrite: true,
               });
             }
           } else {
             const baseoffset = normalizedVel * curSpeed;
 
             if (title1) {
-              gsap.to(title1, {
+              gsap.set(title1, {
                 xPercent: -50,
                 x: `${baseoffset * 8}px`,
-                duration: 0.2,
-                ease: "power1.out",
-                overwrite: "auto",
               });
             }
 
             if (title2) {
-              gsap.to(title2, {
+              gsap.set(title2, {
                 xPercent: -50,
                 x: `${baseoffset * 4}px`,
-                duration: 0.2,
-                ease: "power1.out",
-                overwrite: "auto",
               });
             }
           }
@@ -103,7 +91,6 @@ const WorkTell = () => {
           });
         });
 
-        // Animate cards based on scroll progress
         cards.forEach((card, index) => {
           const staggerOffset = index * 0.075;
           const scaledProgress = (self.progress - staggerOffset) * 3;
@@ -113,7 +100,7 @@ const WorkTell = () => {
           const scaleProgress = Math.min(1, individualProgress * 10);
           const scale = Math.max(0, Math.min(1, scaleProgress));
 
-          gsap.to(card, {
+          gsap.set(card, {
             z: newz,
             scale: scale,
           });

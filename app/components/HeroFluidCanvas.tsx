@@ -125,6 +125,22 @@ export default function HeroFluidCanvas() {
     const fluidPlane = new THREE.Mesh(geometry, fluidMaterial);
     const displayPlane = new THREE.Mesh(geometry, displayMaterial);
 
+    const applyStaticUniforms = () => {
+      fluidMaterial.uniforms.uBrushSize.value = cfg.brushsize;
+      fluidMaterial.uniforms.uBrushStrength.value = cfg.brushStrength;
+      fluidMaterial.uniforms.uFluidDecay.value = cfg.fluidDecay;
+      fluidMaterial.uniforms.uTrailLength.value = cfg.trailLength;
+      fluidMaterial.uniforms.uStopDecay.value = cfg.stopDecay;
+      displayMaterial.uniforms.uDistortionAmount.value = cfg.distortionAmount;
+      displayMaterial.uniforms.uColorIntensity.value = cfg.colorIntensity;
+      displayMaterial.uniforms.uSoftness.value = cfg.softness;
+      displayMaterial.uniforms.uColor1.value.set(...hexToRGB(cfg.color1));
+      displayMaterial.uniforms.uColor2.value.set(...hexToRGB(cfg.color2));
+      displayMaterial.uniforms.uColor3.value.set(...hexToRGB(cfg.color3));
+      displayMaterial.uniforms.uColor4.value.set(...hexToRGB(cfg.color4));
+    };
+    applyStaticUniforms();
+
     let mx = 0;
     let my = 0;
     let pmx = 0;
@@ -168,6 +184,7 @@ export default function HeroFluidCanvas() {
     };
 
     const onMouseMove = (e: MouseEvent) => {
+      if (!heroInView) return;
       const rect = container.getBoundingClientRect();
       pmx = mx;
       pmy = my;
@@ -202,19 +219,6 @@ export default function HeroFluidCanvas() {
       if (performance.now() - lastMoveTime > 100) {
         fluidMaterial.uniforms.iMouse.value.set(0, 0, 0, 0);
       }
-
-      fluidMaterial.uniforms.uBrushSize.value = cfg.brushsize;
-      fluidMaterial.uniforms.uBrushStrength.value = cfg.brushStrength;
-      fluidMaterial.uniforms.uFluidDecay.value = cfg.fluidDecay;
-      fluidMaterial.uniforms.uTrailLength.value = cfg.trailLength;
-      fluidMaterial.uniforms.uStopDecay.value = cfg.stopDecay;
-      displayMaterial.uniforms.uDistortionAmount.value = cfg.distortionAmount;
-      displayMaterial.uniforms.uColorIntensity.value = cfg.colorIntensity;
-      displayMaterial.uniforms.uSoftness.value = cfg.softness;
-      displayMaterial.uniforms.uColor1.value.set(...hexToRGB(cfg.color1));
-      displayMaterial.uniforms.uColor2.value.set(...hexToRGB(cfg.color2));
-      displayMaterial.uniforms.uColor3.value.set(...hexToRGB(cfg.color3));
-      displayMaterial.uniforms.uColor4.value.set(...hexToRGB(cfg.color4));
 
       fluidMaterial.uniforms.iPreviousFrame.value = previousFloatTarget.texture;
       renderer.setRenderTarget(currentFloatTarget);

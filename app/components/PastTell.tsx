@@ -289,6 +289,7 @@ const PastTell = ({ timelineRows }: PastTellProps) => {
 
     gsap.set(progressEl, { scaleY: 0, transformOrigin: "top center" });
 
+    let spotlightRaf = 0;
     const updateSpotlight = () => {
       const steps = [...root.querySelectorAll<HTMLElement>("[data-past-step]")];
       if (steps.length === 0) return;
@@ -327,6 +328,14 @@ const PastTell = ({ timelineRows }: PastTellProps) => {
       }
     };
 
+    const scheduleSpotlight = () => {
+      if (spotlightRaf) return;
+      spotlightRaf = requestAnimationFrame(() => {
+        spotlightRaf = 0;
+        updateSpotlight();
+      });
+    };
+
     const ctx = gsap.context(() => {
       ScrollTrigger.create({
         trigger: journey,
@@ -344,11 +353,11 @@ const PastTell = ({ timelineRows }: PastTellProps) => {
         trigger: journey,
         start: "top bottom",
         end: "bottom top",
-        onEnter: updateSpotlight,
-        onLeave: updateSpotlight,
-        onEnterBack: updateSpotlight,
-        onLeaveBack: updateSpotlight,
-        onUpdate: updateSpotlight,
+        onEnter: scheduleSpotlight,
+        onLeave: scheduleSpotlight,
+        onEnterBack: scheduleSpotlight,
+        onLeaveBack: scheduleSpotlight,
+        onUpdate: scheduleSpotlight,
       });
     }, journey);
 
@@ -356,6 +365,7 @@ const PastTell = ({ timelineRows }: PastTellProps) => {
     requestAnimationFrame(updateSpotlight);
 
     return () => {
+      if (spotlightRaf) cancelAnimationFrame(spotlightRaf);
       journey.classList.remove("pasttell-journey--ready");
       ctx.revert();
     };

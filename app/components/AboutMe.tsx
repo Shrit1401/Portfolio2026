@@ -48,20 +48,20 @@ const AboutMe = () => {
             invalidateOnRefresh: true,
             refreshPriority: -1,
             onUpdate: (self) => {
-              // If mobile, keep the statue fixed
+              const el = statueContainerRef.current;
+              if (!el) return;
+
+              // `gsap.to` on every scroll tick queues endless tweens and tanks FPS.
               if (isMobile) {
-                gsap.to(statueContainerRef.current, {
+                gsap.set(el, {
                   y: 0,
                   scale: 1,
                   rotation: 0,
                   transformOrigin: "center center",
-                  duration: 0.3,
-                  ease: "power2.out",
                 });
                 return;
               }
 
-              // Desktop animation
               const rawProgress = self.progress;
               const easedProgress = gsap.utils.clamp(0, 1, rawProgress);
               const smoothProgress = gsap.utils.interpolate(
@@ -70,18 +70,15 @@ const AboutMe = () => {
                 easedProgress,
               );
 
-              // Gentler transforms
               const yTransform = smoothProgress * window.innerHeight * 0.15;
               const scaleTransform = 1 - smoothProgress * 0.15;
-              const rotation = smoothProgress * 2; // Subtle rotation
+              const rotation = smoothProgress * 2;
 
-              gsap.to(statueContainerRef.current, {
+              gsap.set(el, {
                 y: yTransform,
                 scale: Math.max(0.85, scaleTransform),
-                rotation: rotation,
+                rotation,
                 transformOrigin: "center center",
-                duration: 0.3,
-                ease: "power2.out",
               });
             },
           },
