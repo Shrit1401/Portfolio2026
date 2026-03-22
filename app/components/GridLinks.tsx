@@ -11,9 +11,9 @@ const links = [
     align: "left",
   },
   {
-    href: "/past",
+    href: "/archive",
     img: "/wayout/past.png",
-    label: "Past \u2192", // Past →
+    label: "Archive \u2192", // Past →
     align: "right",
   },
   {
@@ -24,9 +24,9 @@ const links = [
     external: true,
   },
   {
-    href: "/thoughts",
+    href: "/research",
     img: "/wayout/work.png",
-    label: "Thoughts \u2192", // Nerd →
+    label: "Research \u2192", // Nerd →
     align: "right",
   },
 ];
@@ -49,7 +49,7 @@ const GridLinks = () => {
         duration: 2000,
         easing: "cubic-bezier(0.9, 0, 0.1, 1)",
         pseudoElement: "::view-transition-new(root)",
-      }
+      },
     );
   }
 

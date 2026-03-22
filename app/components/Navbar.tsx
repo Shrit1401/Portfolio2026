@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef, type FC } from "react";
 import gsap from "gsap";
 import { useTransitionRouter } from "next-view-transitions";
 import { usePathname } from "next/navigation";
+import NowPlaying from "./NowPlaying";
 
 // Types
 type NavbarProps = {
@@ -222,8 +223,17 @@ const Navbar: FC<NavbarProps> = ({ active }) => {
   };
 
   const isHome = pathname === "/";
+  /** Hero sections that already include NowPlaying next to “Made To Amaze” */
+  const heroHasNowPlayingCorner =
+    pathname === "/archive" ||
+    pathname === "/work" ||
+    pathname === "/research" ||
+    /^\/research\/(?!tag\/)[^/]+$/.test(pathname);
+  const showFloatingNowPlaying =
+    !isHome && !heroHasNowPlayingCorner;
 
   return (
+    <>
     <nav
       className={`w-full flex items-center justify-between py-8 px-4 md:px-12 bg-transparent ${
         isHome ? "absolute top-0 left-0 right-0 z-50" : "relative z-[100]"
@@ -287,6 +297,15 @@ const Navbar: FC<NavbarProps> = ({ active }) => {
         aria-hidden={!isMenuOpen}
       />
     </nav>
+
+    {showFloatingNowPlaying ? (
+      <div className="pointer-events-none fixed bottom-4 md:bottom-8 right-4 md:right-8 z-[60] flex max-w-[min(100vw-2rem,420px)] flex-col items-end gap-2">
+        <div className="pointer-events-auto flex flex-wrap items-center justify-end gap-x-3 gap-y-1 text-xs md:text-sm text-black/80">
+          <NowPlaying />
+        </div>
+      </div>
+    ) : null}
+    </>
   );
 };
 

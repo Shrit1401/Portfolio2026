@@ -54,7 +54,7 @@ export default function ResearchPageClient({
               {research.tags.map((tag) => (
                 <Link
                   key={tag.slug.current}
-                  href={`/thoughts/tag/${tag.slug.current}`}
+                  href={`/research/tag/${tag.slug.current}`}
                   className="inline-block px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-full transition-colors duration-200"
                 >
                   {tag.name}
@@ -83,7 +83,7 @@ export default function ResearchPageClient({
                   firstChild.props.children.includes("[!")
                 ) {
                   const type = firstChild.props.children.match(
-                    /\[!(.*?)\]/
+                    /\[!(.*?)\]/,
                   )?.[1] as CalloutType;
                   const message = firstChild.props.children
                     .replace(/\[!.*?\]/, "")

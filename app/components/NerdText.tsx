@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import gsap from "gsap";
 import Newsletter from "./Newsletter";
+import NowPlaying from "./NowPlaying";
 
 const burgundy = "#7B3737";
 const olive = "#3B4F1B";
@@ -38,7 +39,7 @@ const NerdText = () => {
   const textRef = useRef<(HTMLSpanElement | null)[]>([]);
   const globeRef = useRef<SVGSVGElement>(null);
   const bottomElementsRef = useRef<HTMLDivElement>(null);
-  const dontClickRef = useRef<HTMLAnchorElement>(null);
+  const dontClickRef = useRef<HTMLDivElement>(null);
   const scrollDownRef = useRef<HTMLAnchorElement>(null);
   const newsletterRef = useRef<HTMLDivElement>(null);
 
@@ -60,7 +61,7 @@ const NerdText = () => {
               duration: 0.8,
               ease: "power2.out",
               delay: 1.25 + index * 0.2,
-            }
+            },
           );
 
           // Add subtle continuous rotation with different delays
@@ -104,7 +105,7 @@ const NerdText = () => {
               duration: 1.1,
               ease: "power2.out",
               delay: 1.25 + index * 0.18,
-            }
+            },
           );
         }
       });
@@ -131,7 +132,7 @@ const NerdText = () => {
             duration: 1,
             ease: "power2.out",
             delay: 1.25,
-          }
+          },
         );
       }
 
@@ -146,7 +147,7 @@ const NerdText = () => {
             duration: 1,
             ease: "power2.out",
             delay: 1.45,
-          }
+          },
         );
       }
 
@@ -161,7 +162,7 @@ const NerdText = () => {
             duration: 1,
             ease: "power2.out",
             delay: 1.65,
-          }
+          },
         );
       }
 
@@ -176,7 +177,7 @@ const NerdText = () => {
             duration: 1,
             ease: "power2.out",
             delay: 1.75,
-          }
+          },
         );
       }
     }, 0);
@@ -272,7 +273,7 @@ const NerdText = () => {
               }}
               style={{ opacity: 0 }}
             >
-              Thoughts
+              Research
             </span>
           </span>
         </div>
@@ -309,14 +310,15 @@ const NerdText = () => {
             <TimeDisplay />
           </div>
         </div>
-        <div className="absolute bottom-4 md:bottom-8 right-4 md:right-8 flex flex-col items-end gap-2 md:gap-3">
-          <span
+        <div className="absolute bottom-4 md:bottom-8 right-4 md:right-8 z-20 flex max-w-[min(100vw-2rem,420px)] flex-col items-end gap-2 md:gap-3">
+          <div
             ref={dontClickRef}
-            className="text-xs md:text-sm text-black/80 underline-offset-4 transition-all duration-300"
+            className="flex flex-wrap items-center justify-end gap-x-3 gap-y-1 text-xs md:text-sm text-black/80 transition-all duration-300"
             style={{ opacity: 0 }}
           >
-            Made To Amaze
-          </span>
+            <span className="whitespace-nowrap">Made To Amaze</span>
+            <NowPlaying />
+          </div>
           <a
             ref={scrollDownRef}
             href="/work"

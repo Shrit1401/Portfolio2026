@@ -59,7 +59,7 @@ const ResearchSense = () => {
         duration: 2000,
         easing: "cubic-bezier(0.9, 0, 0.1, 1)",
         pseudoElement: "::view-transition-new(root)",
-      }
+      },
     );
   }
 
@@ -87,7 +87,7 @@ const ResearchSense = () => {
 
   const backward = adjacentResearch.previous
     ? {
-        href: `/thoughts/${adjacentResearch.previous.slug}`,
+        href: `/research/${adjacentResearch.previous.slug}`,
         img: urlFor(adjacentResearch.previous.image).url(),
         label: `← ${adjacentResearch.previous.title}`,
       }
@@ -95,7 +95,7 @@ const ResearchSense = () => {
 
   const forward = adjacentResearch.next
     ? {
-        href: `/thoughts/${adjacentResearch.next.slug}`,
+        href: `/research/${adjacentResearch.next.slug}`,
         img: urlFor(adjacentResearch.next.image).url(),
         label: `${adjacentResearch.next.title} →`,
       }

@@ -53,7 +53,7 @@ export default function ResearchCard({
         duration: ANIMATION_CONFIG.pageTransition.duration,
         easing: ANIMATION_CONFIG.pageTransition.easing,
         pseudoElement: "::view-transition-new(root)",
-      }
+      },
     );
   };
 
@@ -73,8 +73,8 @@ export default function ResearchCard({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       onClick={(e) =>
-        handleNavigation(`/thoughts/${slug}`)(
-          e as unknown as React.MouseEvent<HTMLAnchorElement>
+        handleNavigation(`/research/${slug}`)(
+          e as unknown as React.MouseEvent<HTMLAnchorElement>,
         )
       }
       className="cursor-pointer group relative"

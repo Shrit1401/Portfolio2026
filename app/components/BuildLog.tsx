@@ -37,7 +37,7 @@ const BuildLog = () => {
 
   const goToArchive = (e: React.MouseEvent) => {
     e.preventDefault();
-    router.push("/past#build-proof");
+    router.push("/archive#build-proof");
   };
 
   return (
