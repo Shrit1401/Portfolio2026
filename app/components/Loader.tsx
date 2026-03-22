@@ -213,7 +213,7 @@ export default function Loader() {
             style={{ zIndex: i }}
           >
             <div
-              className="relative aspect-[3/4] overflow-hidden border-2 border-[#1e5a8a]"
+              className="relative aspect-[3/4] overflow-hidden"
               style={{
                 backgroundColor: IMAGE_WELL_BG,
                 boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.08)",

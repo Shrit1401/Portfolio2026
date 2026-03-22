@@ -1,44 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTransitionRouter } from "next-view-transitions";
+import {
+  BUILD_PROOF_ENTRIES,
+  getHomeBuildProofEntries,
+} from "@/app/lib/buildProof";
 
-const entries = [
-  {
-    title: "1st Place — TechFest Hackathon",
-    icon: "🏆",
-    location: "Mumbai",
-    date: "Jan 2024",
-    image: "/work/img-1.jpeg",
-  },
-  {
-    title: "Shipped: AI Memory Tool",
-    icon: "🚀",
-    location: "Remote",
-    date: "Mar 2024",
-    image: "/work/img-2.jpeg",
-  },
-  {
-    title: "Agency — ₹3L Revenue",
-    icon: "💰",
-    location: "Remote",
-    date: "2023",
-    image: "/work/img-3.jpeg",
-  },
-  {
-    title: "YouTube Channel Launch",
-    icon: "🎥",
-    location: "Online",
-    date: "2024",
-    image: "/work/img-4.jpeg",
-  },
-  {
-    title: "Built Portfolio v2026",
-    icon: "⚡",
-    location: "Home",
-    date: "2026",
-    image: "/work/img-5.jpeg",
-  },
-];
+const entries = getHomeBuildProofEntries();
+const showSeeAllLogs = BUILD_PROOF_ENTRIES.length > 0;
 
 const CardText = ({
   entry,
@@ -63,6 +33,13 @@ const CardText = ({
 );
 
 const BuildLog = () => {
+  const router = useTransitionRouter();
+
+  const goToArchive = (e: React.MouseEvent) => {
+    e.preventDefault();
+    router.push("/past#build-proof");
+  };
+
   return (
     <section className="relative px-4 md:px-12 py-16 md:py-20 min-h-screen bg-background">
       {/* Section header */}
@@ -71,15 +48,26 @@ const BuildLog = () => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.5 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="mb-10 md:mb-14"
+        className="mb-10 md:mb-14 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4"
       >
-        <h2 className="text-4xl md:text-5xl font-bold text-black tracking-tight leading-tight lowercase">
-          build proof.
-        </h2>
-        <div
-          className="mt-4 h-px w-full"
-          style={{ background: "rgba(23,23,23,0.18)" }}
-        />
+        <div>
+          <h2 className="text-4xl md:text-5xl font-bold text-black tracking-tight leading-tight lowercase">
+            build proof.
+          </h2>
+          <div
+            className="mt-4 h-px w-full"
+            style={{ background: "rgba(23,23,23,0.18)" }}
+          />
+        </div>
+        {showSeeAllLogs && (
+          <button
+            type="button"
+            onClick={goToArchive}
+            className="self-start sm:self-auto text-sm md:text-base font-medium text-black/60 hover:text-black tracking-tight lowercase underline underline-offset-4 decoration-black/25 hover:decoration-black/50 transition-colors"
+          >
+            see all build logs →
+          </button>
+        )}
       </motion.div>
 
       {/* Mobile: horizontal scroll */}
@@ -139,7 +127,10 @@ const BuildLog = () => {
             className="w-full h-full object-cover object-center group-hover:brightness-125 transition-all duration-500"
             draggable="false"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" aria-hidden="true" />
+          <div
+            className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"
+            aria-hidden="true"
+          />
           <CardText entry={entries[0]} large />
         </motion.div>
 
@@ -150,7 +141,11 @@ const BuildLog = () => {
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.7, ease: "easeOut", delay: (i + 1) * 0.08 }}
+            transition={{
+              duration: 0.7,
+              ease: "easeOut",
+              delay: (i + 1) * 0.08,
+            }}
             className="group relative rounded-2xl overflow-hidden shadow-lg cursor-pointer"
             style={{ background: "#111" }}
           >
@@ -160,7 +155,10 @@ const BuildLog = () => {
               className="w-full h-full object-cover object-center group-hover:brightness-125 transition-all duration-500"
               draggable="false"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" aria-hidden="true" />
+            <div
+              className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"
+              aria-hidden="true"
+            />
             <CardText entry={entry} />
           </motion.div>
         ))}

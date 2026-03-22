@@ -28,7 +28,7 @@ const MENU_ITEMS: MenuItem[] = [
     externalUrl: "https://shrit.substack.com/",
   },
   { label: "Work", path: "/work" },
-  { label: "Past", path: "/past" },
+  { label: "Archive", path: "/archive" },
   { label: "Thoughts", path: "/thoughts" },
 ];
 
@@ -64,7 +64,7 @@ const Navbar: FC<NavbarProps> = ({ active }) => {
         duration: ANIMATION_CONFIG.pageTransition.duration,
         easing: ANIMATION_CONFIG.pageTransition.easing,
         pseudoElement: "::view-transition-new(root)",
-      }
+      },
     );
   };
 
@@ -122,7 +122,7 @@ const Navbar: FC<NavbarProps> = ({ active }) => {
           opacity: 1,
           backdropFilter: "blur(8px)",
           duration: ANIMATION_CONFIG.menu.duration,
-        }
+        },
       );
 
       // Animate menu container
@@ -134,7 +134,7 @@ const Navbar: FC<NavbarProps> = ({ active }) => {
           opacity: 1,
           duration: ANIMATION_CONFIG.menu.duration,
           ease: "power3.out",
-        }
+        },
       );
 
       // Animate menu items with stagger
@@ -148,7 +148,7 @@ const Navbar: FC<NavbarProps> = ({ active }) => {
           duration: ANIMATION_CONFIG.menu.duration,
           stagger: ANIMATION_CONFIG.menu.stagger,
           ease: "back.out(1.7)",
-        }
+        },
       );
     } else {
       // Reverse animations
@@ -187,7 +187,7 @@ const Navbar: FC<NavbarProps> = ({ active }) => {
   const renderMenuItem = (item: MenuItem) => {
     const isActive = item.path === pathname || item.path === active;
     const commonClasses =
-      "cursor-pointer text-[#b8b6b1] hover:text-[#5a5854] hover:font-bold transition-all duration-300";
+      "cursor-pointer  hover:text-[#5a5854] hover:font-bold transition-all duration-300";
     const activeClasses = isActive ? "font-bold text-[#3a3936]" : "";
 
     if (item.isExternal && item.externalUrl) {
@@ -226,9 +226,7 @@ const Navbar: FC<NavbarProps> = ({ active }) => {
   return (
     <nav
       className={`w-full flex items-center justify-between py-8 px-4 md:px-12 bg-transparent ${
-        isHome
-          ? "absolute top-0 left-0 right-0 z-50"
-          : "relative"
+        isHome ? "absolute top-0 left-0 right-0 z-50" : "relative z-[100]"
       }`}
     >
       <a
@@ -264,28 +262,29 @@ const Navbar: FC<NavbarProps> = ({ active }) => {
         </div>
       </button>
 
-      {/* Desktop Menu */}
-      <div className="hidden md:flex space-x-10 text-xl font-normal">
+      {/* Desktop Menu — own stacking context so links stay crisp above any mobile layers */}
+      <div className="relative z-[1] hidden md:flex space-x-10 text-xl font-normal">
         {MENU_ITEMS.map(renderMenuItem)}
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu — md:!hidden beats any inline display GSAP might set; solid bg avoids backdrop-filter bleed */}
       <div
         ref={menuRef}
-        className="fixed top-0 right-0 h-full w-64 bg-white/95 backdrop-blur-md shadow-2xl transform md:hidden z-40"
+        className="fixed top-0 right-0 z-40 h-full w-64 translate-x-full transform bg-white shadow-2xl md:!hidden"
       >
         <div ref={menuItemsRef} className="flex flex-col space-y-6 p-8 mt-16">
           {MENU_ITEMS.map(renderMenuItem)}
         </div>
       </div>
 
-      {/* Overlay */}
+      {/* Overlay — only on small screens; md:!hidden keeps it off desktop even if display toggles */}
       <div
         ref={overlayRef}
-        className={`fixed inset-0 bg-black/20 backdrop-blur-sm md:hidden ${
+        className={`fixed inset-0 z-30 bg-black/25 backdrop-blur-[2px] md:!hidden ${
           isMenuOpen ? "block" : "hidden"
         }`}
         onClick={() => setIsMenuOpen(false)}
+        aria-hidden={!isMenuOpen}
       />
     </nav>
   );

@@ -1,5 +1,6 @@
 "use client";
 
+import BuildProofArchive from "../components/BuildProofArchive";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import PastTell from "../components/PastTell";
@@ -15,6 +16,7 @@ export default function Past() {
         <Navbar active="past" />
         <PastText />
       </div>
+      <BuildProofArchive />
       <PastTell />
       <Footer />
     </div>

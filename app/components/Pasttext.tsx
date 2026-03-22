@@ -60,7 +60,7 @@ const PastText = () => {
               duration: 0.8,
               ease: "power2.out",
               delay: 1.25 + index * 0.2,
-            }
+            },
           );
 
           // Add subtle continuous rotation with different delays
@@ -104,7 +104,7 @@ const PastText = () => {
               duration: 1.1,
               ease: "power2.out",
               delay: 1.25 + index * 0.18,
-            }
+            },
           );
         }
       });
@@ -131,7 +131,7 @@ const PastText = () => {
             duration: 1,
             ease: "power2.out",
             delay: 1.25,
-          }
+          },
         );
       }
 
@@ -146,7 +146,7 @@ const PastText = () => {
             duration: 1,
             ease: "power2.out",
             delay: 1.45,
-          }
+          },
         );
       }
 
@@ -161,7 +161,7 @@ const PastText = () => {
             duration: 1,
             ease: "power2.out",
             delay: 1.65,
-          }
+          },
         );
       }
 
@@ -176,7 +176,7 @@ const PastText = () => {
             duration: 1,
             ease: "power2.out",
             delay: 1.75,
-          }
+          },
         );
       }
     }, 0);
@@ -250,7 +250,7 @@ const PastText = () => {
               }}
               style={{ opacity: 0 }}
             >
-              <span className="blackletter text-6xl mr-2">W</span>eird
+              <span className="blackletter text-6xl mr-2">P</span>ast
             </span>
             <svg
               ref={(el) => {
@@ -272,7 +272,7 @@ const PastText = () => {
               }}
               style={{ opacity: 0 }}
             >
-              past
+              Experiments
             </span>
           </span>
         </div>

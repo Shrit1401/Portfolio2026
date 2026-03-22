@@ -119,6 +119,13 @@ pre {
   overflow: hidden;
 }
 
+/* WorkInfo full-page slider: needs real height + no overflow clip for pin/sticky */
+.work section.workinfo-section {
+  height: auto;
+  min-height: 100vh;
+  overflow: visible;
+}
+
 .titles h1 {
   text-transform: uppercase;
   font-size: 12vw;
@@ -204,13 +211,11 @@ h1.title-2 {
   background: white;
 }
 
-/* Add a class for WorkInfo to allow vertical scrolling if content overflows */
+/* WorkInfo: document scroll drives full-viewport slider; avoid nested scroll for sticky */
 .workinfo-section {
-  min-height: 100vh;
-  height: auto;
-  overflow-y: auto;
-  width: 100vw;
+  width: 100%;
   position: relative;
+  overflow: visible;
 }
 
 /* Add a class for PastTell to allow vertical scrolling if content overflows */
