@@ -70,6 +70,36 @@ function randomStackPoses(count: number): StackPose[] {
   return poses;
 }
 
+function preloadFrame(src: string) {
+  return new Promise<void>((resolve) => {
+    const im = new Image();
+    im.onload = () => {
+      const d = im.decode?.();
+      if (d && typeof d.then === "function") {
+        d.then(() => resolve()).catch(() => resolve());
+      } else {
+        resolve();
+      }
+    };
+    im.onerror = () => resolve();
+    im.src = src;
+  });
+}
+
+function waitForCardImages(cards: HTMLDivElement[]) {
+  return Promise.all(
+    cards.map((card) => {
+      const img = card.querySelector("img");
+      if (!img) return Promise.resolve();
+      if (img.complete && img.naturalHeight !== 0) return Promise.resolve();
+      return new Promise<void>((resolve) => {
+        img.addEventListener("load", () => resolve(), { once: true });
+        img.addEventListener("error", () => resolve(), { once: true });
+      });
+    }),
+  );
+}
+
 const NOISE_BG = `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`;
 
 export default function Loader() {
@@ -98,7 +128,8 @@ export default function Loader() {
         xPercent: -50,
         yPercent: -50,
         transformOrigin: "50% 85%",
-        opacity: 0,
+        /** First polaroid visible in enter pose while assets load; rest stay hidden. */
+        opacity: i === 0 ? 1 : 0,
         x: 0,
         y: p.enterY,
         rotation: p.enterRot,
@@ -108,16 +139,8 @@ export default function Loader() {
     });
 
     const preload = () =>
-      Promise.all(
-        FRAMES.map(
-          (src) =>
-            new Promise<void>((resolve) => {
-              const im = new Image();
-              im.onload = () => resolve();
-              im.onerror = () => resolve();
-              im.src = src;
-            }),
-        ),
+      Promise.all(FRAMES.map((src) => preloadFrame(src))).then(() =>
+        waitForCardImages(cards),
       );
 
     preload().then(() => {
@@ -209,7 +232,7 @@ export default function Loader() {
             ref={(el) => {
               cardRefs.current[i] = el;
             }}
-            className="absolute w-[min(88vw,300px)] bg-white px-3 pt-3 pb-6 opacity-0 shadow-[0_20px_40px_rgba(0,0,0,0.12),0_4px_12px_rgba(0,0,0,0.08)] sm:w-[min(86vw,340px)] sm:pb-7 md:w-[min(70vw,400px)] md:px-3.5 md:pt-3.5 md:pb-8 lg:w-[min(440px,52vw)]"
+            className={`absolute w-[min(88vw,300px)] bg-white px-3 pt-3 pb-6 shadow-[0_20px_40px_rgba(0,0,0,0.12),0_4px_12px_rgba(0,0,0,0.08)] sm:w-[min(86vw,340px)] sm:pb-7 md:w-[min(70vw,400px)] md:px-3.5 md:pt-3.5 md:pb-8 lg:w-[min(440px,52vw)] ${i === 0 ? "opacity-100" : "opacity-0"}`}
             style={{ zIndex: i }}
           >
             <div
@@ -229,6 +252,7 @@ export default function Loader() {
                 decoding="async"
                 draggable={false}
                 loading="eager"
+                fetchPriority={i === 0 ? "high" : "low"}
               />
               {i === FRAME_COUNT - 1 ? (
                 <div
