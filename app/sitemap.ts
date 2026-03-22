@@ -3,7 +3,7 @@ import { client } from "@/sanity/lib/client";
 import { groq } from "next-sanity";
 
 // Query to get all your published content from Sanity
-const query = groq`*[_type in ["research", "work", "past"] && defined(slug.current)] {
+const query = groq`*[_type in ["research", "work"] && defined(slug.current)] {
   "slug": slug.current,
   _updatedAt,
   _type,
@@ -60,9 +60,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           break;
         case "work":
           basePath = "work";
-          break;
-        case "past":
-          basePath = "past";
           break;
       }
 

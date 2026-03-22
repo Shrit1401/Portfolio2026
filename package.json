@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seed:past": "node --env-file=.env scripts/seed-past-timeline.mjs"
   },
   "dependencies": {
     "@formspark/use-formspark": "^0.1.42",

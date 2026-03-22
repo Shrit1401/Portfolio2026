@@ -8,5 +8,13 @@ export const structure: StructureResolver = (S) =>
       S.listItem().title("Research").child(S.documentTypeList("research")),
       S.listItem().title("Tags").child(S.documentTypeList("tag")),
       S.listItem().title("Work").child(S.documentTypeList("work")),
-      S.listItem().title("Past").child(S.documentTypeList("past")),
+      S.listItem()
+        .title("Life timeline")
+        .id("lifeTimeline")
+        .child(
+          S.document()
+            .schemaType("pastTimeline")
+            .documentId("pastLifeTimeline")
+            .title("Life timeline"),
+        ),
     ]);

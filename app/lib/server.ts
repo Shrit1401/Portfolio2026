@@ -13,7 +13,7 @@ export async function getResearchs() {
           name,
           "slug": slug
         }
-      }`
+      }`,
     );
 
     return data;
@@ -32,7 +32,7 @@ export async function getResearchFromSlug(slug: string) {
           name,
           "slug": slug
         }
-      }`
+      }`,
     );
 
     return data;
@@ -50,12 +50,12 @@ export async function getAdjacentResearch(slug: string) {
         "slug": slug.current,
         title,
         image
-      }`
+      }`,
     );
 
     // Find the current index
     const currentIndex = allResearch.findIndex(
-      (item: any) => item.slug === slug
+      (item: any) => item.slug === slug,
     );
 
     // Get previous and next items
@@ -78,7 +78,7 @@ export async function getWorks() {
     const data = await client.fetch(`*[_type == "work"]`);
     data.sort(
       (a: { _createdAt: string }, b: { _createdAt: string }) =>
-        new Date(b._createdAt).getTime() - new Date(a._createdAt).getTime()
+        new Date(b._createdAt).getTime() - new Date(a._createdAt).getTime(),
     );
     return data;
   } catch (error) {
@@ -86,13 +86,3 @@ export async function getWorks() {
   }
 }
 
-export async function getPastEvents() {
-  noStore();
-  try {
-    const data = await client.fetch(`*[_type == "past"]`);
-    data.reverse();
-    return data;
-  } catch (error) {
-    console.error(error);
-  }
-}

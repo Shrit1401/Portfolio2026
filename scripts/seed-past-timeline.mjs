@@ -1,192 +1,198 @@
-export type PastTimelineEventType =
-  | "start"
-  | "thread"
-  | "breakthrough"
-  | "turn"
-  | "experiment"
-  | "big-moment"
-  | "shift"
-  | "first";
+/**
+ * Creates or replaces the singleton `pastLifeTimeline` document in Sanity.
+ *
+ * Requires:
+ *   NEXT_PUBLIC_SANITY_PROJECT_ID
+ *   NEXT_PUBLIC_SANITY_DATASET
+ *   SANITY_API_WRITE_TOKEN (Editor token with write access)
+ *
+ * Run: npm run seed:past
+ * Or:  node --env-file=.env scripts/seed-past-timeline.mjs
+ */
 
-export interface PastTimelineEvent {
-  type: PastTimelineEventType;
-  date: string;
-  title: string;
-  story: string;
-  /** Shown on the card as a right-side polaroid when set. */
-  image?: string;
+import { createClient } from "@sanity/client";
+import { randomBytes } from "crypto";
+
+const key = () => randomBytes(5).toString("hex");
+
+const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
+const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET;
+const token = process.env.SANITY_API_WRITE_TOKEN;
+const apiVersion = process.env.NEXT_PUBLIC_SANITY_API_VERSION || "2025-05-27";
+
+if (!projectId || !dataset || !token) {
+  console.error(
+    "Missing env: NEXT_PUBLIC_SANITY_PROJECT_ID, NEXT_PUBLIC_SANITY_DATASET, SANITY_API_WRITE_TOKEN",
+  );
+  process.exit(1);
 }
 
-export interface PastTimelineChapter {
-  id: string;
-  title: string;
-  events: PastTimelineEvent[];
-}
+const client = createClient({
+  projectId,
+  dataset,
+  apiVersion,
+  token,
+  useCdn: false,
+});
 
-export const PAST_CHAPTERS: PastTimelineChapter[] = [
+/** Mirrors app/lib/pastTimeline.ts — polaroids use static paths via imageUrl. */
+const CHAPTERS = [
   {
-    id: "early-days",
+    slug: "early-days",
     title: "early days",
     events: [
       {
-        type: "start",
+        eventType: "start",
         date: "2019 - ∞",
         title: "video editing",
         story:
           "i didn’t really start with coding. i started with editing random youtube videos, just messing around with cuts and transitions. nothing serious. but that was the first time i realized i liked making things, not consuming them.",
-        image: "/work/img-1.jpeg",
+        imageUrl: "/work/img-1.jpeg",
       },
     ],
   },
-
   {
-    id: "exploration",
+    slug: "exploration",
     title: "exploration",
     events: [
       {
-        type: "thread",
+        eventType: "thread",
         date: "2020 (covid) - 2020 nov",
         title: "og games",
         story:
           "i spent a lot of time playing games like call of duty, halo, and fallout. at some point, just playing wasn’t enough. i wanted to understand how they were made.",
-        image: "/work/img-2.jpeg",
+        imageUrl: "/work/img-2.jpeg",
       },
       {
-        type: "breakthrough",
+        eventType: "breakthrough",
         date: "2020 nov - 2022 aug",
         title: "building games",
         story:
           "after playing so many games, i tried building my own. it wasn’t great, but that curiosity stuck. it was the first time i moved from playing to creating.",
-        image: "/work/img-3.jpeg",
+        imageUrl: "/work/img-3.jpeg",
       },
       {
-        type: "shift",
+        eventType: "shift",
         date: "2021 - 2023",
         title: "valorant phase",
         story:
           "i was heavily addicted to valorant. it took a lot of time and focus away. but it also taught me discipline the hard way.",
-        image: "/work/img-4.jpeg",
+        imageUrl: "/work/img-4.jpeg",
       },
       {
-        type: "turn",
+        eventType: "turn",
         date: "4 feb 2023",
         title: "first $",
         story:
           "i made my first dollar on the internet through fiverr. it was small, but it changed how i saw things. making money online suddenly felt real.",
-        image: "/work/img-5.jpeg",
+        imageUrl: "/work/img-5.jpeg",
       },
     ],
   },
-
   {
-    id: "shift",
+    slug: "shift",
     title: "the shift",
     events: [
       {
-        type: "experiment",
+        eventType: "experiment",
         date: "2023 march - 2023 aug",
         title: "learning react",
         story:
           "i got into react, next, and different libraries. not because of money, but because it felt interesting. i kept building without really thinking about outcomes.",
-        image: "/work/img-1.jpeg",
+        imageUrl: "/work/img-1.jpeg",
       },
       {
-        type: "big-moment",
+        eventType: "big-moment",
         date: "2023 march end",
         title: "₹40,000",
         story:
           "out of nowhere, i earned ₹40,000 through fiverr. i bought a phone and gave the rest to my parents. that moment hit different. it stopped feeling like a hobby.",
-        image: "/work/img-2.jpeg",
+        imageUrl: "/work/img-2.jpeg",
       },
       {
-        type: "thread",
+        eventType: "thread",
         date: "3 nov 2023",
         title: "mindset shift",
         story:
           "i learned things the hard way. motivation fades, people change, but showing up and working consistently is what actually stays.",
-        image: "/work/img-3.jpeg",
+        imageUrl: "/work/img-3.jpeg",
       },
     ],
   },
-
   {
-    id: "real-world",
+    slug: "real-world",
     title: "real world",
     events: [
       {
-        type: "experiment",
+        eventType: "experiment",
         date: "2024 jun - 2024 oct",
         title: "agency work",
         story:
           "i worked with an agency, helped them grow, and made around ₹5 lakh. it taught me how real work actually works. not just building, but solving real problems.",
-        image: "/work/img-4.jpeg",
+        imageUrl: "/work/img-4.jpeg",
       },
       {
-        type: "first",
+        eventType: "first",
         date: "8 aug 2024",
         title: "macbook",
         story:
           "i always wanted a macbook as a kid. after years, i finally got one. it felt like a small but meaningful achievement.",
-        image: "/work/img-5.jpeg",
+        imageUrl: "/work/img-5.jpeg",
       },
     ],
   },
-
   {
-    id: "now",
+    slug: "now",
     title: "now",
     events: [
       {
-        type: "turn",
+        eventType: "turn",
         date: "2019 jan - ∞",
         title: "building websites",
         story:
           "somewhere along the way, i started learning html and css. simple websites, nothing fancy, but real things i could build and improve.",
-        image: "/work/img-1.jpeg",
+        imageUrl: "/work/img-1.jpeg",
       },
       {
-        type: "breakthrough",
+        eventType: "breakthrough",
         date: "2021 - ∞",
         title: "micro tools",
         story:
           "with a better laptop, i started building small tools and micro websites. things people could actually use. simple, but useful.",
-        image: "/work/img-2.jpeg",
+        imageUrl: "/work/img-2.jpeg",
       },
       {
-        type: "experiment",
+        eventType: "experiment",
         date: "march 2026 - present",
         title: "researching ai",
         story:
           "right now, i’m in college and exploring ai more seriously. trying to understand how things work at a deeper level and slowly moving towards research.",
-        image: "/work/img-3.jpeg",
+        imageUrl: "/work/img-3.jpeg",
       },
     ],
   },
 ];
 
-export interface PastTimelineRow {
-  chapter: PastTimelineChapter;
-  event: PastTimelineEvent;
-  globalIdx: number;
-  isFirstInChapter: boolean;
-}
+const doc = {
+  _id: "pastLifeTimeline",
+  _type: "pastTimeline",
+  title: "Life timeline",
+  chapters: CHAPTERS.map((ch) => ({
+    _key: key(),
+    _type: "pastChapter",
+    slug: { _type: "slug", current: ch.slug },
+    title: ch.title,
+    events: ch.events.map((ev) => ({
+      _key: key(),
+      _type: "pastEvent",
+      eventType: ev.eventType,
+      date: ev.date,
+      title: ev.title,
+      story: ev.story,
+      ...(ev.imageUrl ? { imageUrl: ev.imageUrl } : {}),
+    })),
+  })),
+};
 
-export function buildPastTimelineRows(
-  chapters: PastTimelineChapter[],
-): PastTimelineRow[] {
-  return chapters
-    .flatMap((chapter) =>
-      chapter.events.map((event, eventIdx) => ({
-        chapter,
-        event,
-        isFirstInChapter: eventIdx === 0,
-      })),
-    )
-    .map((row, globalIdx) => ({ ...row, globalIdx }));
-}
-
-/** Default timeline when Sanity has no document yet. */
-export const PAST_TIMELINE_ROWS: PastTimelineRow[] =
-  buildPastTimelineRows(PAST_CHAPTERS);
-
-export const PAST_STEP_COUNT = PAST_TIMELINE_ROWS.length;
+await client.createOrReplace(doc);
+console.log("Seeded pastLifeTimeline (type pastTimeline).");
