@@ -223,6 +223,7 @@ const HeroText: FC = () => {
           border: 1.5px solid #171717; cursor: pointer; text-decoration: none;
         }
         .hero-btn-primary:hover { background: #2e2e2e; transform: translateY(-1px); }
+        .hero-btn-primary:focus-visible { outline: 2px solid #37517b; outline-offset: 3px; }
 
         .hero-btn-secondary {
           display: inline-flex; align-items: center; gap: 6px;
@@ -232,6 +233,7 @@ const HeroText: FC = () => {
           border: 1.5px solid rgba(0,0,0,0.1); cursor: pointer; text-decoration: none;
         }
         .hero-btn-secondary:hover { background: rgba(23,23,23,0.05); transform: translateY(-1px); }
+        .hero-btn-secondary:focus-visible { outline: 2px solid rgba(55,81,123,0.65); outline-offset: 3px; }
       `}</style>
 
       <div className="relative flex w-full flex-1 flex-col min-h-screen">
@@ -404,7 +406,7 @@ const HeroText: FC = () => {
                 style={{ opacity: 0 }}
                 className="mt-5 text-sm md:text-base text-neutral-700 max-w-md leading-relaxed tracking-wide [text-shadow:0_1px_16px_rgba(255,255,255,0.9)]"
               >
-                Try to solve more problems by building websits, apps, games help
+                Building websites, apps, and games to solve real problems.
               </div>
 
               {/* CTA buttons */}
@@ -509,8 +511,8 @@ const HeroText: FC = () => {
             <a
               ref={scrollDownRef}
               href="/work"
-              className="md:hidden"
-              aria-label="Scroll down"
+              className="md:hidden rounded-full p-1 outline-none focus-visible:ring-2 focus-visible:ring-[#37517b]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+              aria-label="Scroll to work"
               style={{ opacity: 0 }}
             >
               <svg
@@ -533,8 +535,8 @@ const HeroText: FC = () => {
           <a
             ref={scrollDownRef}
             href="/work"
-            className="absolute bottom-4 md:bottom-8 left-1/2 z-20 -translate-x-1/2 hidden md:block"
-            aria-label="Scroll down"
+            className="absolute bottom-4 md:bottom-8 left-1/2 z-20 -translate-x-1/2 hidden md:block rounded-full p-1 outline-none focus-visible:ring-2 focus-visible:ring-[#37517b]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+            aria-label="Scroll to work"
             style={{ opacity: 0 }}
           >
             <svg

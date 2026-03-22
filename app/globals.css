@@ -16,6 +16,14 @@ html {
 body {
   color: var(--foreground);
   background: var(--background);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: rgba(55, 81, 123, 0.22);
+  color: var(--foreground);
 }
 
 .bg-noise {

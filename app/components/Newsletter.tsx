@@ -50,27 +50,35 @@ const Newsletter: React.FC<NewsletterProps> = ({ className = "" }) => {
       <form
         onSubmit={handleSubmit}
         className="flex flex-col md:flex-row items-center gap-3 relative group"
+        aria-label="Newsletter signup"
       >
         <div className="w-full md:w-80 relative">
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Join my cool newsletter..."
-            className={`px-6 py-3 w-full border-2 rounded-full focus:outline-none transition-all duration-300 text-gray-800 placeholder-gray-400 shadow-sm focus:shadow-sm ${
+            placeholder="Your email for the weekly letter…"
+            autoComplete="email"
+            aria-invalid={Boolean(error)}
+            aria-describedby={error ? "newsletter-error" : undefined}
+            className={`px-6 py-3 w-full border-2 rounded-full outline-none transition-all duration-300 text-gray-800 placeholder-gray-400 shadow-sm focus:shadow-md focus:ring-2 focus:ring-offset-2 focus:ring-offset-[var(--background)] ${
               error
-                ? "border-red-500"
-                : "border-gray-300 focus:border-[#37517b]"
+                ? "border-red-500 focus:ring-red-400/40"
+                : "border-gray-300 focus:border-[#37517b] focus:ring-[#37517b]/25"
             }`}
           />
           {error && (
-            <div className="absolute -bottom-6 left-0 text-sm text-red-500 animate-fade-in">
+            <div
+              id="newsletter-error"
+              role="alert"
+              className="absolute -bottom-6 left-0 text-sm text-red-500 animate-fade-in"
+            >
               {error}
             </div>
           )}
         </div>
         <button
-          className="px-8 py-3 w-full md:w-auto bg-[#37517b] text-white rounded-full hover:bg-[#6B46C1] transition-all duration-300 font-medium shadow-sm hover:shadow-md active:scale-95 relative overflow-hidden group-hover:translate-x-1 disabled:opacity-80 disabled:cursor-not-allowed"
+          className="px-8 py-3 w-full md:w-auto bg-[#37517b] text-white rounded-full hover:bg-[#2d4260] transition-all duration-300 font-medium shadow-sm hover:shadow-md active:scale-[0.98] relative overflow-hidden group-hover:translate-x-0.5 disabled:opacity-80 disabled:cursor-not-allowed outline-none focus-visible:ring-2 focus-visible:ring-[#37517b] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
           type="submit"
           disabled={submitting}
         >
@@ -87,13 +95,16 @@ const Newsletter: React.FC<NewsletterProps> = ({ className = "" }) => {
           <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"></span>
         </button>
         {confirm && (
-          <div className="absolute -bottom-8 left-0 text-sm text-gray-600 animate-fade-in">
+          <div
+            role="status"
+            className="absolute -bottom-8 left-0 text-sm text-gray-600 animate-fade-in"
+          >
             {confirm}
           </div>
         )}
       </form>
-      <p className="text-xs text-gray-400 tracking-wide mt-2">
-        Trauma Dumping Every Week
+      <p className="text-xs text-gray-400 tracking-wide mt-2 text-center max-w-xs leading-snug">
+        Trauma dumping every week.
       </p>
     </div>
   );

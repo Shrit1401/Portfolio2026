@@ -169,7 +169,7 @@ const Navbar: FC<NavbarProps> = ({ active }) => {
   const renderMenuItem = (item: MenuItem) => {
     const isActive = item.path === pathname || item.path === active;
     const commonClasses =
-      "cursor-pointer  hover:text-[#5a5854] hover:font-bold transition-all duration-300";
+      "cursor-pointer rounded-sm px-0.5 -mx-0.5 hover:text-[#5a5854] hover:font-bold transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-[#37517b]/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent";
     const activeClasses = isActive ? "font-bold text-[#3a3936]" : "";
 
     if (item.isExternal && item.externalUrl) {
@@ -222,15 +222,18 @@ const Navbar: FC<NavbarProps> = ({ active }) => {
         <a
           href="/"
           onClick={handleNavigation("/")}
-          className="logo text-3xl font-extrabold tracking-tight text-[#2e2d2b] hover:font-normal transition-all duration-300"
+          className="logo text-3xl font-extrabold tracking-tight text-[#2e2d2b] hover:font-normal transition-all duration-300 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-[#37517b]/35 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
         >
           Shrit.
         </a>
 
         {/* Hamburger Menu Button */}
         <button
-          className="md:hidden p-2 relative z-50"
+          type="button"
+          className="md:hidden p-2 relative z-50 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-[#37517b]/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
+          aria-expanded={isMenuOpen}
+          aria-controls="mobile-nav-drawer"
           aria-label="Toggle menu"
         >
           <div className="w-6 h-5 relative flex flex-col justify-between">
@@ -259,8 +262,9 @@ const Navbar: FC<NavbarProps> = ({ active }) => {
 
         {/* Mobile Menu — md:!hidden beats any inline display GSAP might set; solid bg avoids backdrop-filter bleed */}
         <div
+          id="mobile-nav-drawer"
           ref={menuRef}
-          className="fixed top-0 right-0 z-40 h-full w-64 translate-x-full transform bg-white shadow-2xl md:!hidden"
+          className="fixed top-0 right-0 z-40 h-full w-64 max-w-[85vw] translate-x-full transform bg-white shadow-2xl md:!hidden border-l border-black/[0.06]"
         >
           <div ref={menuItemsRef} className="flex flex-col space-y-6 p-8 mt-16">
             {MENU_ITEMS.map(renderMenuItem)}

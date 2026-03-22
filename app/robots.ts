@@ -1,6 +1,7 @@
 import { MetadataRoute } from "next";
+import { getSiteBaseUrl } from "@/app/lib/site";
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.shrit.in";
+const baseUrl = getSiteBaseUrl();
 
 export default function robots(): MetadataRoute.Robots {
   return {

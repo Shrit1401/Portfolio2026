@@ -90,7 +90,7 @@ const BuildLog = ({ entries: allEntries }: { entries: BuildProofEntry[] }) => {
           <button
             type="button"
             onClick={goToArchive}
-            className="self-start sm:self-auto text-sm md:text-base font-medium text-black/60 hover:text-black tracking-tight lowercase underline underline-offset-4 decoration-black/25 hover:decoration-black/50 transition-colors"
+            className="self-start sm:self-auto text-sm md:text-base font-medium text-black/60 hover:text-black tracking-tight lowercase underline underline-offset-4 decoration-black/25 hover:decoration-black/50 transition-colors rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-[#37517b]/35 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
           >
             see all build logs →
           </button>

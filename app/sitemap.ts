@@ -1,22 +1,22 @@
 import { MetadataRoute } from "next";
 import { client } from "@/sanity/lib/client";
 import { groq } from "next-sanity";
+import { getSiteBaseUrl } from "@/app/lib/site";
 
-// Query to get all your published content from Sanity
-const query = groq`*[_type in ["research", "work"] && defined(slug.current)] {
+// Research only: work detail routes are not implemented yet (avoid 404s in sitemap).
+const query = groq`*[_type == "research" && defined(slug.current)] {
   "slug": slug.current,
   _updatedAt,
-  _type,
-  "tags": tags[]->name
+  "tags": tags[]->{ "name": name, "slug": slug.current }
 }`;
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.shrit.in";
+const baseUrl = getSiteBaseUrl();
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const content = await client.fetch(query);
 
   // Static routes
-  const staticRoutes = [
+  const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
       lastModified: new Date(),
@@ -49,44 +49,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // Dynamic routes from Sanity content
-  const dynamicRoutes = content
-    .map((item: any) => {
-      // Determine the base path based on content type
-      let basePath = "";
-      switch (item._type) {
-        case "research":
-          basePath = "research";
-          break;
-        case "work":
-          basePath = "work";
-          break;
-      }
+  const researchRoutes: MetadataRoute.Sitemap = content.map(
+    (item: { slug: string; _updatedAt: string }) => ({
+      url: `${baseUrl}/research/${item.slug}`,
+      lastModified: new Date(item._updatedAt),
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    }),
+  );
 
-      const routes = [
-        {
-          url: `${baseUrl}/${basePath}/${item.slug}`,
-          lastModified: new Date(item._updatedAt),
-          changeFrequency: "weekly",
-          priority: 0.7,
-        },
-      ];
+  const tagSlugs = new Set<string>();
+  for (const item of content as Array<{
+    tags?: Array<{ slug?: string | null } | null>;
+  }>) {
+    for (const tag of item.tags ?? []) {
+      const s = tag?.slug;
+      if (s) tagSlugs.add(s);
+    }
+  }
 
-      // Add tag pages for research content
-      if (item._type === "research" && item.tags) {
-        item.tags.forEach((tag: string) => {
-          routes.push({
-            url: `${baseUrl}/research/tag/${tag}`,
-            lastModified: new Date(item._updatedAt),
-            changeFrequency: "weekly",
-            priority: 0.6,
-          });
-        });
-      }
+  const tagRoutes: MetadataRoute.Sitemap = [...tagSlugs].map((slug) => ({
+    url: `${baseUrl}/research/tag/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.6,
+  }));
 
-      return routes;
-    })
-    .flat();
-
-  return [...staticRoutes, ...dynamicRoutes];
+  return [...staticRoutes, ...researchRoutes, ...tagRoutes];
 }

@@ -3,6 +3,7 @@ import type { FC, ReactNode } from "react";
 import { DM_Sans, EB_Garamond, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "./components/SmoothScroll";
+import SiteJsonLd from "./components/SiteJsonLd";
 import { metadata as seoMetadata } from "./components/SEO";
 import TransitionProvider from "./hooks/TransitionProvider";
 
@@ -58,6 +59,7 @@ const RootLayout: FC<RootLayoutProps> = ({ children }) => {
         className={`${dmSans.variable} ${ebGaramond.variable} ${instrumentSerif.variable}`}
       >
         <body className="font-sans antialiased">
+          <SiteJsonLd />
           <TransitionProvider>
             <SmoothScroll>{children}</SmoothScroll>
           </TransitionProvider>

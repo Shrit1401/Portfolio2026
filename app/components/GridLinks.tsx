@@ -19,7 +19,7 @@ const GridLinks = () => {
     };
 
   return (
-    <div className=" w-full">
+    <div className="w-full pb-10 md:pb-14">
       <div className="w-full h-full p-2 md:p-4">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.45fr_1fr] gap-2 md:gap-4 w-full max-w-[2000px] mx-auto">
           {zones.map((zone) => (

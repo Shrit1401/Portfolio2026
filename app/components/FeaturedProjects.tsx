@@ -26,7 +26,7 @@ const ProjectCard = ({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.7, ease: "easeOut", delay: idx * 0.1 }}
-      className="group relative w-full h-full rounded-2xl overflow-hidden shadow-lg cursor-pointer ring-1 ring-[#37517b]/30 hover:ring-[#37517b]/70 transition-all duration-400"
+      className="group relative w-full h-full rounded-2xl overflow-hidden shadow-lg cursor-pointer ring-1 ring-[#37517b]/30 hover:ring-[#37517b]/70 transition-all duration-500"
       style={{ background: "#111" }}
     >
       {project.image && (
@@ -106,31 +106,20 @@ const FeaturedProjects = () => {
         />
       </motion.div>
 
-      {/* Grid — single-col on mobile, asymmetric bento on desktop */}
-      <div
-        className="grid gap-4"
-        style={{
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gridTemplateRows: "repeat(2, 1fr)",
-          gridTemplateAreas: `
-            "a a b"
-            "a a c"
-          `,
-          height: "70vh",
-        }}
-      >
+      {/* Grid — single column on small screens, bento on md+ */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:grid-rows-2 md:h-[70vh] md:[grid-template-areas:'a_a_b'_'a_a_c']">
         {projects[0] && (
-          <div className="h-full" style={{ gridArea: "a" }}>
+          <div className="min-h-[min(52vw,300px)] md:min-h-0 h-full md:[grid-area:a]">
             <ProjectCard project={projects[0]} idx={0} large />
           </div>
         )}
         {projects[1] && (
-          <div className="h-full" style={{ gridArea: "b" }}>
+          <div className="min-h-[min(42vw,220px)] md:min-h-0 h-full md:[grid-area:b]">
             <ProjectCard project={projects[1]} idx={1} />
           </div>
         )}
         {projects[2] && (
-          <div className="h-full" style={{ gridArea: "c" }}>
+          <div className="min-h-[min(42vw,220px)] md:min-h-0 h-full md:[grid-area:c]">
             <ProjectCard project={projects[2]} idx={2} />
           </div>
         )}
@@ -144,7 +133,7 @@ const FeaturedProjects = () => {
             if (pathname === "/work") return;
             router.push("/work");
           }}
-          className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-black/5 text-neutral-700 font-semibold text-base tracking-wide border border-black/10 shadow-sm backdrop-blur-md hover:bg-black/10 transition-colors cursor-pointer"
+          className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-black/5 text-neutral-700 font-semibold text-base tracking-wide border border-black/10 shadow-sm backdrop-blur-md hover:bg-black/10 transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[#37517b]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
         >
           View all work
           <MdArrowOutward />

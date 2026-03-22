@@ -10,20 +10,17 @@ const Footer = () => {
   const router = useTransitionRouter();
   const pathname = usePathname();
 
-  const handleNavigation =
-    (path: string) => (e: React.MouseEvent<HTMLElement>) => {
-      if (path === pathname) {
-        e.preventDefault();
-        return;
-      }
-      e.preventDefault();
-      router.push(path);
-    };
+  const goTo = (path: string) => () => {
+    if (pathname === path) return;
+    router.push(path);
+  };
 
   return (
-    <footer className="relative w-full min-h-[75svh] text-white bg-[#111] color-white flex flex-col items-center justify-between py-12">
-      <div className="w-full max-w-6xl mx-auto px-4 flex flex-col items-center gap-12">
-        <h1 className="text-[12vw] font-bold uppercase">Shrit1401</h1>
+    <footer className="relative w-full min-h-[75svh] text-white bg-[#111] flex flex-col items-center justify-between py-14 sm:py-16">
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 flex flex-col items-center gap-12 sm:gap-14">
+        <h1 className="text-[clamp(2.5rem,12vw,8rem)] font-bold uppercase tracking-tight text-center leading-none">
+          Shrit1401
+        </h1>
 
         <div className="flex flex-col items-center gap-8 w-full">
           <Newsletter className="w-full max-w-xl" />
@@ -33,7 +30,8 @@ const Footer = () => {
               href="https://github.com/shrit1401"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-2xl hover:text-[#37517b] transition-colors duration-300"
+              aria-label="GitHub"
+              className="text-2xl p-2 -m-2 rounded-md hover:text-[#5a7aad] transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#111]"
             >
               <FaGithub />
             </Link>
@@ -41,7 +39,8 @@ const Footer = () => {
               href="https://twitter.com/shrit1401"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-2xl hover:text-[#37517b] transition-colors duration-300"
+              aria-label="Twitter / X"
+              className="text-2xl p-2 -m-2 rounded-md hover:text-[#5a7aad] transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#111]"
             >
               <FaTwitter />
             </Link>
@@ -49,46 +48,53 @@ const Footer = () => {
               href="https://www.linkedin.com/in/shrit1401/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-2xl hover:text-[#37517b] transition-colors duration-300"
+              aria-label="LinkedIn"
+              className="text-2xl p-2 -m-2 rounded-md hover:text-[#5a7aad] transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#111]"
             >
               <FaLinkedinIn />
             </Link>
           </div>
 
-          <p className="text-center text-gray-300">
+          <p className="text-center text-gray-300 max-w-lg leading-relaxed text-[0.95rem]">
             Oh, if you wanna connect, send me a mail at{" "}
             <a
               href="mailto:shrit1401@gmail.com"
-              className="text-white underline hover:text-gray-300 transition-colors duration-300"
+              className="text-white underline decoration-white/35 underline-offset-2 hover:decoration-white/60 hover:text-white transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-white/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#111] rounded-sm"
             >
               shrit1401@gmail.com
             </a>{" "}
             or DM me on socials!
           </p>
 
-          <nav className="flex gap-8 items-center">
-            <span
-              onClick={handleNavigation("/research")}
-              className="hover:text-[#37517b] transition-colors cursor-pointer duration-300"
+          <nav
+            className="flex flex-wrap justify-center gap-x-8 gap-y-2 items-center"
+            aria-label="Site sections"
+          >
+            <button
+              type="button"
+              onClick={goTo("/research")}
+              className="bg-transparent border-0 p-0 m-0 font-inherit text-inherit cursor-pointer rounded-sm hover:text-[#5a7aad] transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#111]"
             >
               Research
-            </span>
-            <span
-              onClick={handleNavigation("/work")}
-              className="hover:text-[#37517b] transition-colors cursor-pointer duration-300"
+            </button>
+            <button
+              type="button"
+              onClick={goTo("/work")}
+              className="bg-transparent border-0 p-0 m-0 font-inherit text-inherit cursor-pointer rounded-sm hover:text-[#5a7aad] transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#111]"
             >
               Work
-            </span>
-            <span
-              onClick={handleNavigation("/archive")}
-              className="hover:text-[#37517b] transition-colors cursor-pointer duration-300"
+            </button>
+            <button
+              type="button"
+              onClick={goTo("/archive")}
+              className="bg-transparent border-0 p-0 m-0 font-inherit text-inherit cursor-pointer rounded-sm hover:text-[#5a7aad] transition-colors duration-300 outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#111]"
             >
               Archive
-            </span>
+            </button>
           </nav>
         </div>
 
-        <div className="flex justify-between gap-4 text-sm text-gray-400">
+        <div className="flex flex-col-reverse sm:flex-row sm:justify-between gap-3 sm:gap-4 w-full max-w-6xl text-sm text-gray-400 pt-4 border-t border-white/[0.08]">
           <p>&copy; {new Date().getFullYear()} shrit1401</p>
           <p>
             All Rights Reserved <span className="text-xs">(I hope)</span>

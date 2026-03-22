@@ -189,12 +189,12 @@ export default function NewsletterPage() {
         </article>
       </main>
 
-      {/* Floating Substack button */}
+      {/* Floating Substack — above Navbar’s fixed NowPlaying (bottom-4 / md:bottom-8) */}
       <a
         href={post.link}
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-8 right-8 bg-[#FF6719] text-white px-8 py-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center gap-2 z-50"
+        className="fixed bottom-20 right-4 z-50 flex items-center gap-2 rounded-full bg-[#FF6719] px-6 py-3 text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl sm:px-8 sm:py-4 md:bottom-24 md:right-8"
       >
         <svg
           width="24"
