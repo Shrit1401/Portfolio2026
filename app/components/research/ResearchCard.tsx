@@ -39,29 +39,32 @@ export default function ResearchCard({
     <article
       onClick={handleNavigation}
       className="cursor-pointer group py-7 border-b border-neutral-200 first:border-t"
+      style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
     >
       <div className="flex items-start justify-between gap-6">
         <div className="flex-1 min-w-0">
           <h2
             className="text-xl md:text-2xl font-bold text-neutral-900 leading-snug group-hover:text-neutral-500 transition-colors duration-200"
-            style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
           >
             {title}
           </h2>
           {preview && (
-            <p className="mt-2 text-base text-neutral-500 leading-relaxed line-clamp-2">
+            <p className="mt-2 text-base text-neutral-500 leading-relaxed line-clamp-2 italic">
               {preview}
             </p>
           )}
           <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
-            <time className="text-sm text-neutral-400">{formattedDate}</time>
+            <time className="text-sm text-neutral-400 not-italic" style={{ fontFamily: "inherit" }}>
+              {formattedDate}
+            </time>
             {tags && tags.length > 0 && (
               <>
                 <span className="text-neutral-300 text-sm">·</span>
                 {tags.map((tag) => (
                   <span
                     key={tag.slug.current}
-                    className="text-xs px-2 py-0.5 bg-neutral-100 text-neutral-500 rounded"
+                    className="text-xs px-2 py-0.5 bg-neutral-100 text-neutral-500 rounded not-italic"
+                    style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
                   >
                     {tag.name}
                   </span>

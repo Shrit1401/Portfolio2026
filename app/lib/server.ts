@@ -48,8 +48,7 @@ export async function getAdjacentResearch(slug: string) {
     const allResearch = await client.fetch(
       `*[_type == "research"] | order(date desc) {
         "slug": slug.current,
-        title,
-        image
+        title
       }`,
     );
 

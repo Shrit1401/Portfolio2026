@@ -16,7 +16,6 @@ import rehypeKatex from "rehype-katex";
 import "highlight.js/styles/vs2015.css";
 import "katex/dist/katex.min.css";
 import { Research } from "@/app/lib/types";
-import { urlFor } from "@/sanity/lib/image";
 import Link from "next/link";
 
 type CalloutType = "note" | "warning" | "tip";
@@ -43,7 +42,6 @@ export default function ResearchPageClient({
         title={research.title || "Untitled"}
         time={readingTime}
         date={research.date || new Date().toISOString().split("T")[0]}
-        img={research.image ? urlFor(research.image).url() : ""}
       />
       <main className="flex-grow container mx-auto px-4 py-8">
         <article className="prose lg:prose-xl mx-auto prose-pre:bg-transparent prose-pre:m-0 prose-pre:p-0 prose-headings:scroll-mt-20">

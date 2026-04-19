@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import type { FC, ReactNode } from "react";
-import { DM_Sans, EB_Garamond, Instrument_Serif } from "next/font/google";
+import { DM_Sans, EB_Garamond, Instrument_Serif, Newsreader } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "./components/SmoothScroll";
 import SiteJsonLd from "./components/SiteJsonLd";
@@ -25,6 +25,14 @@ const instrumentSerif = Instrument_Serif({
   weight: "400",
   style: ["normal", "italic"],
   variable: "--font-instrument-serif",
+  display: "swap",
+});
+
+const newsreader = Newsreader({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-newsreader",
   display: "swap",
 });
 
@@ -56,7 +64,7 @@ const RootLayout: FC<RootLayoutProps> = ({ children }) => {
       </head>
       <html
         lang="en"
-        className={`${dmSans.variable} ${ebGaramond.variable} ${instrumentSerif.variable}`}
+        className={`${dmSans.variable} ${ebGaramond.variable} ${instrumentSerif.variable} ${newsreader.variable}`}
       >
         <body className="font-sans antialiased">
           <SiteJsonLd />

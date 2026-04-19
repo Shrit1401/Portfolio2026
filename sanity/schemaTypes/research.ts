@@ -30,20 +30,6 @@ export const research = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: "image",
-      type: "image",
-      options: {
-        hotspot: true,
-      },
-      fields: [
-        {
-          name: "alt",
-          type: "string",
-          title: "Alternative Text",
-        },
-      ],
-    }),
-    defineField({
       name: "tags",
       type: "array",
       of: [{ type: "reference", to: [{ type: "tag" }] }],

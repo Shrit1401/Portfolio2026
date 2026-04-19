@@ -2,7 +2,6 @@ export interface Research {
   title: string;
   description: string;
   date: string;
-  image: string;
   markdown: string;
   tags?: Array<{
     name: string;
