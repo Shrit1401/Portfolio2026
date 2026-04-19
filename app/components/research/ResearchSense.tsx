@@ -2,145 +2,69 @@ import React, { useEffect, useState } from "react";
 import { useTransitionRouter } from "next-transition-router";
 import { usePathname } from "next/navigation";
 import { getAdjacentResearch } from "@/app/lib/server";
-import { urlFor } from "@/sanity/lib/image";
 
-interface NavCard {
-  href: string;
-  img: string;
-  label: string;
+interface AdjacentItem {
+  slug: string;
+  title: string;
 }
 
 interface AdjacentResearch {
-  previous: {
-    slug: string;
-    title: string;
-    image: any;
-  } | null;
-  next: {
-    slug: string;
-    title: string;
-    image: any;
-  } | null;
+  previous: AdjacentItem | null;
+  next: AdjacentItem | null;
 }
 
 const ResearchSense = () => {
   const router = useTransitionRouter();
   const pathname = usePathname();
-  const [adjacentResearch, setAdjacentResearch] = useState<AdjacentResearch>({
-    previous: null,
-    next: null,
-  });
+  const [adjacent, setAdjacent] = useState<AdjacentResearch>({ previous: null, next: null });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchAdjacentResearch = async () => {
-      const slug = pathname.split("/").pop();
-      if (slug) {
-        const data = await getAdjacentResearch(slug);
-        setAdjacentResearch(data);
-      }
-      setLoading(false);
-    };
-
-    fetchAdjacentResearch();
+    const slug = pathname.split("/").pop();
+    if (slug) {
+      getAdjacentResearch(slug).then((data) => {
+        setAdjacent(data);
+        setLoading(false);
+      });
+    }
   }, [pathname]);
 
-  const handleNavigation =
-    (path?: string) => (e: React.MouseEvent<HTMLSpanElement>) => {
-      if (!path || path === pathname) {
-        e.preventDefault();
-        return;
-      }
-      e.preventDefault();
-      router.push(path);
-    };
+  if (loading || (!adjacent.previous && !adjacent.next)) return null;
 
-  if (loading) {
-    return (
-      <div className="w-full h-full p-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="rounded-lg overflow-hidden relative aspect-[4/3] shadow-lg animate-pulse bg-gray-200" />
-          <div className="rounded-lg overflow-hidden relative aspect-[4/3] shadow-lg animate-pulse bg-gray-200" />
-        </div>
-      </div>
-    );
-  }
-
-  const backward = adjacentResearch.previous
-    ? {
-        href: `/research/${adjacentResearch.previous.slug}`,
-        img: urlFor(adjacentResearch.previous.image).url(),
-        label: `← ${adjacentResearch.previous.title}`,
-      }
-    : null;
-
-  const forward = adjacentResearch.next
-    ? {
-        href: `/research/${adjacentResearch.next.slug}`,
-        img: urlFor(adjacentResearch.next.image).url(),
-        label: `${adjacentResearch.next.title} →`,
-      }
-    : null;
-
-  // If there are no adjacent items, don't render anything
-  if (!backward && !forward) {
-    return null;
-  }
+  const navigate = (slug: string) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    router.push(`/research/${slug}`);
+  };
 
   return (
-    <div className="w-full h-full p-4">
-      <div
-        className={`grid gap-6 ${backward && forward ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1"}`}
-      >
-        {/* Backward Card */}
-        {backward && (
-          <span
-            onClick={handleNavigation(backward.href)}
-            className="group block rounded-lg overflow-hidden cursor-pointer relative aspect-[4/3] shadow-lg hover:brightness-125 transition-all duration-300"
-            style={{ background: "#111" }}
+    <div
+      className="w-full max-w-3xl mx-auto px-6 py-12 border-t border-neutral-200"
+      style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
+    >
+      <div className="flex items-start justify-between gap-8">
+        {adjacent.previous ? (
+          <button
+            onClick={navigate(adjacent.previous.slug)}
+            className="group flex flex-col items-start text-left max-w-[45%]"
           >
-            <img
-              src={backward.img}
-              alt={backward.label}
-              className="w-full h-full object-cover object-center group-hover:brightness-125 transition-all duration-500"
-              draggable="false"
-            />
-            <div
-              className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"
-              aria-hidden="true"
-            />
-            <div className="absolute bottom-5 left-6 z-10">
-              <span className="text-2xl md:text-3xl font-extrabold text-white drop-shadow-lg tracking-tight group-hover:tracking-wider transition-all duration-300">
-                {backward.label}
-              </span>
-            </div>
-          </span>
-        )}
+            <span className="text-xs text-neutral-400 uppercase tracking-widest mb-2" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>← Previous</span>
+            <span className="text-base md:text-lg font-bold text-neutral-700 group-hover:text-neutral-900 transition-colors duration-200 leading-snug">
+              {adjacent.previous.title}
+            </span>
+          </button>
+        ) : <div />}
 
-        {/* Forward Card */}
-        {forward && (
-          <span
-            onClick={handleNavigation(forward.href)}
-            className="group block rounded-lg overflow-hidden cursor-pointer relative aspect-[4/3] shadow-lg hover:brightness-125 transition-all duration-300"
-            style={{ background: "#111" }}
+        {adjacent.next ? (
+          <button
+            onClick={navigate(adjacent.next.slug)}
+            className="group flex flex-col items-end text-right max-w-[45%]"
           >
-            <img
-              src={forward.img}
-              alt={forward.label}
-              className="w-full h-full object-cover object-center group-hover:brightness-125 transition-all duration-500"
-              draggable="false"
-            />
-            <div
-              className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"
-              aria-hidden="true"
-            />
-            <div className="absolute bottom-5 right-6 z-10">
-              <span className="text-2xl md:text-3xl font-extrabold text-white drop-shadow-lg tracking-tight group-hover:tracking-wider transition-all duration-300">
-                {forward.label}
-              </span>
-            </div>
-          </span>
-        )}
+            <span className="text-xs text-neutral-400 uppercase tracking-widest mb-2" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Next →</span>
+            <span className="text-base md:text-lg font-bold text-neutral-700 group-hover:text-neutral-900 transition-colors duration-200 leading-snug">
+              {adjacent.next.title}
+            </span>
+          </button>
+        ) : <div />}
       </div>
     </div>
   );

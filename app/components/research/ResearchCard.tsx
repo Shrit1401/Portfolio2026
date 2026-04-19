@@ -39,7 +39,7 @@ export default function ResearchCard({
     <article
       onClick={handleNavigation}
       className="cursor-pointer group py-7 border-b border-neutral-200 first:border-t"
-      style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
+      style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
     >
       <div className="flex items-start justify-between gap-6">
         <div className="flex-1 min-w-0">

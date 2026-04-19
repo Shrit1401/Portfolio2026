@@ -19,13 +19,13 @@ const ResearchText = ({
     <div className="w-full max-w-3xl mx-auto px-6 pt-16 pb-8">
       <h1
         className="text-4xl md:text-5xl lg:text-[3.25rem] font-bold leading-tight tracking-tight text-neutral-900"
-        style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
+        style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
       >
         {title}
       </h1>
       <p
         className="mt-5 text-lg text-neutral-500 leading-relaxed"
-        style={{ fontFamily: "var(--font-newsreader), Georgia, serif", fontStyle: "italic" }}
+        style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic" }}
       >
         {formattedDate} &nbsp;·&nbsp; {time}
       </p>

@@ -1,17 +1,10 @@
 import { Metadata } from "next";
 import { getResearchFromSlug } from "@/app/lib/server";
-import { urlFor } from "@/sanity/lib/image";
 import type { Research } from "@/app/lib/types";
 import ResearchPageClient from "./ResearchPageClient";
 import { getSiteBaseUrl } from "@/app/lib/site";
-import type { SanityImageSource } from "@sanity/image-url/lib/types/types";
 
 type Params = Promise<{ singleThought: string }>;
-
-type ResearchDoc = Omit<Research, "image"> & {
-  image: SanityImageSource;
-  _updatedAt?: string;
-};
 
 export async function generateMetadata({
   params,
@@ -30,12 +23,11 @@ export async function generateMetadata({
     };
   }
 
-  const data = research[0] as ResearchDoc;
-  const imageUrl = urlFor(data.image).url();
+  const data = research[0] as Research;
   const canonical = `${baseUrl}/research/${singleThought}`;
   const updatedAt =
-    "_updatedAt" in data && typeof data._updatedAt === "string"
-      ? data._updatedAt
+    "_updatedAt" in data && typeof (data as any)._updatedAt === "string"
+      ? (data as any)._updatedAt
       : undefined;
 
   return {
@@ -46,25 +38,16 @@ export async function generateMetadata({
       title: data.title,
       description: data.description,
       url: canonical,
-      images: [
-        {
-          url: imageUrl,
-          width: 1200,
-          height: 630,
-          alt: data.title,
-        },
-      ],
       type: "article",
       publishedTime: data.date,
       modifiedTime: updatedAt,
     },
     twitter: {
-      card: "summary_large_image",
+      card: "summary",
       site: "@shrit1401",
       creator: "@shrit1401",
       title: data.title,
       description: data.description,
-      images: [imageUrl],
     },
   };
 }
@@ -81,13 +64,12 @@ export default async function ResearchPage({ params }: { params: Params }) {
     );
   }
 
-  const data = research[0] as ResearchDoc;
+  const data = research[0] as Research;
   const baseUrl = getSiteBaseUrl();
   const canonical = `${baseUrl}/research/${singleThought}`;
-  const imageUrl = urlFor(data.image).url();
   const updatedAt =
-    "_updatedAt" in data && typeof data._updatedAt === "string"
-      ? data._updatedAt
+    "_updatedAt" in data && typeof (data as any)._updatedAt === "string"
+      ? (data as any)._updatedAt
       : data.date;
 
   const articleJsonLd = {
@@ -95,7 +77,6 @@ export default async function ResearchPage({ params }: { params: Params }) {
     "@type": "Article",
     headline: data.title,
     description: data.description,
-    image: imageUrl,
     datePublished: data.date,
     dateModified: updatedAt,
     author: {
@@ -117,7 +98,7 @@ export default async function ResearchPage({ params }: { params: Params }) {
           __html: JSON.stringify(articleJsonLd),
         }}
       />
-      <ResearchPageClient research={data as Research} />
+      <ResearchPageClient research={data} />
     </>
   );
 }
