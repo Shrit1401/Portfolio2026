@@ -1,5 +1,4 @@
 "use client";
-import { motion } from "framer-motion";
 import { useTransitionRouter } from "next-transition-router";
 import { usePathname } from "next/navigation";
 
@@ -8,12 +7,9 @@ interface ResearchCardProps {
   slug: string;
   preview: string;
   date: string;
-  image: string;
   tags?: Array<{
     name: string;
-    slug: {
-      current: string;
-    };
+    slug: { current: string };
   }>;
 }
 
@@ -22,73 +18,64 @@ export default function ResearchCard({
   slug,
   preview,
   date,
-  image,
   tags,
 }: ResearchCardProps) {
   const router = useTransitionRouter();
   const pathname = usePathname();
 
-  const handleNavigation =
-    (path: string) => (e: React.MouseEvent<HTMLElement>) => {
-      if (path === pathname) {
-        e.preventDefault();
-        return;
-      }
-      e.preventDefault();
-      router.push(path);
-    };
+  const handleNavigation = (e: React.MouseEvent) => {
+    if (`/research/${slug}` === pathname) { e.preventDefault(); return; }
+    e.preventDefault();
+    router.push(`/research/${slug}`);
+  };
+
+  const formattedDate = new Date(date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      onClick={(e) =>
-        handleNavigation(`/research/${slug}`)(
-          e as unknown as React.MouseEvent<HTMLAnchorElement>,
-        )
-      }
-      className="cursor-pointer group relative"
-      whileHover={{ y: -8 }}
-      transition={{ duration: 0.2, ease: "easeOut" }}
+    <article
+      onClick={handleNavigation}
+      className="cursor-pointer group py-7 border-b border-neutral-200 first:border-t"
     >
-      <div className="relative w-full aspect-[16/9] overflow-hidden mb-4 rounded-lg">
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 z-10" />
-        <img
-          src={image}
-          alt={title}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-        />
-      </div>
-
-      <h2 className="text-xl font-medium mb-2 group-hover:text-gray-600 transition-colors duration-300">
-        {title}
-      </h2>
-
-      <div className="flex items-center text-sm text-gray-500">
-        <p className="line-clamp-2 group-hover:text-gray-600 transition-colors duration-300">
-          {preview}
-        </p>
-        <span className="mx-2">•</span>
-        <time className="group-hover:text-gray-600 transition-colors duration-300">
-          {new Date(date).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-          })}
-        </time>
-      </div>
-
-      {tags && tags.length > 0 && (
-        <div className="flex flex-wrap gap-2 mt-3">
-          {tags.map((tag) => (
-            <span
-              key={tag.slug.current}
-              className="text-xs px-2 py-1 bg-gray-100 text-gray-600 rounded-full"
-            >
-              {tag.name}
-            </span>
-          ))}
+      <div className="flex items-start justify-between gap-6">
+        <div className="flex-1 min-w-0">
+          <h2
+            className="text-xl md:text-2xl font-bold text-neutral-900 leading-snug group-hover:text-neutral-500 transition-colors duration-200"
+            style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+          >
+            {title}
+          </h2>
+          {preview && (
+            <p className="mt-2 text-base text-neutral-500 leading-relaxed line-clamp-2">
+              {preview}
+            </p>
+          )}
+          <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
+            <time className="text-sm text-neutral-400">{formattedDate}</time>
+            {tags && tags.length > 0 && (
+              <>
+                <span className="text-neutral-300 text-sm">·</span>
+                {tags.map((tag) => (
+                  <span
+                    key={tag.slug.current}
+                    className="text-xs px-2 py-0.5 bg-neutral-100 text-neutral-500 rounded"
+                  >
+                    {tag.name}
+                  </span>
+                ))}
+              </>
+            )}
+          </div>
         </div>
-      )}
-    </motion.div>
+        <span className="shrink-0 mt-1 text-neutral-300 group-hover:text-neutral-500 transition-colors duration-200">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M17 7l-10 10M7 7h10v10" />
+          </svg>
+        </span>
+      </div>
+    </article>
   );
 }

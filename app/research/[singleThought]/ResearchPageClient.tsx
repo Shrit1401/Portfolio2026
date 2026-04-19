@@ -38,15 +38,13 @@ export default function ResearchPageClient({
     <div className="relative w-full home">
       <Revealer />
 
-      <div className="flex flex-col min-h-screen">
-        <Navbar />
-        <ResearchText
-          title={research.title || "Untitled"}
-          time={readingTime}
-          date={research.date || new Date().toISOString().split("T")[0]}
-          img={urlFor(research.image).url()}
-        />
-      </div>
+      <Navbar />
+      <ResearchText
+        title={research.title || "Untitled"}
+        time={readingTime}
+        date={research.date || new Date().toISOString().split("T")[0]}
+        img={research.image ? urlFor(research.image).url() : ""}
+      />
       <main className="flex-grow container mx-auto px-4 py-8">
         <article className="prose lg:prose-xl mx-auto prose-pre:bg-transparent prose-pre:m-0 prose-pre:p-0 prose-headings:scroll-mt-20">
           {research.tags && research.tags.length > 0 && (
