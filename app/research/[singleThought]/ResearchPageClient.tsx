@@ -43,15 +43,15 @@ export default function ResearchPageClient({
         time={readingTime}
         date={research.date || new Date().toISOString().split("T")[0]}
       />
-      <main className="flex-grow container mx-auto px-4 py-8">
-        <article className="prose lg:prose-xl mx-auto prose-pre:bg-transparent prose-pre:m-0 prose-pre:p-0 prose-headings:scroll-mt-20">
+      <main className="container mx-auto flex-grow px-4 pb-8">
+        <article className="prose prose-neutral mx-auto max-w-3xl prose-headings:scroll-mt-20 prose-headings:font-semibold prose-p:text-[1.02rem] prose-p:leading-8 prose-li:text-[1.01rem] prose-li:leading-8 prose-hr:border-neutral-200 prose-strong:font-semibold prose-a:no-underline hover:prose-a:underline prose-pre:m-0 prose-pre:bg-transparent prose-pre:p-0 lg:prose-lg">
           {research.tags && research.tags.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-8">
+            <div className="mb-7 flex flex-wrap gap-2">
               {research.tags.map((tag) => (
                 <Link
                   key={tag.slug.current}
                   href={`/research/tag/${tag.slug.current}`}
-                  className="inline-block px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-full transition-colors duration-200"
+                  className="inline-flex items-center rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs font-medium text-neutral-700 transition-colors duration-200 hover:bg-neutral-100"
                 >
                   {tag.name}
                 </Link>
@@ -87,25 +87,25 @@ export default function ResearchPageClient({
 
                   const bgColor =
                     {
-                      note: "bg-blue-100 border-blue-500",
-                      warning: "bg-yellow-100 border-yellow-500",
-                      tip: "bg-green-100 border-green-500",
-                    }[type] || "bg-gray-100 border-gray-500";
+                      note: "bg-blue-50 border-blue-300",
+                      warning: "bg-amber-50 border-amber-300",
+                      tip: "bg-emerald-50 border-emerald-300",
+                    }[type] || "bg-neutral-50 border-neutral-300";
 
                   return (
                     <div
-                      className={`p-4 my-4 rounded-lg border-l-4 ${bgColor}`}
+                      className={`my-6 rounded-md border-l-[3px] px-4 py-3 ${bgColor}`}
                     >
-                      <div className="font-bold mb-2">
+                      <div className="mb-1 text-sm font-semibold">
                         {type.charAt(0).toUpperCase() + type.slice(1)}
                       </div>
-                      <div>{message}</div>
+                      <div className="text-sm text-neutral-700">{message}</div>
                     </div>
                   );
                 }
                 return (
                   <blockquote
-                    className="border-l-4 border-gray-300 pl-4 italic"
+                    className="border-l-2 border-neutral-300 pl-4 italic text-neutral-700"
                     {...props}
                   >
                     {children}
@@ -118,7 +118,7 @@ export default function ResearchPageClient({
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-500 hover:underline"
+                  className="text-neutral-800 underline-offset-2 hover:underline"
                   {...props}
                 >
                   {children}
@@ -129,7 +129,7 @@ export default function ResearchPageClient({
                 const match = /language-(\w+)/.exec(className || "");
                 return match ? (
                   <div className="relative">
-                    <div className="absolute right-2 top-2 text-xs text-gray-400">
+                    <div className="absolute right-2 top-2 text-xs text-neutral-500">
                       {match[1]}
                     </div>
                     <pre
@@ -141,7 +141,7 @@ export default function ResearchPageClient({
                     </pre>
                   </div>
                 ) : (
-                  <code className="bg-gray-100 rounded px-1 py-0.5" {...props}>
+                  <code className="rounded bg-neutral-100 px-1 py-0.5 text-[0.9em]" {...props}>
                     {children}
                   </code>
                 );
@@ -154,7 +154,7 @@ export default function ResearchPageClient({
                       type="checkbox"
                       checked={checked}
                       readOnly
-                      className="h-4 w-4 mr-2"
+                      className="mr-2 h-4 w-4"
                       {...props}
                     />
                   );
@@ -167,7 +167,7 @@ export default function ResearchPageClient({
                   const id = children.match(/\[(.*?)\]/)?.[1];
                   if (id) {
                     return (
-                      <sup className="text-sm text-gray-600">
+                      <sup className="text-sm text-neutral-600">
                         <a
                           href={`#footnote-${id}`}
                           className="no-underline hover:underline"

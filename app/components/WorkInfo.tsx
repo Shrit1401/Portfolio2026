@@ -15,6 +15,10 @@ function projectPrimaryHref(project: Work): string {
   return first ?? "https://github.com/Shrit1401?tab=repositories";
 }
 
+function projectLinks(project: Work): Array<{ name: string; link: string }> {
+  return (project.usefullinks ?? []).filter((item) => Boolean(item?.link));
+}
+
 const GRAIN_SVG = encodeURIComponent(
   `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(#n)"/></svg>`,
 );
@@ -93,6 +97,7 @@ const WorkInfo = () => {
           <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-12 lg:grid-cols-3 lg:gap-x-10 lg:gap-y-14">
             {projects.map((project, i) => {
               const href = projectPrimaryHref(project);
+              const links = projectLinks(project);
               return (
                 <article
                   key={`polaroid-${project.title}-${i}`}
@@ -131,17 +136,34 @@ const WorkInfo = () => {
                         <p className="font-[family-name:var(--font-instrument-serif)] text-[1.05rem] leading-snug text-neutral-900 md:text-lg">
                           {project.title}
                         </p>
-                        <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-                          <a
-                            href={href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-600 transition-colors duration-300 hover:text-neutral-900"
-                          >
-                            Visit
-                            <MdArrowOutward className="ml-0.5 inline align-[-2px] text-sm" />
-                          </a>
-                        </div>
+                        {links.length > 0 ? (
+                          <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+                            {links.map((item, linkIndex) => (
+                              <a
+                                key={`${project.title}-link-${linkIndex}`}
+                                href={item.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 rounded-full border border-neutral-900/15 bg-neutral-900/[0.03] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.15em] text-neutral-700 transition-colors duration-300 hover:bg-neutral-900/[0.08] hover:text-neutral-900"
+                              >
+                                {item.name || "Visit"}
+                                <MdArrowOutward className="text-xs" />
+                              </a>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+                            <a
+                              href={href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-600 transition-colors duration-300 hover:text-neutral-900"
+                            >
+                              Visit
+                              <MdArrowOutward className="ml-0.5 inline align-[-2px] text-sm" />
+                            </a>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

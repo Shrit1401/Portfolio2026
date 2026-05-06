@@ -18,7 +18,7 @@ const ProjectCard = ({
   idx: number;
   large?: boolean;
 }) => {
-  const firstLink = project.usefullinks?.[0];
+  const links = project.usefullinks?.filter((item) => item?.link) ?? [];
 
   return (
     <motion.div
@@ -26,21 +26,18 @@ const ProjectCard = ({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.7, ease: "easeOut", delay: idx * 0.1 }}
-      className="group relative w-full h-full rounded-2xl overflow-hidden shadow-lg cursor-pointer ring-1 ring-[#37517b]/30 hover:ring-[#37517b]/70 transition-all duration-500"
+      className="group relative h-full w-full cursor-pointer overflow-hidden rounded-2xl border border-black/10 bg-neutral-900 shadow-[0_20px_40px_-28px_rgba(0,0,0,0.6)] transition-all duration-500 hover:-translate-y-0.5 hover:shadow-[0_26px_48px_-26px_rgba(0,0,0,0.62)]"
       style={{ background: "#111" }}
     >
       {project.image && (
         <img
           src={urlFor(project.image).width(960).quality(82).auto("format").url()}
           alt={project.title}
-          className="w-full h-full object-cover object-center group-hover:brightness-110 group-hover:scale-[1.02] transition-all duration-500"
+          className="h-full w-full object-cover object-center transition-all duration-500 group-hover:scale-[1.02] group-hover:brightness-110"
           draggable="false"
         />
       )}
-      <div
-        className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"
-        aria-hidden="true"
-      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/58 to-black/15" aria-hidden="true" />
       <div className="absolute bottom-5 left-5 right-5 z-10">
         <div className="flex items-center gap-2 mb-1">
           <span className="bg-white/20 text-white text-xs px-2 py-0.5 rounded-full">
@@ -52,20 +49,25 @@ const ProjectCard = ({
         >
           {project.title}
         </p>
-        <p className="text-white/70 text-sm mt-1 truncate">
+        <p className="mt-1 text-sm text-white/72 truncate">
           {project.description}
         </p>
-        {firstLink && (
-          <a
-            href={firstLink.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 mt-2 text-white/80 hover:text-white text-xs font-semibold transition-colors"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {firstLink.name}
-            <MdArrowOutward className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </a>
+        {links.length > 0 && (
+          <div className="mt-3 flex flex-wrap gap-2">
+            {links.map((link, linkIdx) => (
+              <a
+                key={`${project.title}-link-${linkIdx}`}
+                href={link.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 rounded-full border border-white/25 bg-white/10 px-2.5 py-1 text-[11px] font-medium text-white/85 transition-colors hover:bg-white/20 hover:text-white"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {link.name || "Visit"}
+                <MdArrowOutward className="text-xs" />
+              </a>
+            ))}
+          </div>
         )}
       </div>
     </motion.div>
@@ -88,7 +90,7 @@ const FeaturedProjects = () => {
   if (projects.length === 0) return null;
 
   return (
-    <section className="relative px-4 md:px-12 py-16 md:py-20 bg-background">
+    <section className="relative bg-background px-4 py-16 md:px-12 md:py-20">
       {/* Section header */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -100,10 +102,10 @@ const FeaturedProjects = () => {
         <h2 className="text-4xl md:text-5xl font-bold text-black tracking-tight leading-tight lowercase">
           featured projects.
         </h2>
-        <div
-          className="mt-4 h-px w-full"
-          style={{ background: "rgba(23,23,23,0.18)" }}
-        />
+        <p className="mt-3 max-w-2xl text-sm text-neutral-600 md:text-base">
+          Cleaner snapshots of recent builds, with all related project links from CMS.
+        </p>
+        <div className="mt-4 h-px w-full" style={{ background: "rgba(23,23,23,0.18)" }} />
       </motion.div>
 
       {/* Grid — single column on small screens, bento on md+ */}

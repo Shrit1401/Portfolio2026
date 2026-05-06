@@ -38,7 +38,7 @@ const ResearchSense = () => {
 
   return (
     <div
-      className="w-full max-w-3xl mx-auto px-6 py-12 border-t border-neutral-200"
+      className="mx-auto w-full max-w-3xl border-t border-neutral-200 px-6 py-10 md:py-12"
       style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}
     >
       <div className="flex items-start justify-between gap-8">
@@ -47,8 +47,8 @@ const ResearchSense = () => {
             onClick={navigate(adjacent.previous.slug)}
             className="group flex flex-col items-start text-left max-w-[45%]"
           >
-            <span className="text-xs text-neutral-400 uppercase tracking-widest mb-2" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>← Previous</span>
-            <span className="text-base md:text-lg font-bold text-neutral-700 group-hover:text-neutral-900 transition-colors duration-200 leading-snug">
+            <span className="mb-1 text-[11px] uppercase tracking-[0.18em] text-neutral-400" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>← Previous</span>
+            <span className="text-base leading-snug text-neutral-700 transition-colors duration-200 group-hover:text-neutral-900 md:text-lg">
               {adjacent.previous.title}
             </span>
           </button>
@@ -59,8 +59,8 @@ const ResearchSense = () => {
             onClick={navigate(adjacent.next.slug)}
             className="group flex flex-col items-end text-right max-w-[45%]"
           >
-            <span className="text-xs text-neutral-400 uppercase tracking-widest mb-2" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Next →</span>
-            <span className="text-base md:text-lg font-bold text-neutral-700 group-hover:text-neutral-900 transition-colors duration-200 leading-snug">
+            <span className="mb-1 text-[11px] uppercase tracking-[0.18em] text-neutral-400" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>Next →</span>
+            <span className="text-base leading-snug text-neutral-700 transition-colors duration-200 group-hover:text-neutral-900 md:text-lg">
               {adjacent.next.title}
             </span>
           </button>
