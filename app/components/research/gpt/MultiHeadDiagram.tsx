@@ -72,7 +72,7 @@ function MiniHeatmap({ weights, cellSize }: { weights: HeadMatrix; cellSize: num
                 height: cellSize,
                 margin: "0.5px",
                 backgroundColor:
-                  w === null ? "#f3f4f6" : `rgba(29,78,216,${(w as number) * 0.85 + 0.05})`,
+                  w === null ? "var(--color-gray-100, #f3f4f6)" : `rgba(29,78,216,${(w as number) * 0.85 + 0.05})`,
               }}
             />
           ))}
@@ -131,7 +131,7 @@ export default function MultiHeadDiagram({ className = "" }: { className?: strin
                               width: 22,
                               backgroundColor:
                                 w === null
-                                  ? "#e5e7eb"
+                                  ? "var(--color-gray-200, #e5e7eb)"
                                   : `rgba(29,78,216,${(w as number) * 0.85 + 0.05})`,
                             }}
                             title={w === null ? "masked" : `${((w as number) * 100).toFixed(0)}%`}

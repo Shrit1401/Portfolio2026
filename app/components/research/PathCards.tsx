@@ -48,7 +48,7 @@ export default function PathCards({ className = "" }: { className?: string }) {
             className={`relative pb-3 text-sm font-medium transition-colors ${
               active === key ? "text-neutral-900" : "text-neutral-400 hover:text-neutral-600"
             }`}
-            style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
+            style={{ fontFamily: "var(--font-geist), sans-serif" }}
           >
             {paths[key].title}
             {active === key && (
@@ -70,7 +70,7 @@ export default function PathCards({ className = "" }: { className?: string }) {
           exit={{ opacity: 0, x: -16 }}
           transition={{ duration: 0.2 }}
         >
-          <p className="text-xs font-medium uppercase tracking-widest text-neutral-400 mb-4" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>
+          <p className="text-xs font-medium uppercase tracking-widest text-neutral-400 mb-4" style={{ fontFamily: "var(--font-geist), sans-serif" }}>
             {paths[active].subtitle}
           </p>
           <ul className="space-y-3">
@@ -82,7 +82,7 @@ export default function PathCards({ className = "" }: { className?: string }) {
                 transition={{ delay: i * 0.05, duration: 0.25 }}
                 className="flex items-start gap-3 text-[0.95rem] text-neutral-700 leading-relaxed"
               >
-                <svg className="mt-[5px] h-3.5 w-3.5 shrink-0 text-[#37517b]" viewBox="0 0 20 20" fill="currentColor">
+                <svg className="mt-[5px] h-3.5 w-3.5 shrink-0 text-accent" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
                 {point}
@@ -94,8 +94,8 @@ export default function PathCards({ className = "" }: { className?: string }) {
               href={paths[active].link!.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-5 inline-flex items-center gap-1.5 text-sm text-[#37517b] hover:underline"
-              style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
+              className="mt-5 inline-flex items-center gap-1.5 text-sm text-accent hover:underline"
+              style={{ fontFamily: "var(--font-geist), sans-serif" }}
             >
               {paths[active].link!.label}
               <svg className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">

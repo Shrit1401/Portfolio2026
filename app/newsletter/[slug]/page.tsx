@@ -3,14 +3,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Navbar from "../../components/Navbar";
-import { Revealer } from "../../components/Revealer";
 import Footer from "@/app/components/Footer";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import rehypeSlug from "rehype-slug";
 import rehypeHighlight from "rehype-highlight";
-import "highlight.js/styles/vs2015.css";
+import "highlight.js/styles/github.css";
 
 interface NewsletterPost {
   title: string;
@@ -136,7 +135,6 @@ export default function NewsletterPage() {
 
   return (
     <div className="relative w-full home">
-      <Revealer />
 
       <div className="flex flex-col min-h-screen">
         <Navbar />
@@ -157,7 +155,7 @@ export default function NewsletterPage() {
         </div>
       </div>
 
-      <main className="flex-grow container mx-auto px-4 py-8">
+      <main className="grow container mx-auto px-4 py-8">
         <article className="prose lg:prose-xl mx-auto prose-pre:bg-transparent prose-pre:m-0 prose-pre:p-0 prose-headings:scroll-mt-20">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}

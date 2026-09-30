@@ -5,8 +5,8 @@ import {
   pastEvent,
   pastTimeline,
 } from "./pastTimeline";
-import { buildLogEntry, buildLogList } from "./buildLog";
-import { ropePolaroidGallery } from "./ropePolaroidGallery";
+import { galleryOfThings } from "./galleryOfThings";
+import { inspirationBoard } from "./inspiration";
 import { pageViews } from "./pageViews";
 
 export const schema: { types: SchemaTypeDefinition[] } = {
@@ -15,9 +15,8 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     pastChapter,
     pastEvent,
     pastTimeline,
-    buildLogEntry,
-    buildLogList,
-    ropePolaroidGallery,
+    galleryOfThings,
+    inspirationBoard,
     pageViews,
   ],
 };

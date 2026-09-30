@@ -1,5 +1,5 @@
 import type { StructureResolver } from "sanity/structure";
-import { BUILD_LOG_LIST_ID, ROPE_POLAROID_GALLERY_ID } from "./constants";
+import { GALLERY_ID, INSPIRATION_ID } from "./constants";
 
 // https://www.sanity.io/docs/structure-builder-cheat-sheet
 export const structure: StructureResolver = (S) =>
@@ -8,17 +8,23 @@ export const structure: StructureResolver = (S) =>
     .items([
       S.listItem().title("Work").child(S.documentTypeList("work")),
       S.listItem()
-        .title("Build log order")
-        .id("buildLogOrder")
+        .title("Gallery of things (home)")
+        .id("galleryOfThingsNav")
         .child(
           S.document()
-            .schemaType("buildLogList")
-            .documentId(BUILD_LOG_LIST_ID)
-            .title("Build log order"),
+            .schemaType("galleryOfThings")
+            .documentId(GALLERY_ID)
+            .title("Gallery of things"),
         ),
       S.listItem()
-        .title("Build log entries")
-        .child(S.documentTypeList("buildLogEntry")),
+        .title("Inspiration board (/photos)")
+        .id("inspirationBoardNav")
+        .child(
+          S.document()
+            .schemaType("inspirationBoard")
+            .documentId(INSPIRATION_ID)
+            .title("Inspiration board"),
+        ),
       S.listItem()
         .title("Life timeline")
         .id("lifeTimeline")
@@ -27,14 +33,5 @@ export const structure: StructureResolver = (S) =>
             .schemaType("pastTimeline")
             .documentId("pastLifeTimeline")
             .title("Life timeline"),
-        ),
-      S.listItem()
-        .title("Rope gallery (home)")
-        .id("ropePolaroidGalleryNav")
-        .child(
-          S.document()
-            .schemaType("ropePolaroidGallery")
-            .documentId(ROPE_POLAROID_GALLERY_ID)
-            .title("Rope polaroid gallery"),
         ),
     ]);

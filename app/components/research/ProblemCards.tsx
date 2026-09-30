@@ -38,11 +38,11 @@ export default function ProblemCards({ className = "" }: { className?: string })
     <div className={className}>
       <p
         className="mb-1 text-xs font-medium uppercase tracking-widest text-neutral-400"
-        style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
+        style={{ fontFamily: "var(--font-geist), sans-serif" }}
       >
         Opportunities
       </p>
-      <p className="mb-6 text-neutral-600 text-sm" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic" }}>
+      <p className="mb-6 text-neutral-600 text-sm" style={{ fontFamily: "var(--font-newsreader), Georgia, serif", fontStyle: "italic" }}>
         Problems worth solving — click to explore
       </p>
 

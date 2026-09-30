@@ -1,12 +1,8 @@
 import { NextResponse } from "next/server";
-import getNowPlayingItem from "../../SpotifyAPI";
+import { getNowPlaying } from "@/app/lib/spotify";
+
+export const dynamic = "force-dynamic";
 
 export async function GET() {
-  try {
-    const data = await getNowPlayingItem();
-    return NextResponse.json(data === false ? null : data);
-  } catch (error) {
-    console.error("Spotify now-playing route:", error);
-    return NextResponse.json(null);
-  }
+  return NextResponse.json(await getNowPlaying());
 }

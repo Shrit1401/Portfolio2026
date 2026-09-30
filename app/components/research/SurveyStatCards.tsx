@@ -20,10 +20,10 @@ export default function SurveyStatCards({ className = "" }: { className?: string
           transition={{ duration: 0.5, delay: i * 0.1 }}
           className="flex-1"
         >
-          <p className="text-3xl font-bold tracking-tight text-neutral-800" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+          <p className="text-3xl font-bold tracking-tight text-neutral-800" style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}>
             {stat.value}
           </p>
-          <p className="mt-1 text-xs text-neutral-400 uppercase tracking-widest" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>
+          <p className="mt-1 text-xs text-neutral-400 uppercase tracking-widest" style={{ fontFamily: "var(--font-geist), sans-serif" }}>
             {stat.label}
           </p>
         </motion.div>

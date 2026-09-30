@@ -1,0 +1,507 @@
+/* ------------------------------------------------------------------ */
+/* Shrit TV (/retro): one old CRT with the whole site inside it.       */
+/* ------------------------------------------------------------------ */
+.retro {
+  --crt-bg: #06110b;
+  --crt-ink: #b8ffc8;
+  --crt-dim: #5fae78;
+  --crt-glow: rgba(120, 255, 160, 0.55);
+  --cab-ink: #d9c9a8;
+  font-family: var(--font-vt323), ui-monospace, monospace;
+  font-size: 21px;
+  line-height: 1.35;
+  color: var(--crt-ink);
+  background: #120e0a;
+}
+.retro-room {
+  background:
+    radial-gradient(ellipse at 50% 40%, rgba(255, 196, 120, 0.12), transparent 60%),
+    radial-gradient(ellipse at 50% 120%, rgba(0, 0, 0, 0.8), transparent 60%),
+    #120e0a;
+}
+
+/* Phone (default, < 768px): chunky grey plastic keypad phone. */
+.retro-cabinet {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14), transparent 22%),
+    linear-gradient(160deg, #3d4450, #20252d 70%);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -8px 20px rgba(0, 0, 0, 0.5),
+    0 30px 60px -20px rgba(0, 0, 0, 0.9);
+}
+.retro-earpiece {
+  width: 64px;
+  height: 7px;
+  border-radius: 9999px;
+  background: repeating-linear-gradient(90deg, #0b0d10 0 4px, #2a2f37 4px 7px);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+.retro-phone-key {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 44px;
+  padding: 4px 6px;
+  border-radius: 14px 14px 18px 18px;
+  color: #e9edf3;
+  font-size: 18px;
+  letter-spacing: 0.05em;
+  background: linear-gradient(180deg, #5a6270, #3a414c);
+  box-shadow: 0 3px 0 #15181d, inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transition: translate 100ms var(--ease-out), box-shadow 100ms var(--ease-out);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.retro-phone-key:active {
+  translate: 0 2px;
+  box-shadow: 0 1px 0 #15181d, inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+.retro-phone-key:disabled {
+  opacity: 0.5;
+}
+.retro-phone-num {
+  min-height: 52px;
+  border-radius: 40% 40% 48% 48% / 50% 50% 50% 50%;
+}
+.retro-phone-call {
+  color: #06210c;
+  background: linear-gradient(180deg, #6fe38a, #2fb553);
+}
+.retro-phone-end {
+  color: #2a0505;
+  background: linear-gradient(180deg, #ff7b72, #d8342b);
+}
+.retro-dpad {
+  position: relative;
+  display: grid;
+  grid-template: repeat(3, 38px) / repeat(3, 38px);
+  border-radius: 9999px;
+  padding: 4px;
+  background: radial-gradient(circle, #4a525f, #2a3038);
+  box-shadow: 0 4px 0 #15181d, inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+.retro-dpad button {
+  color: #e9edf3;
+  font-size: 16px;
+  border-radius: 9999px;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: scale 100ms var(--ease-out), background-color 100ms ease;
+}
+.retro-dpad button:active {
+  scale: 0.9;
+  background: rgba(255, 255, 255, 0.12);
+}
+.retro-dpad button:disabled {
+  opacity: 0.5;
+}
+.retro-dpad-up { grid-area: 1 / 2; }
+.retro-dpad-left { grid-area: 2 / 1; }
+.retro-dpad-ok {
+  grid-area: 2 / 2;
+  background: linear-gradient(180deg, #7b8494, #525a67) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  font-size: 15px !important;
+}
+.retro-dpad-right { grid-area: 2 / 3; }
+.retro-dpad-down { grid-area: 3 / 2; }
+
+/* TV (>= 768px) cabinet: walnut veneer with a soft top light. */
+@media (min-width: 768px) {
+.retro-cabinet {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 30%),
+    repeating-linear-gradient(92deg, rgba(0, 0, 0, 0.07) 0 3px, transparent 3px 11px),
+    linear-gradient(180deg, #6b4428, #4a2d19);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 220, 180, 0.25),
+    inset 0 -6px 18px rgba(0, 0, 0, 0.45),
+    0 40px 80px -30px rgba(0, 0, 0, 0.9);
+}
+}
+.retro-bezel {
+  background: linear-gradient(180deg, #2b2724, #1a1715);
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.8), inset 0 -1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* The tube. */
+.retro-screen {
+  background: radial-gradient(ellipse at center, #0c2016 0%, var(--crt-bg) 75%);
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(120, 255, 160, 0.08);
+  animation: crt-flicker 6s infinite steps(1);
+}
+.retro-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--crt-dim) transparent;
+  text-shadow: 0.6px 0 rgba(255, 60, 90, 0.35), -0.6px 0 rgba(60, 160, 255, 0.35);
+}
+.retro-glow {
+  color: var(--crt-ink);
+  text-shadow: 0 0 6px var(--crt-glow), 0 0 18px rgba(120, 255, 160, 0.25);
+}
+.retro-scanlines {
+  background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0 1px, transparent 1px 3px);
+  mix-blend-mode: multiply;
+}
+/* Curved glass: vignette + a soft highlight in the top-left. */
+.retro-glass {
+  border-radius: inherit;
+  background:
+    radial-gradient(ellipse at 28% 12%, rgba(255, 255, 255, 0.09), transparent 38%),
+    radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.65) 100%);
+}
+.retro-static {
+  image-rendering: pixelated;
+  transition: opacity 120ms ease-out;
+}
+.retro-img {
+  filter: sepia(0.35) hue-rotate(70deg) saturate(1.3) contrast(1.1) brightness(0.95);
+}
+.retro-copy .link,
+.retro-link {
+  color: var(--crt-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--crt-dim);
+  text-underline-offset: 4px;
+}
+.retro-copy .link:hover,
+.retro-link:hover {
+  background: var(--crt-ink);
+  color: var(--crt-bg);
+  text-shadow: none;
+}
+.retro-row {
+  transition: scale 160ms var(--ease-out);
+}
+.retro-row:active {
+  scale: 0.98;
+}
+
+/* OSD label: shows on channel change, then dims. */
+.retro-osd {
+  animation: crt-osd 2.4s var(--ease-out) forwards;
+}
+.retro-blink {
+  animation: crt-blink 1.2s steps(1) infinite;
+}
+
+/* Power: the picture opens from a bright line, and collapses to a dot on the way out. */
+.retro-power-on {
+  animation: crt-on 700ms var(--ease-out) both;
+}
+.retro-power-off > * {
+  animation: crt-off 520ms cubic-bezier(0.77, 0, 0.175, 1) forwards;
+}
+
+@keyframes crt-on {
+  0% { transform: scale(1, 0.004); filter: brightness(8); opacity: 0.2; }
+  45% { transform: scale(1, 0.004); filter: brightness(8); opacity: 1; }
+  75% { transform: scale(1, 1.02); filter: brightness(1.6); }
+  100% { transform: scale(1, 1); filter: brightness(1); }
+}
+@keyframes crt-off {
+  0% { transform: scale(1, 1); filter: brightness(1); }
+  55% { transform: scale(1, 0.004); filter: brightness(6); }
+  100% { transform: scale(0, 0.004); filter: brightness(10); opacity: 0; }
+}
+@keyframes crt-flicker {
+  0%, 100% { filter: brightness(1); }
+  47% { filter: brightness(1.04); }
+  48% { filter: brightness(0.96); }
+  49% { filter: brightness(1); }
+}
+@keyframes crt-osd {
+  0%, 70% { opacity: 1; }
+  100% { opacity: 0.35; }
+}
+@keyframes crt-blink {
+  0%, 60% { opacity: 1; }
+  61%, 100% { opacity: 0.25; }
+}
+
+/* Controls. */
+.retro-badge {
+  color: #e8d9b5;
+  letter-spacing: 0.12em;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
+}
+.retro-knob {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 9999px;
+  background:
+    repeating-conic-gradient(from 0deg, rgba(255, 255, 255, 0.06) 0 6deg, rgba(0, 0, 0, 0.12) 6deg 12deg),
+    radial-gradient(circle at 35% 30%, #4a4540, #1c1a18 70%);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transition: rotate 380ms cubic-bezier(0.34, 1.4, 0.64, 1), scale 160ms var(--ease-out);
+}
+.retro-knob:active {
+  scale: 0.95;
+}
+.retro-knob-mark {
+  position: absolute;
+  top: 7px;
+  left: 50%;
+  width: 4px;
+  height: 14px;
+  margin-left: -2px;
+  border-radius: 2px;
+  background: #f1e3c2;
+}
+.retro-key,
+.retro-power {
+  display: grid;
+  place-items: center;
+  min-height: 40px;
+  padding: 0 8px;
+  border-radius: 7px;
+  color: #e8d9b5;
+  font-size: 19px;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  background: linear-gradient(180deg, #3a3531, #221f1c);
+  box-shadow: 0 3px 0 #120f0d, inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transition: translate 120ms var(--ease-out), box-shadow 120ms var(--ease-out);
+}
+.retro-key:active,
+.retro-power:active {
+  translate: 0 2px;
+  box-shadow: 0 1px 0 #120f0d, inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+.retro-power {
+  width: 48px;
+  height: 48px;
+  min-height: 48px;
+  padding: 0;
+  flex-shrink: 0;
+  border-radius: 9999px;
+}
+.retro-key:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.retro-key-hot {
+  color: #1a1206;
+  background: linear-gradient(180deg, #ffd35a, #e0a520);
+  box-shadow: 0 3px 0 #7a5410, inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+.retro-key-hot:active {
+  box-shadow: 0 1px 0 #7a5410, inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+.retro-led {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: #3b1512;
+  transition: background-color 200ms ease, box-shadow 200ms ease;
+}
+.retro-led-on {
+  background: #ff3b30;
+  box-shadow: 0 0 8px #ff3b30;
+}
+.retro-grille {
+  min-height: 120px;
+  border-radius: 10px;
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.55) 1.6px, transparent 2px) 0 0 / 9px 9px;
+}
+.retro-key:focus-visible,
+.retro-power:focus-visible,
+.retro-knob:focus-visible,
+.retro a:focus-visible {
+  outline: 2px solid var(--crt-ink);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .retro-screen,
+  .retro-blink {
+    animation: none;
+  }
+  .retro-power-on {
+    animation: crt-fade-in 200ms ease-out both;
+  }
+  .retro-roll > *,
+  .retro-glitch > *,
+  .retro-kenburns,
+  .retro-dream,
+  .retro-doodle,
+  .retro-crawl,
+  .retro-ticker {
+    animation: none !important;
+  }
+  .retro-power-off > * {
+    animation: crt-fade-out 200ms ease-out forwards;
+  }
+  .retro-knob {
+    transition: none;
+  }
+}
+@keyframes crt-fade-in {
+  from { opacity: 0; }
+}
+@keyframes crt-fade-out {
+  to { opacity: 0; }
+}
+
+/* ---- Channels ---------------------------------------------------- */
+.retro-video {
+  filter: saturate(1.15) contrast(1.05);
+}
+.retro-lower-third {
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.9), 0 0 10px rgba(0, 0, 0, 0.9);
+}
+.retro-subtitle {
+  animation: crt-fade-in 150ms ease-out;
+}
+
+/* Teletext page for the letters. */
+.retro-teletext {
+  --tt-cyan: #3fe0ff;
+  --tt-yellow: #ffe14d;
+  --tt-green: #7dff8a;
+  background: #000814;
+}
+.retro-crawl {
+  animation: crt-crawl 40s linear 2s both;
+}
+@keyframes crt-crawl {
+  to { transform: translateY(-60%); }
+}
+
+.retro-kenburns {
+  animation: crt-kenburns 4.2s ease-out both;
+}
+@keyframes crt-kenburns {
+  from { transform: scale(1.12) translate(2%, 1%); opacity: 0.4; }
+  15% { opacity: 1; }
+  to { transform: scale(1) translate(0, 0); }
+}
+.retro-dream {
+  filter: sepia(0.25) saturate(1.1) contrast(1.05) blur(0.3px);
+  animation: crt-dream 5.4s ease-in-out both;
+}
+@keyframes crt-dream {
+  from { opacity: 0; transform: scale(1.06); }
+  18% { opacity: 1; }
+  82% { opacity: 1; }
+  to { opacity: 0.2; transform: scale(1); }
+}
+.retro-cam {
+  filter: grayscale(0.4) contrast(1.2) brightness(0.9);
+}
+
+/* Fake commercial: loud, saturated, on purpose. */
+.retro-ad {
+  color: #fff;
+  background:
+    repeating-conic-gradient(from 0deg at 50% 45%, #1f3bd6 0 12deg, #2a4cf0 12deg 24deg);
+  text-shadow: 3px 3px 0 #000;
+}
+.retro-ad-title {
+  color: #ffe14d;
+  animation: crt-wobble 1.6s ease-in-out infinite;
+}
+@keyframes crt-wobble {
+  0%, 100% { transform: rotate(-2deg) scale(1); }
+  50% { transform: rotate(2deg) scale(1.05); }
+}
+
+.retro-news {
+  background:
+    linear-gradient(180deg, transparent 40%, rgba(0, 0, 0, 0.85)),
+    radial-gradient(ellipse at 70% 30%, #274b8f, #0a1530 70%);
+  text-shadow: 0 2px 0 #000;
+}
+.retro-ticker {
+  animation: crt-ticker 28s linear infinite;
+}
+@keyframes crt-ticker {
+  to { transform: translateX(-50%); }
+}
+
+.retro-bars {
+  background: linear-gradient(90deg, #c0c0c0 0 14.28%, #c0c000 0 28.57%, #00c0c0 0 42.85%, #00c000 0 57.14%, #c000c0 0 71.42%, #c00000 0 85.71%, #0000c0 0);
+}
+.retro-bars-low {
+  background: linear-gradient(90deg, #0000c0 0 14.28%, #131313 0 28.57%, #c000c0 0 42.85%, #131313 0 57.14%, #00c0c0 0 71.42%, #131313 0 85.71%, #c0c0c0 0);
+}
+
+/* GitHub as a terminal. */
+.retro-terminal {
+  background: #020a05;
+}
+.retro-type {
+  animation: crt-type 260ms steps(4) both;
+}
+@keyframes crt-type {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+.retro-cursor {
+  animation: crt-blink 1s steps(1) infinite;
+}
+
+/* Saturday morning cartoons: paper, crayon ink, and a hand-drawn "boil". */
+.retro-paper {
+  background:
+    radial-gradient(circle at 20% 10%, rgba(255, 255, 255, 0.6), transparent 40%),
+    repeating-linear-gradient(0deg, rgba(90, 120, 200, 0.12) 0 1px, transparent 1px 28px),
+    #f6efdf;
+}
+.retro-paper-ink {
+  color: #6a5a3a;
+}
+.retro-paper-title {
+  color: #1d1a16;
+  animation: crt-boil 0.36s steps(1) infinite;
+}
+.retro-doodle {
+  background: #fff;
+  box-shadow: 0 8px 20px -8px rgba(60, 40, 10, 0.5);
+  animation: crt-pop 500ms cubic-bezier(0.34, 1.4, 0.64, 1) both, crt-boil 0.36s steps(1) infinite 500ms;
+}
+@keyframes crt-pop {
+  from { opacity: 0; transform: scale(0.9) rotate(-3deg); }
+  to { opacity: 1; transform: scale(1) rotate(0); }
+}
+@keyframes crt-boil {
+  0% { transform: rotate(-0.6deg) translate(0, 0); }
+  33% { transform: rotate(0.4deg) translate(0.6px, -0.4px); }
+  66% { transform: rotate(-0.2deg) translate(-0.4px, 0.5px); }
+}
+
+/* Surprises. */
+.retro-glitch > * {
+  animation: crt-glitch 420ms steps(2) both;
+}
+@keyframes crt-glitch {
+  0% { transform: translateX(0); filter: hue-rotate(0); }
+  25% { transform: translateX(-3%) skewX(8deg); filter: hue-rotate(90deg) saturate(3); }
+  50% { transform: translateX(4%) skewX(-6deg); filter: invert(0.2); }
+  75% { transform: translateX(-1%); filter: hue-rotate(-60deg); }
+  100% { transform: none; filter: none; }
+}
+/* Vertical hold slipping: the picture rolls up, jumps, rolls down, catches. */
+.retro-roll > * {
+  animation: crt-roll 1.4s cubic-bezier(0.77, 0, 0.175, 1) both;
+}
+@keyframes crt-roll {
+  0% { transform: translateY(0); }
+  20% { transform: translateY(-40%); filter: brightness(1.3); }
+  21% { transform: translateY(55%); }
+  45% { transform: translateY(-12%); }
+  60% { transform: translateY(8%); }
+  75% { transform: translateY(-3%); }
+  100% { transform: translateY(0); filter: none; }
+}
+
+/* OSD readable on any channel, including the light paper one. */
+.retro-osd-chip {
+  padding: 0 6px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.45);
+}

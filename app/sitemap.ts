@@ -30,35 +30,35 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
     },
     {
-      url: `${baseUrl}/work`,
+      url: `${baseUrl}/posts`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/research`,
+      url: `${baseUrl}/past`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/archive`,
+      url: `${baseUrl}/photos`,
       lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.8,
+      changeFrequency: "monthly",
+      priority: 0.6,
     },
     {
-      url: `${baseUrl}/newsletter`,
+      url: `${baseUrl}/retro`,
       lastModified: new Date(),
       changeFrequency: "weekly",
-      priority: 0.7,
+      priority: 0.6,
     },
   ];
 
   // Local research posts (researchData.ts)
   const localSlugs = new Set(researchPosts.map((p) => p.slug.current));
   const localResearchRoutes: MetadataRoute.Sitemap = researchPosts.map((post) => ({
-    url: `${baseUrl}/research/${post.slug.current}`,
+    url: `${baseUrl}/posts/${post.slug.current}`,
     lastModified: new Date(post.date),
     changeFrequency: "weekly" as const,
     priority: 0.8,
@@ -68,7 +68,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const sanityResearchRoutes: MetadataRoute.Sitemap = sanityContent
     .filter((item) => !localSlugs.has(item.slug))
     .map((item) => ({
-      url: `${baseUrl}/research/${item.slug}`,
+      url: `${baseUrl}/posts/${item.slug}`,
       lastModified: new Date(item._updatedAt),
       changeFrequency: "weekly" as const,
       priority: 0.7,
@@ -91,7 +91,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   const tagRoutes: MetadataRoute.Sitemap = [...tagSlugs].map((slug) => ({
-    url: `${baseUrl}/research/tag/${slug}`,
+    url: `${baseUrl}/posts/tag/${slug}`,
     lastModified: new Date(),
     changeFrequency: "weekly" as const,
     priority: 0.6,

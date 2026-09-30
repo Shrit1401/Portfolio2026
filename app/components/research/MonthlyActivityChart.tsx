@@ -19,9 +19,9 @@ const monthData = [
 ];
 
 function getBarColor(month: string) {
-  if (month === "Aug" || month === "Mar") return "#37517b";
+  if (month === "Aug" || month === "Mar") return "var(--color-accent)";
   if (month === "Dec") return "#c9726a";
-  return "#c4c4c4";
+  return "var(--color-chart-muted)";
 }
 
 export default function MonthlyActivityChart({ className = "" }: { className?: string }) {
@@ -34,11 +34,11 @@ export default function MonthlyActivityChart({ className = "" }: { className?: s
     <div ref={ref} className={className}>
       <p
         className="mb-1 text-xs font-medium uppercase tracking-widest text-neutral-400"
-        style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}
+        style={{ fontFamily: "var(--font-geist), sans-serif" }}
       >
         Google Trends
       </p>
-      <p className="mb-6 text-neutral-600 text-sm" style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic" }}>
+      <p className="mb-6 text-neutral-600 text-sm" style={{ fontFamily: "var(--font-newsreader), Georgia, serif", fontStyle: "italic" }}>
         Homeschooling search interest by month
       </p>
 

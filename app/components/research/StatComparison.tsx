@@ -43,17 +43,17 @@ export default function StatComparison({ className = "" }: { className?: string 
         transition={{ duration: 0.6 }}
         className="flex-1"
       >
-        <p className="text-xs font-medium uppercase tracking-widest text-neutral-400 mb-3" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>
+        <p className="text-xs font-medium uppercase tracking-widest text-neutral-400 mb-3" style={{ fontFamily: "var(--font-geist), sans-serif" }}>
           Focused study
         </p>
-        <span className="text-5xl md:text-6xl font-bold tracking-tight text-[#37517b]" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+        <span className="text-5xl md:text-6xl font-bold tracking-tight text-accent" style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}>
           {focusedCount > 0 ? `4–${focusedCount}` : "0"}
         </span>
         <span className="text-lg text-neutral-400 ml-2">months</span>
         <p className="mt-2 text-sm text-neutral-500 leading-relaxed">to finish CBSE syllabus through 11th</p>
         <div className="mt-4 h-1.5 w-full rounded-full bg-neutral-200/60 overflow-hidden">
           <motion.div
-            className="h-full rounded-full bg-[#37517b]"
+            className="h-full rounded-full bg-accent"
             initial={{ width: 0 }}
             animate={barInView ? { width: "22%" } : { width: 0 }}
             transition={{ duration: 1, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
@@ -71,10 +71,10 @@ export default function StatComparison({ className = "" }: { className?: string 
         transition={{ duration: 0.6, delay: 0.15 }}
         className="flex-1"
       >
-        <p className="text-xs font-medium uppercase tracking-widest text-neutral-400 mb-3" style={{ fontFamily: "var(--font-dm-sans), sans-serif" }}>
+        <p className="text-xs font-medium uppercase tracking-widest text-neutral-400 mb-3" style={{ fontFamily: "var(--font-geist), sans-serif" }}>
           Traditional school
         </p>
-        <span className="text-5xl md:text-6xl font-bold tracking-tight text-neutral-300" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+        <span className="text-5xl md:text-6xl font-bold tracking-tight text-neutral-300" style={{ fontFamily: "var(--font-newsreader), Georgia, serif" }}>
           {traditionalCount}
         </span>
         <span className="text-lg text-neutral-400 ml-2">months</span>

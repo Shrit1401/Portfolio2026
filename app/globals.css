@@ -1,16 +1,187 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
-@import "easymde/dist/easymde.min.css";
+/* `dark:` = the night theme (html.theme-dark site-wide, or the always-dark /e wrapper). */
+@custom-variant dark (&:where(.theme-dark, .theme-dark *));
+
+@theme {
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-newsreader), Georgia, serif;
+  --font-instrument: var(--font-instrument-serif), Georgia, serif;
+
+  --color-paper: #f9f7f1;
+  --color-ink: #1c1b19;
+  --color-muted: #6f6a62;
+  --color-line: #e5e1d8;
+  --color-accent: #37517b;
+  --color-card: #ffffff;
+  --color-on-accent: #ffffff;
+  --color-chart-muted: #c4c4c4;
+
+  /* Stronger curves than the CSS built-ins (these also power Tailwind's ease-out / ease-in-out). */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* Anything pressable: a quick, subtle squeeze so the page feels like it heard you. */
+@utility press {
+  transition-property: color, background-color, border-color, text-decoration-color, opacity, scale;
+  transition-duration: 160ms;
+  transition-timing-function: var(--ease-out);
+  &:active {
+    scale: 0.97;
+  }
+}
 
 :root {
-  --background: #f8f6f0;
-  --foreground: #171717;
+  --background: #f9f7f1;
+  --foreground: #1c1b19;
+}
+
+/* Night theme: on <html> from 8pm to 6am (see app/lib/theme.ts), or always on the /e wrapper.
+   Everything built on paper/ink/muted/line/accent/card flips with it. The Tailwind
+   neutral/gray scales and white are flipped too, so the article widgets follow along. */
+.theme-dark {
+  --color-paper: #141311;
+  --color-ink: #ece7dc;
+  --color-muted: #948e83;
+  --color-line: #2b2925;
+  --color-accent: #9db4dc;
+  --color-card: #1e1c19;
+  --color-on-accent: #141311;
+  --color-chart-muted: #4a463f;
+  --background: #141311;
+  --foreground: #ece7dc;
+
+  --color-white: #1e1c19;
+  --color-neutral-50: #1a1917;
+  --color-neutral-100: #221f1c;
+  --color-neutral-200: #2e2b27;
+  --color-neutral-300: #3f3b35;
+  --color-neutral-400: #7c766c;
+  --color-neutral-500: #948e83;
+  --color-neutral-600: #aea89d;
+  --color-neutral-700: #c5bfb3;
+  --color-neutral-800: #d8d2c6;
+  --color-neutral-900: #ece7dc;
+  --color-neutral-950: #f5f1e8;
+  --color-gray-50: #1a1917;
+  --color-gray-100: #221f1c;
+  --color-gray-200: #2e2b27;
+  --color-gray-300: #3f3b35;
+  --color-gray-400: #7c766c;
+  --color-gray-500: #948e83;
+  --color-gray-600: #aea89d;
+  --color-gray-700: #c5bfb3;
+  --color-gray-800: #d8d2c6;
+  --color-gray-900: #ece7dc;
+  --color-blue-50: #1b2231;
+  --color-blue-300: #3a4d73;
+  --color-blue-400: #5a78b0;
+  --color-blue-500: #7e9ee0;
+  --color-blue-600: #7a9be0;
+  --color-blue-700: #6f93e0;
+  --color-blue-900: #c4d4f5;
+  --color-amber-50: #29231a;
+  --color-amber-300: #6b5520;
+  --color-emerald-50: #17251f;
+  --color-emerald-300: #2f6150;
+
+  color-scheme: dark;
+}
+.theme-dark ::selection {
+  background-color: rgba(157, 180, 220, 0.25);
+}
+/* Overscroll / rubber-band areas outside the /e wrapper. */
+body:has(.theme-dark) {
+  background: #141311;
+}
+
+/* Article body text (prose-neutral sets literal greys). */
+.theme-dark .prose {
+  --tw-prose-body: var(--color-ink);
+  --tw-prose-headings: var(--color-ink);
+  --tw-prose-lead: var(--color-muted);
+  --tw-prose-links: var(--color-accent);
+  --tw-prose-bold: var(--color-ink);
+  --tw-prose-counters: var(--color-muted);
+  --tw-prose-bullets: var(--color-neutral-400);
+  --tw-prose-hr: var(--color-line);
+  --tw-prose-quotes: var(--color-ink);
+  --tw-prose-quote-borders: var(--color-line);
+  --tw-prose-captions: var(--color-muted);
+  --tw-prose-kbd: var(--color-ink);
+  --tw-prose-code: var(--color-ink);
+  --tw-prose-pre-code: var(--color-ink);
+  --tw-prose-pre-bg: var(--color-card);
+  --tw-prose-th-borders: var(--color-line);
+  --tw-prose-td-borders: var(--color-line);
+}
+
+/* highlight.js ships github.css (light); night-friendly token colours. */
+.theme-dark .hljs {
+  color: #d9d4ca;
+}
+.theme-dark :is(.hljs-keyword, .hljs-doctag, .hljs-meta .hljs-keyword, .hljs-template-tag, .hljs-type, .hljs-variable.language_) {
+  color: #ff8f86;
+}
+.theme-dark :is(.hljs-title, .hljs-title.class_, .hljs-title.function_) {
+  color: #d6b3ff;
+}
+.theme-dark :is(.hljs-attr, .hljs-attribute, .hljs-literal, .hljs-meta, .hljs-number, .hljs-operator, .hljs-variable, .hljs-selector-attr, .hljs-selector-class, .hljs-selector-id) {
+  color: #8fc3ff;
+}
+.theme-dark :is(.hljs-regexp, .hljs-string, .hljs-meta .hljs-string) {
+  color: #a9d4ff;
+}
+.theme-dark :is(.hljs-built_in, .hljs-symbol) {
+  color: #ffb877;
+}
+.theme-dark :is(.hljs-comment, .hljs-code, .hljs-formula) {
+  color: #8b8579;
+}
+
+/* SVG charts with hardcoded presentation attributes (TrainingLossChart). */
+.theme-dark svg :is([stroke="#e5e7eb"], [stroke="#d1d5db"]) {
+  stroke: var(--color-line);
+}
+.theme-dark svg [stroke="#9ca3af"] {
+  stroke: var(--color-neutral-400);
+}
+.theme-dark svg [stroke="#1d4ed8"] {
+  stroke: var(--color-blue-700);
+}
+.theme-dark svg [fill="white"] {
+  fill: var(--color-card);
+}
+.theme-dark svg :is([fill="#9ca3af"], [fill="#6b7280"]) {
+  fill: var(--color-muted);
+}
+.theme-dark svg [fill="#374151"] {
+  fill: var(--color-ink);
+}
+.theme-dark svg [fill="#1d4ed8"] {
+  fill: var(--color-blue-700);
+}
+
+/* react-tweet cards on the inspiration board. */
+.theme-dark .inspo-tweet .react-tweet-theme {
+  --tweet-bg-color: var(--color-card);
+  --tweet-bg-color-hover: var(--color-card);
+  --tweet-color-blue-secondary: var(--color-accent);
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+/* Night <-> day: the new theme grows out of the toggle as a circle (see ThemeToggle).
+   Without the class, the browser's default crossfade is used (auto switches, reduced motion). */
+html.theme-reveal::view-transition-old(root),
+html.theme-reveal::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
 }
 
 body {
@@ -22,206 +193,273 @@ body {
 }
 
 ::selection {
-  background-color: rgba(55, 81, 123, 0.22);
+  background-color: rgba(55, 81, 123, 0.2);
   color: var(--foreground);
 }
 
-.bg-noise {
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 256px 256px;
+/* Inline links in running copy (story, past page). */
+.link {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in srgb, var(--color-accent) 30%, transparent);
+  transition: text-decoration-color 150ms;
+}
+.link:hover {
+  text-decoration-color: var(--color-accent);
 }
 
-/* Work / Past / etc.: explicit black curtain (home uses polaroid Loader on top instead). */
-.revealer--route {
-  background-color: #111;
+/* Horizontal carousels: hide the scrollbar, keep native scroll + snap. */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
-.explosion-container {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 200%;
-  pointer-events: none;
+/* Tailwind v4 defaults buttons to cursor: default. */
+button:not(:disabled),
+[role="button"]:not(:disabled) {
+  cursor: pointer;
 }
 
-.explosion-container-img {
-  position: absolute;
-  bottom: -200px;
-  left: 50%;
-  width: 150px;
-  transform: translateX(-50%);
-  will-change: transform;
-  object-fit: cover;
-  border-radius: 12px;
+.prose {
+  --tw-prose-body: var(--foreground);
+  --tw-prose-headings: var(--foreground);
+  --tw-prose-links: var(--foreground);
+  --tw-prose-bold: var(--foreground);
 }
 
-.sticky img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.work section {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-}
-
-/* WorkInfo full-page slider: needs real height + no overflow clip for pin/sticky */
-.work section.workinfo-section {
-  height: auto;
-  min-height: 100vh;
-  overflow: visible;
-}
-
-/* Polaroid gallery is a normal document section — must not use legacy .work section 100vh clip */
-.work section.workinfo-polaroid-grid {
-  height: auto;
-  min-height: 0;
-  overflow: visible;
-}
-
-.titles h1 {
-  text-transform: uppercase;
-  font-size: 12vw;
-  font-weight: 900;
-  color: black;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-style: italic;
-  will-change: transform;
-  letter-spacing: -0.02em;
-  line-height: 0.9;
-}
-
-h1.title-1 {
-  color: #fa6c6c;
-  text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
-}
-h1.title-2 {
-  color: #10d0f4;
-  text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
-}
-
-.titles {
-  position: absolute;
-  top: 0%;
-  left: 0%;
-  width: 400vw;
-  height: 100vh;
-  display: flex;
-  will-change: transform;
-}
-
-.title {
-  position: relative;
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.images {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 250vw;
-  height: 250vw;
-  transform-style: preserve-3d;
-  perspective: 2000px;
-  z-index: -1;
-}
-
-.card {
-  position: absolute;
-  width: 500px;
-  background: white;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.card-content {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.card img {
-  width: 100%;
-  height: 400px;
-  object-fit: cover;
-}
-
-.card-text {
-  padding: 16px;
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: #333;
-  text-align: center;
-  background: white;
-}
-
-/* WorkInfo: document scroll drives full-viewport slider; avoid nested scroll for sticky */
-.workinfo-section {
-  width: 100%;
-  position: relative;
-  overflow: visible;
-}
-
-/* Add a class for PastTell to allow vertical scrolling if content overflows */
-.pasttell-section {
-  min-height: 100vh;
-  height: auto;
-  overflow-y: auto;
-  width: 100vw;
-  position: relative;
-}
-
-/* Do NOT change the default section styles for sticky/WorkTell */
-
-/* Hero fluid: must live inside a `position: relative` ancestor with min-height;
-   percentage height alone often collapses to 0 when the parent only has min-height. */
-.gradient-canvas {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  width: 100%;
-  min-height: 100%;
-  pointer-events: none;
-}
-
-.gradient-canvas canvas {
-  display: block;
-  width: 100% !important;
-  height: 100% !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .gradient-canvas {
-    background-color: #f8f6f0;
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
   }
 }
 
-.transition-grid {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 9998;
-  overflow: hidden;
+/* Now-playing equalizer bars */
+@keyframes eq {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
 }
 
-.transition-block {
+/* react-tweet cards on the inspiration board, restyled to sit on the paper. */
+.inspo-tweet .react-tweet-theme {
+  --tweet-container-margin: 0;
+  --tweet-font-family: var(--font-geist), system-ui, sans-serif;
+  --tweet-font-color: var(--color-ink);
+  --tweet-font-color-secondary: var(--color-muted);
+  --tweet-bg-color: #fffdf8;
+  --tweet-bg-color-hover: #fffdf8;
+  --tweet-border: 1px solid var(--color-line);
+  --tweet-body-font-size: 15px;
+  --tweet-body-line-height: 1.45;
+  --tweet-header-font-size: 14px;
+  --tweet-info-font-size: 13px;
+  --tweet-actions-font-size: 13px;
+  --tweet-replies-font-size: 13px;
+  --tweet-color-blue-secondary: var(--color-accent);
+  border-radius: 10px;
+  min-width: 0;
+  width: 100%;
+  transition: box-shadow 0.35s, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.inspo-tweet .react-tweet-theme:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px -18px rgba(0, 0, 0, 0.25);
+}
+/* Keep tweets quiet on the board: no action bar or "read replies". */
+.inspo-tweet [class*="tweet-actions-module"][class$="__actions"],
+.inspo-tweet [class*="tweet-replies-module"] {
+  display: none;
+}
+
+/* Footer link to /retro: a tiny CRT. Phosphor text, scanlines, a rolling bar; static on hover. */
+.retro-chip {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 4px;
+  padding: 3px;
+  border-radius: 7px;
+  background: linear-gradient(180deg, #6b4428, #4a2d19);
+  box-shadow: inset 0 1px 0 rgba(255, 220, 180, 0.3), 0 4px 10px -4px rgba(0, 0, 0, 0.5);
+  rotate: -2deg;
+}
+.retro-chip-screen {
+  position: relative;
+  overflow: hidden;
+  padding: 2px 9px;
+  border-radius: 5px / 8px;
+  background: radial-gradient(ellipse at center, #0f2a1b, #04100a 80%);
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.9);
+}
+.retro-chip-screen::before,
+.retro-chip-screen::after {
+  content: "";
   position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+/* Scanlines + a slow rolling bar. */
+.retro-chip-screen::before {
+  background:
+    linear-gradient(180deg, transparent 0 40%, rgba(160, 255, 190, 0.12) 50%, transparent 60%) 0 0 / 100% 300%,
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.35) 0 1px, transparent 1px 3px);
+  animation: chip-roll 3.2s linear infinite;
+}
+/* Static, shown on hover. */
+.retro-chip-screen::after {
   opacity: 0;
+  background:
+    repeating-radial-gradient(circle at 17% 32%, #fff 0 0.5px, transparent 1px 2px),
+    repeating-radial-gradient(circle at 73% 61%, #aaa 0 0.5px, transparent 1px 3px);
+  background-size: 7px 7px, 11px 11px;
+  transition: opacity 150ms var(--ease-out);
+}
+.retro-chip-text {
+  position: relative;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #b8ffc8;
+  text-shadow: 0 0 5px rgba(120, 255, 160, 0.8), 0.7px 0 rgba(255, 60, 90, 0.5), -0.7px 0 rgba(60, 160, 255, 0.5);
+  animation: chip-flicker 4s steps(1) infinite;
+}
+.retro-chip-knobs {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  padding-right: 2px;
+}
+.retro-chip-knobs i {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 35% 30%, #d9c9a8, #6b5a3a);
+}
+@media (hover: hover) and (pointer: fine) {
+  .retro-chip {
+    transition: rotate 200ms var(--ease-out), scale 160ms var(--ease-out);
+  }
+  .retro-chip:hover {
+    rotate: 1deg;
+  }
+  .retro-chip:hover .retro-chip-screen::after {
+    opacity: 0.55;
+    animation: chip-static 120ms steps(3) infinite;
+  }
+  .retro-chip:hover .retro-chip-text {
+    animation: chip-glitch 300ms steps(2) infinite;
+  }
+}
+@keyframes chip-roll {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: 0 100%, 0 0; }
+}
+@keyframes chip-flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 0.75; }
+  93% { opacity: 1; }
+}
+@keyframes chip-static {
+  33% { background-position: 3px 2px, -4px 5px; }
+  66% { background-position: -2px 4px, 5px -3px; }
+}
+@keyframes chip-glitch {
+  50% { transform: translateX(1px) skewX(-6deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .retro-chip-screen::before,
+  .retro-chip-text {
+    animation: none;
+  }
+}
+
+/* Footer teaser for Shrit TV. */
+.tv-teaser-set {
+  padding: 7px 7px 9px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #6b4428, #4a2d19);
+  box-shadow: inset 0 1px 0 rgba(255, 220, 180, 0.3), 0 14px 24px -12px rgba(0, 0, 0, 0.5);
+  rotate: -3deg;
+  transition: rotate 300ms var(--ease-out);
+}
+.tv-teaser-antenna {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  width: 44px;
+  height: 22px;
+  translate: -50% 0;
+  background:
+    linear-gradient(60deg, transparent 47%, #6b5a3a 47% 53%, transparent 53%) left / 50% 100% no-repeat,
+    linear-gradient(-60deg, transparent 47%, #6b5a3a 47% 53%, transparent 53%) right / 50% 100% no-repeat;
+}
+.tv-teaser-screen {
+  border-radius: 9px / 14px;
+  background: #06110b;
+  box-shadow: inset 0 0 14px rgba(0, 0, 0, 0.9);
+}
+.tv-teaser-still {
+  opacity: 0;
+  filter: sepia(0.3) hue-rotate(70deg) saturate(1.2) contrast(1.1);
+  animation: teaser-channel 8s steps(1) infinite;
+}
+/* Each still owns a 1.6s slot of the 8s loop. */
+@keyframes teaser-channel {
+  0% { opacity: 1; }
+  20%, 100% { opacity: 0; }
+}
+.tv-teaser-static {
+  opacity: 0;
+  background:
+    repeating-radial-gradient(circle at 17% 32%, #fff 0 0.6px, transparent 1px 2px),
+    repeating-radial-gradient(circle at 73% 61%, #999 0 0.6px, transparent 1px 3px);
+  background-size: 7px 7px, 11px 11px;
+  animation: teaser-static 1.6s steps(1) infinite;
+}
+/* A blink of static on every channel flip. */
+@keyframes teaser-static {
+  0% { opacity: 0.9; background-position: 0 0, 0 0; }
+  3% { opacity: 0.7; background-position: 3px 2px, -4px 5px; }
+  6%, 100% { opacity: 0; }
+}
+.tv-teaser-lines {
+  background:
+    radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.6)),
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.3) 0 1px, transparent 1px 3px);
+}
+.tv-teaser-onair {
+  color: #ff5a4f;
+  text-shadow: 0 0 6px rgba(255, 60, 60, 0.8);
+  animation: chip-flicker 1.4s steps(1) infinite;
+}
+@media (hover: hover) and (pointer: fine) {
+  .tv-teaser:hover .tv-teaser-set {
+    rotate: 2deg;
+  }
+  .tv-teaser:hover .tv-teaser-static {
+    animation-duration: 0.4s;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tv-teaser-still {
+    animation: none;
+  }
+  .tv-teaser-still:first-child {
+    opacity: 1;
+  }
+  .tv-teaser-static,
+  .tv-teaser-onair {
+    animation: none;
+  }
 }

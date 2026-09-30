@@ -16,14 +16,6 @@ export const metadata: Metadata = {
   description: defaultDescription,
   authors: [{ name: "Shrit", url: baseUrl }],
   creator: "Shrit",
-  icons: {
-    icon: [
-      {
-        url: "/favicon.png",
-        sizes: "any",
-      },
-    ],
-  },
   openGraph: {
     type: "website",
     locale: "en_US",

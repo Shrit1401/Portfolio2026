@@ -89,7 +89,7 @@ export default function AttentionHeatmap({ className = "" }: { className?: strin
                 return (
                   <div
                     key={j}
-                    className={`flex-1 h-8 flex items-center justify-center text-[9px] font-mono rounded-sm mx-[1px] transition-all duration-200 ${
+                    className={`flex-1 h-8 flex items-center justify-center text-[9px] font-mono rounded-sm mx-px transition-all duration-200 ${
                       masked ? "bg-neutral-100 text-neutral-300" : isActive ? "ring-1 ring-blue-400" : ""
                     }`}
                     style={
@@ -97,7 +97,7 @@ export default function AttentionHeatmap({ className = "" }: { className?: strin
                         ? {}
                         : {
                             backgroundColor: `rgba(29,78,216,${w * 0.85 + 0.05})`,
-                            color: w > 0.4 ? "#fff" : w > 0.15 ? "#1e3a8a" : "#9ca3af",
+                            color: w > 0.4 ? "#fff" : w > 0.15 ? "var(--color-blue-900, #1e3a8a)" : "var(--color-gray-400, #9ca3af)",
                           }
                     }
                     title={masked ? "masked (future)" : `${(w * 100).toFixed(0)}%`}

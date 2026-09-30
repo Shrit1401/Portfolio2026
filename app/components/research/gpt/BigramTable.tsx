@@ -65,7 +65,7 @@ export default function BigramTable({ className = "" }: { className?: string }) 
                 return (
                   <div
                     key={colIdx}
-                    className={`flex-1 h-9 flex items-center justify-center text-[10px] font-mono rounded mx-[1px] transition-all duration-150 border ${
+                    className={`flex-1 h-9 flex items-center justify-center text-[10px] font-mono rounded mx-px transition-all duration-150 border ${
                       isTop3
                         ? "border-blue-600 bg-blue-50 text-blue-700 font-semibold"
                         : "border-transparent"
@@ -74,8 +74,8 @@ export default function BigramTable({ className = "" }: { className?: string }) 
                       isTop3
                         ? {}
                         : {
-                            backgroundColor: `rgba(0,0,0,${prob * 0.55})`,
-                            color: prob > 0.3 ? "#fff" : "#6b7280",
+                            backgroundColor: `color-mix(in srgb, var(--color-ink) ${prob * 55}%, transparent)`,
+                            color: prob > 0.3 ? "var(--color-paper)" : "var(--color-gray-500, #6b7280)",
                           }
                     }
                   >

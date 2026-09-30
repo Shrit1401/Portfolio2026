@@ -1,22 +1,15 @@
 import type { Metadata } from "next";
-import type { FC, ReactNode } from "react";
-import { DM_Sans, EB_Garamond, Instrument_Serif, Newsreader } from "next/font/google";
+import type { ReactNode } from "react";
+import { Geist, Instrument_Serif, Newsreader } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "./components/SmoothScroll";
 import SiteJsonLd from "./components/SiteJsonLd";
 import { metadata as seoMetadata } from "./components/SEO";
-import TransitionProvider from "./hooks/TransitionProvider";
+import { themeScript } from "./lib/theme";
 
-// Font configurations
-const dmSans = DM_Sans({
+const geist = Geist({
   subsets: ["latin"],
-  variable: "--font-dm-sans",
-  display: "swap",
-});
-
-const ebGaramond = EB_Garamond({
-  subsets: ["latin"],
-  variable: "--font-eb-garamond",
+  variable: "--font-geist",
   display: "swap",
 });
 
@@ -38,43 +31,26 @@ const newsreader = Newsreader({
 
 export const metadata: Metadata = seoMetadata;
 
-interface RootLayoutProps {
-  children: ReactNode;
-}
-
-const RootLayout: FC<RootLayoutProps> = ({ children }) => {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <>
+    <html
+      lang="en"
+      // The theme script adds `theme-dark` before hydration.
+      suppressHydrationWarning
+      className={`${geist.variable} ${instrumentSerif.variable} ${newsreader.variable}`}
+    >
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=UnifrakturCook:wght@700&display=swap"
-        />
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <script
           defer
           src="https://cloud.umami.is/script.js"
           data-website-id="369e35b2-80fb-48ed-a840-9a68246a3c68"
         ></script>
       </head>
-      <html
-        lang="en"
-        className={`${dmSans.variable} ${ebGaramond.variable} ${instrumentSerif.variable} ${newsreader.variable}`}
-      >
-        <body className="font-sans antialiased">
-          <SiteJsonLd />
-          <TransitionProvider>
-            <SmoothScroll>{children}</SmoothScroll>
-          </TransitionProvider>
-        </body>
-      </html>
-    </>
+      <body className="font-sans antialiased">
+        <SiteJsonLd />
+        <SmoothScroll>{children}</SmoothScroll>
+      </body>
+    </html>
   );
-};
-
-export default RootLayout;
+}

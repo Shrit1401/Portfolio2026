@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
@@ -74,21 +76,19 @@ const StatueModel = () => {
         // Scale the model if needed
         const size = box.getSize(new THREE.Vector3());
         const maxDim = Math.max(size.x, size.y, size.z);
-        const scale = 5 / maxDim;
+        const scale = 5.3 / maxDim;
         model.scale.multiplyScalar(scale);
 
         scene.add(model);
       },
-      (xhr) => {
-        console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-      },
+      undefined,
       (error) => {
         console.error("An error happened while loading the model:", error);
       },
     );
 
     // Camera position
-    camera.position.z = 7;
+    camera.position.z = 5.6;
     camera.position.y = 0;
 
     // Controls

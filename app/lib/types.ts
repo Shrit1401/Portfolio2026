@@ -3,6 +3,12 @@ export interface Research {
   description: string;
   date: string;
   markdown: string;
+  /** Cover still shown on cards, e.g. /covers/<slug>.jpg */
+  cover?: string;
+  /** Where the cover still is from, shown as a small caption. */
+  coverCredit?: string;
+  /** CSS aspect ratio for the article's cover, e.g. "5 / 2". Defaults to 16 / 8.7. */
+  coverAspect?: string;
   tags?: Array<{
     name: string;
     slug: {

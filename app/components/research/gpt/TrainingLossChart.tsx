@@ -84,7 +84,7 @@ export default function TrainingLossChart({ className = "" }: { className?: stri
   const trainPts = showFt ? [...TRAIN_MAIN, ...TRAIN_FT.slice(1)] : TRAIN_MAIN;
   const valPts = showFt ? [...VAL_MAIN, ...VAL_FT.slice(1)] : VAL_MAIN;
 
-  function handleMouseMove(e: React.MouseEvent<SVGSVGElement>) {
+  function handlePointerMove(e: React.PointerEvent<SVGSVGElement>) {
     if (!svgRef.current) return;
     const rect = svgRef.current.getBoundingClientRect();
     const svgX = ((e.clientX - rect.left) / rect.width) * VW;
@@ -123,9 +123,11 @@ export default function TrainingLossChart({ className = "" }: { className?: stri
           ref={svgRef}
           viewBox={`0 0 ${VW} ${VH}`}
           width="100%"
-          style={{ minWidth: 300, display: "block", cursor: "crosshair" }}
-          onMouseMove={handleMouseMove}
-          onMouseLeave={() => setScrubber(null)}
+          // pan-y keeps vertical page scroll on phones while a horizontal drag scrubs.
+          style={{ minWidth: 300, display: "block", cursor: "crosshair", touchAction: "pan-y" }}
+          onPointerMove={handlePointerMove}
+          onPointerDown={handlePointerMove}
+          onPointerLeave={() => setScrubber(null)}
         >
           {yTicks.map((loss) => (
             <line key={loss} x1={ML} y1={yOf(loss)} x2={ML + CW} y2={yOf(loss)} stroke="#e5e7eb" strokeWidth="1" />

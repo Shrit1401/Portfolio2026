@@ -32,7 +32,7 @@ export default function ImageLightbox({ src, onClose }: ImageLightboxProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
-          className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 cursor-zoom-out p-6"
+          className="fixed inset-0 z-200 flex items-center justify-center bg-black/80 cursor-zoom-out p-6"
           onClick={onClose}
         >
           <motion.img

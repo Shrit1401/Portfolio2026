@@ -2,11 +2,167 @@ import { Research } from "./types";
 
 export const researchPosts: Research[] = [
   {
+    title: "Not Being Ambitious Is Also Fine",
+    description: "Why don't more people try to build something they like?",
+    date: "2026-09-30T10:43:15.000Z",
+    slug: { current: "not-being-ambitious-is-also-fine" },
+    cover: "/covers/not-being-ambitious-is-also-fine.jpg",
+    coverCredit: "© 1995 Aoi Hiiragi, Shueisha/Hayao Miyazaki/Studio Ghibli, NH",
+    coverAspect: "5 / 2",
+    tags: [{ name: "Thoughts", slug: { current: "thoughts" } }],
+    markdown: `**Why don't more people try to build something they like?**
+
+I've been trying to understand this since I came to college. When I ask people what they want to do, I tend to get the same answers. Get through college. Sit for placements. Go abroad for further studies. Find a job.
+
+When I ask about passion, they say they're still looking for things that excites them.
+
+I started to realise that, for many of them, work was something they had to do so they could enjoy the rest of their lives.
+
+That was something I couldn't get my head around, You have one life. There are problems you could solve, films you could make, robots you could build. You could spend years getting good at any of these things. What was making people hesitate?
+
+At first, I thought there were two kinds of people: those who were ambitious and those who weren't.
+
+But the more I talked to people, the less sense that made.
+
+# Ambition and passion
+
+When I say, *"I wish people would do something"*, I don't mean they should all them should start companies. I'd be just as interested in someone learning an language, picking up a instrument, or making furniture. How long they've been doing it for matters less to me than how much they care.
+
+And even that is hard to judge from one conversation.
+
+Someone might want a stable job to support their parents. Someone else might want free time to play games with friends. Or they might just want a small place they can call home.
+
+I don't get to dismiss a life that doesn't look like mine.
+
+Wanting to do something big doesn't mean you're interested in the work it takes. You can want to be a founder without wanting to run a company. You can dream of making films without wanting to spend your days writing and editing them.
+
+It's quite easy to fall in love with the person you imagine becoming. You may know very little about how that person spends their day.
+
+Going to gym for example, I go because I want to be healthier and look better in six months. I don't particularly like lifting weights.
+
+I like to call such people, “larpers” for wanting an identity more than the work behind it. But here I am, going to the gym for the result. And I'm still going. The effort doesn't become fake just because I want what comes after it.
+
+So ambition and passion seem like different things to me.
+
+Ambition is the vision of who you want to become. Passion is caring about something enough to keep spending time on it.
+
+Ideally, you'd have both. They need be together always.
+
+That makes my original question harder to answer. Am I judging people simply by whether they've started making things? Someone who seems to be only consuming might still be figuring out what they want to make.
+
+I don't have a good answer yet.
+
+# Finding something to care about
+
+I think some of this confusion comes from how I've grown up.
+
+You study because there's an exam. You code because there's a lab submission. You get an internship because everyone around you is getting one. Eventually, you get a job because, of course, you need a salary.
+
+Each step seems sensible. It gets you somewhere.
+
+But after years of this, you start asking yourself what you'd do without being told where to go next. What would I spend 200 hours getting good at if nobody had asked me to? Would I do it just because I liked it, even if it gave me nothing to post on LinkedIn?
+
+I sometimes think people who do great things begin as rebels before they even know what they're rebelling for. Something makes them question the path they've been given. They start to suspect there are other ways to live.
+
+I think about Steve Jobs, for instance. Would he have built Apple if he'd grown up without knowing he was adopted? There's no way to know. Pretty sure plenty of other things shaped him. But I wonder how many of the things that unsettle us also make us question what everyone else takes for granted.
+
+I'm hardly outside all this. I still hate studying for exams. I put aside things I want to build because I don't want to fail or disappoint my dad. I try to save as much time as I can for what I love, but I feel that pull too.
+
+Perhaps this is why “I haven't found my passion yet” is such a common answer. We expect to find something that tells us what to do next.
+
+People make passion sound like a shiny object on a supermarket shelf. Keep looking, and eventually you'll spot yours.
+
+I'm not sure that's how it happens.
+
+A lot of my urge to build comes from seeing something someone else has made. It could be a product, a film, or a strange little project. I get excited. Then, at some point, I start wondering whether I could make something like it.
+
+*George Lucas was deeply influenced by experimental films, including Arthur Lipsett's short films. He made small films himself long before Star Wars.*
+
+That is the part I find interesting. Someone enjoys something, then starts wondering about making it. What makes them cross over? Why does watching something or someone give one person the urge to try, while another is happy to just keep watching?
+
+I don't know. But I think trying can change what you want.
+
+At first, you barely know what you're doing. The thing you make, looks really bad compared to what it is in your head. But because, some small part of it is still interesting, you keep going.
+
+You get a little better. You begin to notice stuff you couldn't see before. Those details give you more to try. After a while, you may care about the work far more than you expected to.
+
+By then, you might call it passion. You didn't necessarily know that when you started. You just wanted to see if you could do it.
+
+This won't happen with everything. You might try making a film and find out that you prefer watching films.
+
+But if you're waiting to be sure you love making films before you make one, what are you basing that certainty on?
+
+# Making something bad
+
+There's an awkward part to all this. It's much easier to enjoy someone else's work than to be bad at your own.
+
+The film was sick. The music made you feel exactly what it was supposed to. The app seemed so beautiful. Then you try making something, and all you can think is, this is shit.
+
+> A friend of mine really liked *The Odyssey*. He seemed so inspired by it that I asked what was stopping him from making the next one.
+>
+> He said he couldn't. He didn't have what Christopher Nolan had.
+>
+> I suggested starting with something small. People recreate scenes from animes all the time. Why not make a short clip? But he didn't seem interested. He was already sure his version would be bad.
+
+I think a lot of people would rather leave the idea alone than make something that disappoints them.
+
+I understand some of that. When you love a piece of work, you're seeing what someone managed to make after years of effort. You can feel how much went into it. Your first attempt is unlikely to give you that feeling.
+
+J.K. Rowling spent five years writing the first Harry Potter book. Even after she'd finished, it took another year to find a publisher, twelve publishers turned it down. We only got to read that book because she kept going through years of writing and rejection.
+
+So how do you build a culture where people keep trying? Where making something bad is a reason to have another go, rather than a reason to stop?
+
+# The people around you
+
+I think a large part of the answer is other people.
+
+I've started studying so many times just because my roommate was studying. I look at him, think, “I'm going to fail,” and open my notes.
+
+If that can get me to do something I don't even like, what would happen if the people around me were always making things?
+
+I imagine a room where someone is editing a film and someone else is building an app. In the corner, there's a half made robot, whole desk being messy with parts of it.
+
+It would be easier to begin before you knew what you wanted the whole thing to become.
+
+There's another thing that seeing people work might help with. When people talk about finding something they love, they sometimes make it sound as if everything after that will be easy. Find the shiny object and you're sorted.
+
+That hasn't been my experience.
+
+Say you want to build robots. You're excited about it. Then you run into electronics, mechanics, code, and all the other things the robot needs. You might hate mechanics. Being interested in the robot doesn't mean you'll enjoy every subject involved in making it work.
+
+I do this too. I want building my own thing to be fun every minute.
+
+Then there are cold emails to send. People to talk to who aren't interested. Rejections. Weeks spent changing something and getting nowhere. Sometimes I spend more time on the parts I hate than on the building I wanted to do.
+
+But when a few things finally work, I can step back and see what they're adding up to. That's when the effort feels worth it.
+
+Does someone need to be especially ambitious to go through all this?
+
+I'm starting to think we already do it in plenty of other parts of life. If you want to get better at talking to girls, you have to talk to them and risk being rejected. If you want new friends, you have to meet people and find out who you get along with.
+
+Most people I've spoken to seem to understand this. They know it can be awkward. They do it because having the relationship is worth getting through the awkward part.
+
+I wish we'd think about work in a similar way. You can't figure out who you'll become friends with by avoiding every conversation. It's hard to know what work you'll care about if you never get the chance to try it.
+
+People should have those chances. They shouldn't need a huge ambition before they're allowed to explore an interest. It would help to be around others who were doing the same.
+
+Some might find something they want to spend years on. Others might try it and move on. Some might find something they want to spend years on. Others might try it and move on. Either way, they'll know a little more about what they enjoy.
+
+Most people may never want to change the world. I'd still like them to have a chance to discover something they enjoy doing in it.
+
+Shrit
+
+*I'm still figuring this out. I might read this a year from now and think differently. I'm learning, so don't take every work by heart :)*
+`,
+  },
+  {
     title: "Making ur own GPT",
     description:
       "Building a small GPT from scratch using transformers, training on personal data, and optimizing it step by step.",
     date: "2026-05-21T12:00:00.000Z",
     slug: { current: "making-ur-own-gpt" },
+    cover: "/covers/making-ur-own-gpt.jpg",
+    coverCredit: "The Wind Rises (2013), Studio Ghibli",
     tags: [{ name: "AI", slug: { current: "ai" } }],
     markdown: `# How did it start?
 
@@ -255,6 +411,8 @@ YT Video: [https://youtu.be/kCc8FmEb1nY](https://youtu.be/kCc8FmEb1nY)
     description: "What If You Didn’t Have to Go to School?",
     date: "2025-07-23T18:21:42.540Z",
     slug: { current: "homeschooling" },
+    cover: "/covers/homeschooling.jpg",
+    coverCredit: "Whisper of the Heart (1995), Studio Ghibli",
     tags: [{ name: "Research", slug: { current: "research" } }],
     markdown: `# Tl;dr (too long didn’t read)
 
