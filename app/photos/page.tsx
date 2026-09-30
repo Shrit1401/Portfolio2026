@@ -6,6 +6,8 @@ import Board from "./Board";
 import { getInspirationPins } from "../lib/inspiration";
 
 export const metadata: Metadata = {
+  // X only serves tweet videos (video.twimg.com) to requests without a foreign Referer; anything else gets a 403.
+  referrer: "no-referrer",
   title: "Inspiration",
   description:
     "Things that keep Shrit building: people, books, films, music, quotes and posts.",

@@ -463,3 +463,29 @@ button:not(:disabled),
     animation: none;
   }
 }
+
+/* Live board media (see app/photos/LiveMedia.tsx): autoplaying muted loop, so hide react-tweet's play button and "Watch on X". */
+.tweet-live [class*="tweet-media-video-module"][class*="videoButton"],
+.tweet-live [class*="tweet-media-video-module"][class*="watchOnTwitter"] {
+  display: none;
+}
+.tweet-live video {
+  cursor: pointer;
+}
+.tweet-sound {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  z-index: 2;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(20, 19, 17, 0.62);
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.4;
+  backdrop-filter: blur(6px);
+  transition: background 0.2s;
+}
+.tweet-sound:hover {
+  background: rgba(20, 19, 17, 0.8);
+}

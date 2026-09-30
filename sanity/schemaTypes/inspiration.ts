@@ -17,7 +17,7 @@ export const inspirationBoard = defineType({
       name: "pins",
       title: "Pins",
       description:
-        "Reading order across the masonry. Mix images, quotes and tweets so it never feels like a list.",
+        "Reading order across the masonry. Mix images, videos, quotes and tweets so it never feels like a list.",
       type: "array",
       of: [
         defineArrayMember({
@@ -41,6 +41,35 @@ export const inspirationBoard = defineType({
           preview: {
             select: { title: "caption", media: "image" },
             prepare: ({ title, media }) => ({ title, subtitle: "Image", media }),
+          },
+        }),
+        defineArrayMember({
+          type: "object",
+          name: "videoPin",
+          title: "Video",
+          fields: [
+            defineField({
+              name: "video",
+              type: "file",
+              description: "An .mp4 (H.264) plays everywhere. It autoplays muted and loops on the board; tap for sound.",
+              options: { accept: "video/mp4,video/webm,video/quicktime" },
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: "poster",
+              type: "image",
+              description: "Optional still shown while the video loads (and for people who turn off motion).",
+            }),
+            defineField({
+              name: "caption",
+              type: "string",
+              validation: (Rule) => Rule.required(),
+            }),
+            linkField,
+          ],
+          preview: {
+            select: { title: "caption", media: "poster" },
+            prepare: ({ title, media }) => ({ title, subtitle: "Video", media }),
           },
         }),
         defineArrayMember({
