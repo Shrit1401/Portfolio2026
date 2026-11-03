@@ -2,11 +2,11 @@ import { Research } from "./types";
 
 export const researchPosts: Research[] = [
   {
-    title: "Outside the Bubble",
+    title: "Your Mom Doesn’t Care Which Model You Use",
     description: "What I found when I started asking people in college what they do with AI.",
     date: "2026-11-03T12:00:00.000Z",
-    slug: { current: "outside-the-bubble" },
-    cover: "/covers/outside-the-bubble.jpg",
+    slug: { current: "your-mom-doesnt-care-which-model-you-use" },
+    cover: "/covers/your-mom-doesnt-care-which-model-you-use.jpg",
     coverCredit: "© 1989 Eiko Kadono/Hayao Miyazaki/Studio Ghibli, NH",
     tags: [{ name: "AI", slug: { current: "ai" } }],
     markdown: `I've been following AI closely for a while. I don't care much about which model is ahead, but I keep asking people in college what they're doing with it. The answers are a lot stranger than I expected.
@@ -71,7 +71,7 @@ The friend who made the bakery website later started making little 3D bots to he
 
 I love that she kept coming up with things. I gave her access to a tool for a day. I couldn't have picked all those ideas for her.
 
-It makes me wonder how many people in college have something they'd like to make but assume they can't. If coding was the only thing stopping them, what beautiful things could they build now?
+It makes me wonder how many people in college have something they'd like to make but assume they can't. If coding was the only thing stopping them, how many could now build [something beautiful](/posts/not-being-ambitious-is-also-fine)?
 
 # Who are we building for?
 
@@ -86,8 +86,6 @@ I'd like someone who's never written code to be able to explain what they need a
 When I went home, my father was working in Excel. A friend's father, who works as a manager at a non-tech company, seemed to think AI was something to stay away from.
 
 For some people I spoke to, AI seemed like a person they'd heard bad things about but had never really met. If you mostly hear about jobs going away and people's work being copied, a timetable probably isn't what comes to mind.
-
-# The work beyond the code
 
 That means getting better at parts of the work I've often avoided. Writing code used to take long enough that I could feel busy without finding out whether anyone wanted the thing I was making. AI lets me get to that uncomfortable question much sooner.
 
