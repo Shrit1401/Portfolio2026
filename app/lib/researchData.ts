@@ -2,6 +2,111 @@ import { Research } from "./types";
 
 export const researchPosts: Research[] = [
   {
+    title: "Outside the Bubble",
+    description: "What I found when I started asking people in college what they do with AI.",
+    date: "2026-11-03T12:00:00.000Z",
+    slug: { current: "outside-the-bubble" },
+    cover: "/covers/outside-the-bubble.jpg",
+    coverCredit: "© 1989 Eiko Kadono/Hayao Miyazaki/Studio Ghibli, NH",
+    tags: [{ name: "AI", slug: { current: "ai" } }],
+    markdown: `I've been following AI closely for a while. I don't care much about which model is ahead, but I keep asking people in college what they're doing with it. The answers are a lot stranger than I expected.
+
+Around November last year, I stopped writing most of my code myself. I thought I was late in this AI race. Then I started talking to my classmates and found that plenty were still writing most of it by hand. I honestly couldn't understand why. Why spend so much time on code you could ask AI to write for you?
+
+My roommate and I had made a little bubble. We'd try new models, send each other things, and talk about what we could build. From inside our room, this way of working felt normal.
+
+# What people think AI is
+
+A friend studying law uses AI for research but doesn't see why she'd use it for a small task in Excel. She's completely against AI art. Another friend is excited about doing more work herself and spending less money. My classmates are thinking about assignments and jobs.
+
+I usually have something I want to make. That's where my mind goes first.
+
+One designer friend told me she didn't see the point of being a designer if AI could do the work. She preferred to use less of it.
+
+I asked why a client would care. If I could give them something just as good, faster and for less money, wouldn't they choose that? She said some people would still want a person to make it.
+
+I still think plenty of clients will choose the cheaper option. But I was talking about saving them money. She was trying to work out what would happen to something she'd learned to do.
+
+A few days ago, a friend and I were eating lunch while Claude Code rebuilt a website from her phone. It was writing the code and putting everything into the right folders.
+
+I used to sit at my computer and do all of that. Open the terminal, set up the project, write the code, fix what broke. Now it was happening while we ate.
+
+I loved watching it. I also felt a little useless. I'd spent years learning to do this, and here it was, running on a phone during lunch. I still wanted it to get better. I just hadn't expected that to feel so strange.
+
+# What are we supposed to learn?
+
+Some of my classmates are following the same plan their seniors did: learn data structures and algorithms, practise interview questions, and get a job. When I ask why, some say it's what the seniors told them to do.
+
+I don't like that answer. A senior can tell you how they got hired. They can't tell you what your work will look like four years from now. AI labs are shipping something new almost every day. How can you expect everything to stay the same for the next four years?
+
+But I wasn't giving them much of an answer either. I kept asking why they should learn things AI could already do.
+
+I'd learned to code before I had these tools. That helps me know what to ask for and when something looks wrong. It's easy to forget how much I'm using that knowledge while telling someone else they don't need to learn it.
+
+A friend told me she was learning HTML, one of the basics of making a website. I laughed a little and asked why. She was dead serious. She wanted to start with the basics and understand how things worked.
+
+I liked that. I also wanted to see what she'd come up with if she got a taste of what frontier models could code in a day. So I gave her access to my AI subscription and told her to go all in.
+
+The next day, she showed me a website she'd made for her mother's bakery.
+
+It was beautiful. She'd barely started learning to code, and she'd already made something for her mom. Now she wanted to build more tools for the family business, including a way to keep track of customers. She was finding ideas in problems she'd seen at home.
+
+Then I started asking about deploying the website and making sure it worked. There was a lot more for her to learn from it.
+
+She said she wanted to understand the code, but as far as I could tell, she hadn't gone back to work through it. I hoped the site would make her curious. I was also pushing her to learn, so I can't say how much she'd have learned on her own.
+
+When I learned to code, wanting to see my idea work was what got me through the confusing parts. I didn't have to enjoy all of them. If I wanted the website, I had to learn enough to make it. The reward was on the other side of the work.
+
+She got the reward on the first day.
+
+What would make her go back? I could tell her it was good to understand the code, but she'd already seen her idea on the screen. Learning how it worked now looked like extra homework. I'd helped her skip the parts that slowed me down. Some of those were also the parts that made me learn.
+
+# A day to try
+
+I tried the same thing with another friend. I let him use Codex, and he started building a product he thought people would want.
+
+He soon started thinking about how to find out what people wanted, so I told him what I'd been trying. He started doing something similar. His process needed work, but he had something to work on. I've spent plenty of time thinking about what to build without getting that far.
+
+The friend who made the bakery website later started making little 3D bots to help her with daily tasks.
+
+I love that she kept coming up with things. I gave her access to a tool for a day. I couldn't have picked all those ideas for her.
+
+It makes me wonder how many people in college have something they'd like to make but assume they can't. If coding was the only thing stopping them, what beautiful things could they build now?
+
+# Who are we building for?
+
+My mother makes timetables for her teachers every Sunday. I'd like to help her learn AI by working on that together. I want her to get comfortable enough to try other ideas herself, without waiting for me to help.
+
+A lot of the tools I see seem built for people like me, people who already know the technical side well. I'll install something unfamiliar and spend an afternoon figuring it out. I enjoy some of that. Someone trying to finish their work might reasonably wonder why I've given them more work.
+
+For the last few years, much of the AI progress I followed was about writing code. That made it easy for people like me to see what it could do. I think we're now starting to make that power easier for other people to use.
+
+I'd like someone who's never written code to be able to explain what they need and work with AI to make it. There are so many people who know a problem well but have never had a way to build their own answer.
+
+When I went home, my father was working in Excel. A friend's father, who works as a manager at a non-tech company, seemed to think AI was something to stay away from.
+
+For some people I spoke to, AI seemed like a person they'd heard bad things about but had never really met. If you mostly hear about jobs going away and people's work being copied, a timetable probably isn't what comes to mind.
+
+# The work beyond the code
+
+That means getting better at parts of the work I've often avoided. Writing code used to take long enough that I could feel busy without finding out whether anyone wanted the thing I was making. AI lets me get to that uncomfortable question much sooner.
+
+I still have to talk to people, give them a reason to try it, and find out why they don't come back. Making another feature is often easier than having those conversations. It's also easier to mistake for progress.
+
+Watching Farza talk about what he's building makes me want to get back to my own ideas. I like seeing what got someone started. My friend wanted to help her mother's bakery. You can understand why that matters to her without knowing anything about the code.
+
+That's how I'd like to share my work. I want someone to see an attempt and feel comfortable making one of their own, even if they're still figuring things out.
+
+There are people all over my college who know about problems I don't. They've grown up in different homes, helped with different work, and had different ideas. I'd love to see what they make once they get a chance to try.
+
+And I'd love for my mom to show me something she made with AI on her own. Something useful for her teachers that I wouldn't have thought to build. I'd want to sit with her and hear how she did it.
+
+Shrit
+
+*I get curious about things, so I run little experiments to keep the scientist in me busy. I'm still figuring things out, and I could be wrong about plenty of this :)*
+`,
+  },
+  {
     title: "Not Being Ambitious Is Also Fine",
     description: "Why don't more people try to build something they like?",
     date: "2026-09-30T10:43:15.000Z",
