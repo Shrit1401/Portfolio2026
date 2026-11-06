@@ -84,11 +84,16 @@ function mapSanityToChapters(doc: SanityPastTimelineDoc): PastTimelineChapter[] 
           const typeRaw = ev.eventType ?? "thread";
           const type = isEventType(typeRaw) ? typeRaw : "thread";
           const img = resolveEventImage(ev);
+          // Keep the former current-status entry in sync with the homepage.
+          const isPreviousStatus = ev.title?.trim().toLowerCase() === "researching ai"
+            && ev.date?.trim().toLowerCase() === "march 2026 - present";
           return {
             type,
             date: ev.date?.trim() ?? "",
-            title: ev.title?.trim() ?? "Untitled",
-            story: ev.story?.trim() ?? "",
+            title: isPreviousStatus ? "working on tappr" : ev.title?.trim() ?? "Untitled",
+            story: isPreviousStatus
+              ? "right now, i’m working on tappr, helping product managers get their stuck users unstuck. building, testing, and iterating on it, one version at a time."
+              : ev.story?.trim() ?? "",
             ...(img ? { image: img } : {}),
           };
         })

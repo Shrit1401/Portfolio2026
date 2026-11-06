@@ -155,9 +155,9 @@ export const PAST_CHAPTERS: PastTimelineChapter[] = [
       {
         type: "experiment",
         date: "march 2026 - present",
-        title: "researching ai",
+        title: "working on tappr",
         story:
-          "right now, i’m in college and exploring ai more seriously. trying to understand how things work at a deeper level and slowly moving towards research.",
+          "right now, i’m working on tappr, helping product managers get their stuck users unstuck. building, testing, and iterating on it, one version at a time.",
         image: "/work/img-3.jpeg",
       },
     ],

@@ -1,0 +1,76 @@
+.entrance {
+  animation: comicReveal 850ms steps(1, end) both;
+}
+
+.fx {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.magenta,
+.cyan {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  mix-blend-mode: screen;
+}
+
+.magenta {
+  filter: grayscale(1) sepia(1) saturate(6) hue-rotate(275deg);
+  animation: magentaSlice 850ms steps(1, end) both;
+}
+
+.cyan {
+  filter: grayscale(1) sepia(1) saturate(6) hue-rotate(125deg);
+  animation: cyanSlice 850ms steps(1, end) both;
+}
+
+.dots {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(#171717 1px, transparent 1.5px);
+  background-size: 5px 5px;
+  mix-blend-mode: multiply;
+  animation: ink 850ms steps(1, end) both;
+}
+
+@keyframes comicReveal {
+  0% { clip-path: inset(0 0 100% 0); transform: scale(1.07) rotate(-2deg); filter: saturate(1.8) contrast(1.35); }
+  12% { clip-path: inset(0 0 55% 0); transform: scale(1.05) translateX(-3px); }
+  25% { clip-path: inset(0 0 12% 0); transform: scale(1.03) translateX(3px); }
+  42% { clip-path: inset(0); transform: scale(1.02) rotate(0.5deg); filter: saturate(1.4) contrast(1.15); }
+  65%, 100% { clip-path: inset(0); transform: none; filter: none; }
+}
+
+@keyframes magentaSlice {
+  0% { opacity: 0; }
+  12% { opacity: 0.75; transform: translateX(-10px); clip-path: inset(5% 0 45% 0); }
+  25% { opacity: 0.6; transform: translateX(8px); clip-path: inset(55% 0 12% 0); }
+  42% { opacity: 0.35; transform: translateX(-4px); clip-path: inset(28% 0 55% 0); }
+  65%, 100% { opacity: 0; }
+}
+
+@keyframes cyanSlice {
+  0% { opacity: 0; }
+  12% { opacity: 0.65; transform: translateX(10px); clip-path: inset(45% 0 15% 0); }
+  25% { opacity: 0.6; transform: translateX(-8px); clip-path: inset(8% 0 58% 0); }
+  42% { opacity: 0.35; transform: translateX(4px); clip-path: inset(65% 0 10% 0); }
+  65%, 100% { opacity: 0; }
+}
+
+@keyframes ink {
+  0% { opacity: 0; }
+  12% { opacity: 0.5; }
+  42% { opacity: 0.25; }
+  65%, 100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entrance { animation: none; }
+  .fx { display: none; }
+}

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import styles from "./PoseGif.module.css";
 
 const POSES = [
   { name: "happy", label: "happy" },
@@ -20,12 +21,21 @@ const CYCLE_MS = 3200;
 /** Looping clips of me cut from one video; cycles on its own, hover or click skips ahead. */
 export default function PoseGif() {
   const [index, setIndex] = useState(0);
+  const [ready, setReady] = useState(false);
+  const firstImage = useRef<HTMLImageElement>(null);
   const [loaded, setLoaded] = useState<Set<number>>(() => new Set([0]));
 
   const show = (i: number) => {
     setLoaded((prev) => (prev.has(i) ? prev : new Set(prev).add(i)));
     setIndex(i);
   };
+
+  useEffect(() => {
+    // Cached images may finish before React attaches the load handler.
+    if (firstImage.current?.complete && firstImage.current.naturalWidth > 0) {
+      setReady(true);
+    }
+  }, []);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -40,11 +50,14 @@ export default function PoseGif() {
         onMouseEnter={() => show((index + 1) % POSES.length)}
         onClick={() => show((index + 1) % POSES.length)}
       >
+        <div className={`absolute inset-0 ${ready ? styles.entrance : ""}`}>
         {POSES.map((pose, i) => (
           // GIFs need a plain <img>; next/image would re-encode them to a still frame.
           // eslint-disable-next-line @next/next/no-img-element
           <img
             key={pose.name}
+            ref={i === 0 ? firstImage : undefined}
+            onLoad={i === 0 ? () => setReady(true) : undefined}
             src={loaded.has(i) ? pose.src : pose.poster}
             alt={i === index ? `Shrit, ${pose.label}` : ""}
             aria-hidden={i !== index}
@@ -56,6 +69,15 @@ export default function PoseGif() {
             }`}
           />
         ))}
+        {ready && <span aria-hidden="true" className={styles.fx}>
+          {/* Colored slices play once with the opening pose. */}
+          {[styles.magenta, styles.cyan].map((className) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img key={className} src={POSES[0].src} alt="" className={className} />
+          ))}
+          <span className={styles.dots} />
+        </span>}
+        </div>
       </div>
     </figure>
   );

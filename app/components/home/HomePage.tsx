@@ -39,9 +39,7 @@ export default async function HomePage() {
         {/* Welcome: me on the left, my story on the right, contact rail on wide screens. */}
         <section className="grid grid-cols-1 gap-8 pt-8 md:grid-cols-[240px_1fr] md:gap-14 lg:grid-cols-[260px_1fr_320px] xl:gap-16">
           <div className="mx-auto w-56 md:sticky md:top-8 md:mx-0 md:w-full md:self-start">
-            <Reveal>
-              <PoseGif />
-            </Reveal>
+            <PoseGif />
             <NowPlaying className="mt-3" />
           </div>
 
