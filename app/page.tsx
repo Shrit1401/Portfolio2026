@@ -1,14 +1,20 @@
 import type { Metadata } from "next";
+import { profile } from "./lib/profile";
 import HomePage from "./components/home/HomePage";
 
 export const metadata: Metadata = {
-  title: { absolute: "Shrit" },
-  description:
-    "Shrit Shrivastava — a guy that loves creating things. Posts, a weekly newsletter, vlogs on YouTube, and a gallery of things.",
+  title: { absolute: "Shrit Shrivastava | Developer, maker, and writer" },
+  description: profile.description,
+  alternates: { canonical: "/" },
   openGraph: {
-    title: "Shrit",
-    description:
-      "Posts, a weekly newsletter, vlogs on YouTube, and a gallery of things by Shrit.",
+    title: "Shrit Shrivastava | Developer, maker, and writer",
+    description: profile.description,
+    url: "/",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Shrit Shrivastava | Developer, maker, and writer",
+    description: profile.description,
   },
 };
 

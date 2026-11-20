@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { getSiteBaseUrl, getSiteOriginUrl } from "@/app/lib/site";
 
+import { profile } from "@/app/lib/profile";
+
 const baseUrl = getSiteBaseUrl();
 const defaultDescription =
-  "Shrit — developer and maker. Portfolio, projects, research notes, and writing on building software and creative tech.";
+  profile.description;
 
 const defaultOgImagePath = "./opengraph-image.png";
 
@@ -14,8 +16,8 @@ export const metadata: Metadata = {
     template: "%s | Shrit",
   },
   description: defaultDescription,
-  authors: [{ name: "Shrit", url: baseUrl }],
-  creator: "Shrit",
+  authors: [{ name: profile.name, url: baseUrl }],
+  creator: profile.name,
   openGraph: {
     type: "website",
     locale: "en_US",

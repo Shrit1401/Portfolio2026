@@ -1,10 +1,7 @@
 import { getSiteBaseUrl } from "@/app/lib/site";
+import { profile } from "@/app/lib/profile";
 
-const sameAs = [
-  "https://github.com/shrit1401",
-  "https://twitter.com/shrit1401",
-  "https://www.linkedin.com/in/shrit1401/",
-];
+const sameAs = Object.values(profile.links).filter((url) => url.startsWith("https://"));
 
 export default function SiteJsonLd() {
   const baseUrl = getSiteBaseUrl();
@@ -16,16 +13,17 @@ export default function SiteJsonLd() {
         "@type": "WebSite",
         "@id": `${baseUrl}/#website`,
         url: baseUrl,
-        name: "Shrit",
-        description:
-          "Shrit — developer and maker. Portfolio, research, projects, and writing.",
+        name: profile.name,
+        description: profile.description,
         publisher: { "@id": `${baseUrl}/#person` },
       },
       {
         "@type": "Person",
         "@id": `${baseUrl}/#person`,
-        name: "Shrit",
+        name: profile.name,
         url: baseUrl,
+        alternateName: profile.shortName,
+        description: profile.description,
         sameAs,
       },
     ],
@@ -34,7 +32,7 @@ export default function SiteJsonLd() {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(graph) }}
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(graph).replace(/</g, "\\u003c") }}
     />
   );
 }

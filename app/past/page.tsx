@@ -6,9 +6,11 @@ import { getPastTimelineRows } from "@/app/lib/pastTimelineServer";
 import PastTimeline, { type ChapterGroup } from "./PastTimeline";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/past" },
   title: "Past",
   description: "How I got here, from editing youtube videos as a kid to researching AI in college.",
   openGraph: {
+    url: "/past",
     title: "Past | Shrit",
     description: "How I got here, from editing youtube videos as a kid to researching AI in college.",
   },

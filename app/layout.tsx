@@ -40,6 +40,8 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       className={`${geist.variable} ${instrumentSerif.variable} ${newsreader.variable}`}
     >
       <head>
+        <link rel="alternate" type="text/plain" href="/llms.txt" title="Shrit: profile for AI assistants" />
+        <link rel="alternate" type="application/json" href="/agent.json" title="Shrit: structured profile" />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <script
           defer

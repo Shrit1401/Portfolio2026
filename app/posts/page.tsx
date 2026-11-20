@@ -1,9 +1,21 @@
+import type { Metadata } from "next";
 import Navbar from "../components/Navbar";
 import { RevealText } from "@/app/components/motion";
 import Footer from "../components/Footer";
 import PostList from "../components/PostList";
 import { getAllResearch } from "../lib/researchData";
 import { SUBSTACK_URL } from "../lib/links";
+
+export const metadata: Metadata = {
+  title: "Posts",
+  description: "Essays and research notes by Shrit Shrivastava on AI, building software, and life.",
+  alternates: { canonical: "/posts" },
+  openGraph: {
+    title: "Posts | Shrit Shrivastava",
+    description: "Essays and research notes on AI, building software, and life.",
+    url: "/posts",
+  },
+};
 
 export default function PostsPage() {
   const posts = getAllResearch();

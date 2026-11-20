@@ -30,6 +30,20 @@ export default function Navbar() {
         Shrit Shrivastava
       </Link>
 
+      <div className="mt-4 flex justify-center">
+        <nav aria-label="View mode" className="inline-flex overflow-hidden rounded-md border border-line font-mono text-[11px]">
+          {[{ label: "human", href: "/" }, { label: "agent", href: "/agent" }].map((view) => {
+            const active = view.href === "/agent" ? pathname === "/agent" : pathname !== "/agent";
+            return (
+              <Link key={view.href} href={view.href} aria-current={active ? "page" : undefined}
+                className={`px-3 py-1.5 transition-colors focus-visible:outline-2 focus-visible:outline-offset-[-2px] ${active ? "bg-ink text-paper" : "text-muted hover:text-ink"}`}>
+                {view.label}
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
+
       <nav
         aria-label="Main"
         className="mt-5 grid grid-cols-5 border-y border-line text-[13px] sm:text-[15px]"
