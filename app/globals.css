@@ -91,7 +91,8 @@
   color-scheme: dark;
 }
 .theme-dark ::selection {
-  background-color: rgba(157, 180, 220, 0.25);
+  background-color: #c6fb4b;
+  color: #0b0b0b;
 }
 /* Overscroll / rubber-band areas outside the /e wrapper. */
 body:has(.theme-dark) {
@@ -193,8 +194,8 @@ body {
 }
 
 ::selection {
-  background-color: rgba(55, 81, 123, 0.2);
-  color: var(--foreground);
+  background-color: #c6fb4b;
+  color: #0b0b0b;
 }
 
 /* Inline links in running copy (story, past page). */

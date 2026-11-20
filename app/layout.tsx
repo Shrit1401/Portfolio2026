@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { Geist, Instrument_Serif, Newsreader } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "./components/SmoothScroll";
+import SelectionPixels from "./components/SelectionPixels";
 import SiteJsonLd from "./components/SiteJsonLd";
 import { metadata as seoMetadata } from "./components/SEO";
 import { themeScript } from "./lib/theme";
@@ -51,6 +52,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body className="font-sans antialiased">
         <SiteJsonLd />
+        <SelectionPixels />
         <SmoothScroll>{children}</SmoothScroll>
       </body>
     </html>
