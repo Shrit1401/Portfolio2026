@@ -70,11 +70,22 @@ export default function SelectionPixels() {
     function paint() {
       clear();
       if (!boxes.length || reducedMotion.matches || document.hidden) return;
-      ctx.fillStyle = "#c6fb4b";
+      const anchor = window.getSelection()?.anchorNode;
+      const element = anchor instanceof Element ? anchor : anchor?.parentElement;
+      if (!element?.isConnected) return;
+      // Read from the selected element so the forced-dark /e page works too.
+      ctx.fillStyle = getComputedStyle(element).getPropertyValue("--selection-background").trim() || "#000";
+      const phase = performance.now() / 140;
       let pixels = 0;
       function fringe(x: number, y: number, dx: number, dy: number) {
-        for (let step = 0; step < 2; step++) {
-          if (Math.random() > (step === 0 ? 0.58 : 0.28) || pixels++ > 12000) break;
+        // Travelling, stepped waves create a crawling edge rather than random noise.
+        const along = dx === 0 ? x : y;
+        const direction = dx + dy;
+        const wave = Math.sin(along / 9 - phase * direction)
+          + 0.5 * Math.sin(along / 4.5 + phase * 1.3);
+        const depth = Math.max(0, Math.min(3, Math.round(1 + wave)));
+        for (let step = 0; step < depth; step++) {
+          if (pixels++ > 12000) break;
           const px = Math.round(x + dx * step * PIXEL);
           const py = Math.round(y + dy * step * PIXEL);
           // Never cover text or draw seams inside an adjacent selected line.
@@ -97,7 +108,7 @@ export default function SelectionPixels() {
         }
         if (pixels > 12000) break;
       }
-      timer = setTimeout(paint, 110);
+      timer = setTimeout(paint, 50);
     }
 
     function refresh() {

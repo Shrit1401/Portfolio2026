@@ -37,6 +37,8 @@
 :root {
   --background: #f9f7f1;
   --foreground: #1c1b19;
+  --selection-background: #000;
+  --selection-foreground: #fff;
 }
 
 /* Night theme: on <html> from 8pm to 6am (see app/lib/theme.ts), or always on the /e wrapper.
@@ -53,6 +55,8 @@
   --color-chart-muted: #4a463f;
   --background: #141311;
   --foreground: #ece7dc;
+  --selection-background: #fff;
+  --selection-foreground: #000;
 
   --color-white: #1e1c19;
   --color-neutral-50: #1a1917;
@@ -89,10 +93,6 @@
   --color-emerald-300: #2f6150;
 
   color-scheme: dark;
-}
-.theme-dark ::selection {
-  background-color: #c6fb4b;
-  color: #0b0b0b;
 }
 /* Overscroll / rubber-band areas outside the /e wrapper. */
 body:has(.theme-dark) {
@@ -194,8 +194,8 @@ body {
 }
 
 ::selection {
-  background-color: #c6fb4b;
-  color: #0b0b0b;
+  background-color: var(--selection-background);
+  color: var(--selection-foreground);
 }
 
 /* Inline links in running copy (story, past page). */
